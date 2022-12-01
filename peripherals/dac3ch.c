@@ -6,10 +6,17 @@
    Works only if i8255/MHB8255A mode has been set to all channels out.
 
    Usage:
-     OUT 127 (#7F), 128 (#80) - sets 8255 to mode 0 and outbound way
+     OUT 127 (#7F), 128 (#80) - sets 8255 to mode 0 and outbound way for all 3 channels
      OUT 31 (#1F), X - Left "A" channel
      OUT 63 (#3F), Y - Right "B" channel
      OUT 95 (#5F), Z - Middle "C" channel
+  
+   Some application(s) or their version(s) set the mode wrongly (maybe it worked with authors' HW), 
+   so I've added "force OUT Mode" option to override it and enjoy music from those apps as well.
+   See "settings_current.dac3ch_force_out == 1" .
+   Examples:
+     Sample Tracker 3D: Setting 155 (all IN). Version 2 is OK.
+     A.S.E BETA: Setting 0x51, 0x33 (maybe Beta conflict?).
 
    Copyright (c) 2011-2016 Jon Mitchell, Philip Kendall
    Copyright (c) 2015 Stuart Brady
@@ -78,7 +85,7 @@ static const periph_port_t dac3ch_ports[] = {
 static const periph_t dac3ch_periph = {
   /* .option = */ &settings_current.dac3ch,
   /* .ports = */ dac3ch_ports,
-  /* .hard_reset = */ 1,
+  /* .hard_reset = */ 0,
   /* .activate = */ NULL,
 };
 
@@ -156,11 +163,7 @@ dac3ch_write_control( libspectrum_word port GCC_UNUSED, libspectrum_byte val )
   // Control - sound works only if port 0x7C = 128
   // Works only if 8255's mode has been set to all channels out.
   if (val == 128) {
-    // Standard OUT mode (Sample Tracker 2)
-    machine_current->dac3ch.dac3ch_active = 1;
-  } else if (val == 155) {
-    // Alternative OUT mode (Sample Tracker 3D) 
-    // (although this mode should be all IN, maybe a bug in ST-3D?)
+    // Standard all channels OUT mode
     machine_current->dac3ch.dac3ch_active = 1;
   } else {
     // Deactivated - reset all
@@ -177,7 +180,7 @@ dac3ch_write_channel_a( libspectrum_word port GCC_UNUSED, libspectrum_byte val )
   if( !periph_is_active( PERIPH_TYPE_DAC3CH ) ) {
     return;
   }
-  if (machine_current->dac3ch.dac3ch_active == 0) {
+  if (machine_current->dac3ch.dac3ch_active == 0 && settings_current.dac3ch_force_out == 0) {
     return;
   }
   sound_dac3ch_write_left(val);
@@ -190,7 +193,7 @@ dac3ch_write_channel_b( libspectrum_word port GCC_UNUSED, libspectrum_byte val )
   if( !periph_is_active( PERIPH_TYPE_DAC3CH ) ) {
     return;
   }
-  if (machine_current->dac3ch.dac3ch_active == 0) {
+  if (machine_current->dac3ch.dac3ch_active == 0 && settings_current.dac3ch_force_out == 0) {
     return;
   }
 
@@ -204,7 +207,7 @@ dac3ch_write_channel_c( libspectrum_word port GCC_UNUSED, libspectrum_byte val )
   if( !periph_is_active( PERIPH_TYPE_DAC3CH ) ) {
     return;
   }
-  if (machine_current->dac3ch.dac3ch_active == 0) {
+  if (machine_current->dac3ch.dac3ch_active == 0 && settings_current.dac3ch_force_out == 0) {
     return;
   }
 
