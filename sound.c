@@ -275,7 +275,7 @@ sound_init( const char *device )
   right_dac3ch_synth = new_Blip_Synth();
   blip_synth_set_volume( right_dac3ch_synth,
                          sound_get_volume( settings_current.volume_dac3ch ) );
-  blip_synth_set_output( right_dac3ch_synth, right_buf );
+  blip_synth_set_output( right_dac3ch_synth, sound_stereo_ay == SOUND_STEREO_AY_NONE ? left_buf : right_buf );
   blip_synth_set_treble_eq( right_dac3ch_synth, treble );
 
   middle_dac3ch_synth_l = new_Blip_Synth();
@@ -287,7 +287,7 @@ sound_init( const char *device )
   middle_dac3ch_synth_r = new_Blip_Synth();
   blip_synth_set_volume( middle_dac3ch_synth_r,
                          sound_get_volume( settings_current.volume_dac3ch ) );
-  blip_synth_set_output( middle_dac3ch_synth_r, right_buf );
+  blip_synth_set_output( middle_dac3ch_synth_r, sound_stereo_ay == SOUND_STEREO_AY_NONE ? left_buf : right_buf );
   blip_synth_set_treble_eq( middle_dac3ch_synth_r, treble );
 
   /* important to override these settings if not using stereo
@@ -328,47 +328,50 @@ sound_init( const char *device )
     blip_synth_set_output( *ay_mid_synth_r, right_buf );
     blip_synth_set_treble_eq( *ay_mid_synth_r, treble );
 
+    // @FIXME: Specdrum cannot work when AY stereo is OFF (crash)
     right_specdrum_synth = new_Blip_Synth();
     blip_synth_set_volume( right_specdrum_synth,
                            sound_get_volume( settings_current.volume_specdrum ) );
     blip_synth_set_output( right_specdrum_synth, right_buf );
     blip_synth_set_treble_eq( right_specdrum_synth, treble );
 
+    // @FIXME: Covox cannot work when AY stereo is OFF (crash)
     right_covox_synth = new_Blip_Synth();
     blip_synth_set_volume( right_covox_synth,
                            sound_get_volume( settings_current.volume_covox ) );
     blip_synth_set_output( right_covox_synth, right_buf );
     blip_synth_set_treble_eq( right_covox_synth, treble );
-
-    // Init sound for 3 channel D/A converter
-    left_dac3ch_synth = new_Blip_Synth();
-    blip_synth_set_volume( left_dac3ch_synth,
-                            sound_get_volume( settings_current.volume_dac3ch ) );
-    blip_synth_set_output( left_dac3ch_synth, left_buf );
-    blip_synth_set_treble_eq( left_dac3ch_synth, treble );
-
-    right_dac3ch_synth = new_Blip_Synth();
-    blip_synth_set_volume( right_dac3ch_synth,
-                            sound_get_volume( settings_current.volume_dac3ch ) );
-    blip_synth_set_output( right_dac3ch_synth, right_buf );
-    blip_synth_set_treble_eq( right_dac3ch_synth, treble );
-
-    middle_dac3ch_synth_l = new_Blip_Synth();
-    blip_synth_set_volume( middle_dac3ch_synth_l,
-                            sound_get_volume( settings_current.volume_dac3ch ) );
-    blip_synth_set_output( middle_dac3ch_synth_l, left_buf );
-    blip_synth_set_treble_eq( middle_dac3ch_synth_l, treble );
-
-    middle_dac3ch_synth_r = new_Blip_Synth();
-    blip_synth_set_volume( middle_dac3ch_synth_r,
-                            sound_get_volume( settings_current.volume_dac3ch ) );
-    blip_synth_set_output( middle_dac3ch_synth_r, right_buf );
-    blip_synth_set_treble_eq( middle_dac3ch_synth_r, treble );
   } else {
     blip_synth_set_output( ay_a_synth, left_buf );
     blip_synth_set_output( ay_b_synth, left_buf );
     blip_synth_set_output( ay_c_synth, left_buf );
   }
+
+  // Init sound for 3 channel D/A converter
+  left_dac3ch_synth = new_Blip_Synth();
+  blip_synth_set_volume( left_dac3ch_synth,
+                          sound_get_volume( settings_current.volume_dac3ch ) );
+  blip_synth_set_output( left_dac3ch_synth, left_buf );
+  blip_synth_set_treble_eq( left_dac3ch_synth, treble );
+
+  right_dac3ch_synth = new_Blip_Synth();
+  blip_synth_set_volume( right_dac3ch_synth,
+                          sound_get_volume( settings_current.volume_dac3ch ) );
+  blip_synth_set_output( right_dac3ch_synth, sound_stereo_ay == SOUND_STEREO_AY_NONE ? left_buf : right_buf );
+  blip_synth_set_treble_eq( right_dac3ch_synth, treble );
+
+  middle_dac3ch_synth_l = new_Blip_Synth();
+  blip_synth_set_volume( middle_dac3ch_synth_l,
+                          sound_get_volume( settings_current.volume_dac3ch ) );
+  blip_synth_set_output( middle_dac3ch_synth_l, left_buf );
+  blip_synth_set_treble_eq( middle_dac3ch_synth_l, treble );
+
+  middle_dac3ch_synth_r = new_Blip_Synth();
+  blip_synth_set_volume( middle_dac3ch_synth_r,
+                          sound_get_volume( settings_current.volume_dac3ch ) );
+  blip_synth_set_output( middle_dac3ch_synth_r, sound_stereo_ay == SOUND_STEREO_AY_NONE ? left_buf : right_buf );
+  blip_synth_set_treble_eq( middle_dac3ch_synth_r, treble );
+
 
   sound_enabled = sound_enabled_ever = 1;
 
