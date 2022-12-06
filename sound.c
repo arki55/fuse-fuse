@@ -729,6 +729,8 @@ sound_ay_reset( void )
 void
 sound_specdrum_write( libspectrum_word port GCC_UNUSED, libspectrum_byte val )
 {
+  if( !sound_enabled ) return;
+  
   if( periph_is_active( PERIPH_TYPE_SPECDRUM ) ) {
     blip_synth_update( left_specdrum_synth, tstates, ( val - 128) * 128);
     if( right_specdrum_synth ) {
@@ -745,6 +747,8 @@ sound_specdrum_write( libspectrum_word port GCC_UNUSED, libspectrum_byte val )
 void
 sound_covox_write( libspectrum_word port GCC_UNUSED, libspectrum_byte val )
 {
+  if( !sound_enabled ) return;
+
   if( periph_is_active( PERIPH_TYPE_COVOX_FB ) ||
       periph_is_active( PERIPH_TYPE_COVOX_DD ) ) {
     blip_synth_update( left_covox_synth, tstates, val * 128);
@@ -764,6 +768,8 @@ sound_covox_write( libspectrum_word port GCC_UNUSED, libspectrum_byte val )
 void
 sound_dac3ch_write_left( libspectrum_byte val )
 {
+  if( !sound_enabled ) return;
+
   // 4 or 8 bits ?
   if (option_enumerate_sound_dac3ch_mode() == SOUND_DAC3CH_MODE_4BIT) {
     // 4 bit mode: Move lower 4 bits up to boost volume and remove possible 
@@ -778,6 +784,8 @@ sound_dac3ch_write_left( libspectrum_byte val )
 void
 sound_dac3ch_write_right( libspectrum_byte val )
 {
+  if( !sound_enabled ) return;
+
   // 4 or 8 bits ?
   if (option_enumerate_sound_dac3ch_mode() == SOUND_DAC3CH_MODE_4BIT) {
     // 4 bit mode: Move lower 4 bits up to boost volume and remove possible 
@@ -792,6 +800,8 @@ sound_dac3ch_write_right( libspectrum_byte val )
 void
 sound_dac3ch_write_middle( libspectrum_byte val )
 {
+  if( !sound_enabled ) return;
+
   // 4 or 8 bits ?
   if (option_enumerate_sound_dac3ch_mode() == SOUND_DAC3CH_MODE_4BIT) {
     // 4 bit mode: Move lower 4 bits up to boost volume and remove possible 
