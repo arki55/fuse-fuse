@@ -21,7 +21,6 @@
 ## E-mail: philip-fuse@shadowmagic.org.uk
 
 fuse_SOURCES += \
-                peripherals/dac3ch.c \
                 peripherals/dck.c \
                 peripherals/if1.c \
                 peripherals/if2.c \
@@ -37,6 +36,7 @@ fuse_SOURCES += \
                 peripherals/ttx2000s.c \
                 peripherals/sound/ay.c \
                 peripherals/sound/covox.c \
+                peripherals/sound/dac3ch.c \
                 peripherals/sound/fuller.c \
                 peripherals/sound/melodik.c \
                 peripherals/sound/specdrum.c \
@@ -72,7 +72,6 @@ fuse_SOURCES += \
 endif
 
 noinst_HEADERS += \
-                  peripherals/dac3ch.h \
                   peripherals/dck.h \
                   peripherals/if1.h \
                   peripherals/if2.h \
@@ -88,6 +87,7 @@ noinst_HEADERS += \
                   peripherals/ttx2000s.h \
                   peripherals/sound/ay.h \
                   peripherals/sound/covox.h \
+                  peripherals/sound/dac3ch.h \
                   peripherals/sound/fuller.h \
                   peripherals/sound/melodik.h \
                   peripherals/sound/specdrum.h \
