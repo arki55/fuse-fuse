@@ -89,6 +89,7 @@ ttx2000s, boolean, 0
 usource, boolean, 0
 zxprinter, boolean, 1
 covox, boolean, 0
+dac3ch, boolean, 0
 phantom_typist_mode, string, "Auto"
 
 sound_device, string, NULL, 'd'
@@ -98,10 +99,13 @@ stereo_ay, string, NULL,, separation
 sound_force_8bit, boolean, 0
 sound_freq, numeric, 44100, 'f'
 speaker_type, string, NULL
+dac3ch_mode, string, NULL
+dac3ch_force_out, boolean, 0
 volume_ay, numeric, 100
 volume_beeper, numeric, 100
 volume_specdrum, numeric, 100
 volume_covox, numeric, 100
+volume_dac3ch, numeric, 100
 
 joystick_1, string, NULL, 'j'
 joystick_1_output, numeric, 0

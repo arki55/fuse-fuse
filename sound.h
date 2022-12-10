@@ -37,6 +37,9 @@ void sound_ay_write( int reg, int val, libspectrum_dword now );
 void sound_ay_reset( void );
 void sound_specdrum_write( libspectrum_word port, libspectrum_byte val );
 void sound_covox_write( libspectrum_word port, libspectrum_byte val );
+void sound_dac3ch_write_left( libspectrum_byte val );
+void sound_dac3ch_write_right( libspectrum_byte val );
+void sound_dac3ch_write_middle( libspectrum_byte val );
 void sound_frame( void );
 void sound_beeper( libspectrum_dword at_tstates, int on );
 libspectrum_dword sound_get_effective_processor_speed( void );
@@ -45,7 +48,7 @@ extern int sound_enabled;
 extern int sound_framesiz;
 
 /* Stereo separation types:
- *  * ACB is used in the Melodik interface.
+ *  * ACB is used in the Melodik and 8-bit D/A converter interface.
  *  * ABC stereo is used in the Pentagon/Scorpion.
  *  * BAC stereo does seem to exist but is quite rare:
  *      Z80Stealth emulates BAC stereo but that's about all.
@@ -57,6 +60,10 @@ extern int sound_framesiz;
 #define SOUND_STEREO_AY_ABC	2
 
 extern int sound_stereo_ay;
+
+/* D/A converter mode */
+#define SOUND_DAC3CH_MODE_8BIT 0
+#define SOUND_DAC3CH_MODE_4BIT 1
 
 /* The low-level sound interface */
 
