@@ -21,25 +21,25 @@
 ## E-mail: philip-fuse@shadowmagic.org.uk
 
 fuse_SOURCES += \
-                peripherals/ay.c \
-                peripherals/covox.c \
-                peripherals/dac3ch.c \
                 peripherals/dck.c \
-                peripherals/fuller.c \
                 peripherals/if1.c \
                 peripherals/if2.c \
                 peripherals/joystick.c \
                 peripherals/kempmouse.c \
-                peripherals/melodik.c \
                 peripherals/multiface.c \
                 peripherals/printer.c \
                 peripherals/scld.c \
                 peripherals/speccyboot.c \
-                peripherals/specdrum.c \
                 peripherals/spectranet.c \
                 peripherals/ula.c \
                 peripherals/usource.c \
                 peripherals/ttx2000s.c \
+                peripherals/sound/ay.c \
+                peripherals/sound/covox.c \
+                peripherals/sound/dac3ch.c \
+                peripherals/sound/fuller.c \
+                peripherals/sound/melodik.c \
+                peripherals/sound/specdrum.c \
                 peripherals/disk/beta.c \
                 peripherals/disk/crc.c \
                 peripherals/disk/didaktik.c \
@@ -72,25 +72,25 @@ fuse_SOURCES += \
 endif
 
 noinst_HEADERS += \
-                  peripherals/ay.h \
-                  peripherals/covox.h \
-                  peripherals/dac3ch.h \
                   peripherals/dck.h \
-                  peripherals/fuller.h \
                   peripherals/if1.h \
                   peripherals/if2.h \
                   peripherals/joystick.h \
                   peripherals/kempmouse.h \
-                  peripherals/melodik.h \
                   peripherals/multiface.h \
                   peripherals/printer.h \
                   peripherals/scld.h \
                   peripherals/speccyboot.h \
-                  peripherals/specdrum.h \
                   peripherals/spectranet.h \
                   peripherals/ula.h \
                   peripherals/usource.h \
                   peripherals/ttx2000s.h \
+                  peripherals/sound/ay.h \
+                  peripherals/sound/covox.h \
+                  peripherals/sound/dac3ch.h \
+                  peripherals/sound/fuller.h \
+                  peripherals/sound/melodik.h \
+                  peripherals/sound/specdrum.h \
                   peripherals/disk/beta.h \
                   peripherals/disk/crc.h \
                   peripherals/disk/didaktik.h \
