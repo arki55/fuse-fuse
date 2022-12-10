@@ -81,6 +81,7 @@ typedef enum periph_type {
   PERIPH_TYPE_ZXMMC,          /* ZXMMC interface */
   PERIPH_TYPE_ZXPRINTER,      /* ZX Printer */
   PERIPH_TYPE_ZXPRINTER_FULL_DECODE, /* ZX Printer responding only to 0xfb */
+  PERIPH_TYPE_128_MEMORY_PATCHED, /* 128K-style memory paging + A5=1 check in decoder */
 } periph_type;
 
 /*

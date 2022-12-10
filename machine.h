@@ -82,6 +82,8 @@ typedef struct fuse_machine_info {
 
   covox_info covox; /* Covox settings */
 
+  writeback_port *writeback; /* Writeback port (one is enough) */
+
   int (*shutdown)( void );
 
   int (*memory_map)( void );

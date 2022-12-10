@@ -56,6 +56,7 @@ pentagon1024_init( fuse_machine_info *machine )
   machine->ram.valid_pages    = 64;
 
   machine->unattached_port = spectrum_unattached_port_none;
+  machine->writeback = NULL;
 
   machine->shutdown = NULL;
 
