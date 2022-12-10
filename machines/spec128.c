@@ -198,13 +198,15 @@ spec128_memory_map( void )
   return 0;
 }
 
-static writeback_port spec128_writeback_orig = { 0x8020, 0x0000, 0x7ffd };
+/* Originally speccy 128 memory page decoder, checking for 2 pins */
+static writeback_port spec128_writeback_orig = { 0x8002, 0x0000, 0x7ffd };
+/* Modified page decoder as used in Didaktik M 128k, checking also A5 = 1 */
 static writeback_port spec128_writeback_patched = { 0x8022, 0x0020, 0x7ffd };
 
 writeback_port *
 spec128_get_writeback( BOOL patched )
 {
-  if (patched == 1) 
+  if (patched == TRUE) 
     return & spec128_writeback_patched;
   else
     return & spec128_writeback_orig;
