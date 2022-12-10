@@ -121,6 +121,7 @@ tc2068_init( fuse_machine_info *machine )
   ensure_empty_mapping();
 
   machine->unattached_port = spectrum_unattached_port_none;
+  machine->writeback = NULL;
 
   machine->shutdown = NULL;
 

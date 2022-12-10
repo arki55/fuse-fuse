@@ -28,9 +28,9 @@
 # <name on command line>, (defaults to <settings_info name> =~ s/_/-/g)
 # <name in config file>, (defaults to <command line> =~ s/-//g)
 
+# General Options
 emulation_speed, numeric, 100,, speed
 frame_rate, numeric, 1,, rate
-
 issue2, boolean, 0
 joy_prompt, boolean, 0,, joystick-prompt
 joy_kempston, boolean, 0,, kempston
@@ -48,6 +48,7 @@ writable_roms, boolean, 0
 autosave_settings, boolean, 0
 bw_tv, boolean, 0
 recreated_spectrum, boolean, 0
+didaktik_128k_patch, boolean, 0
 rs232_handshake, boolean, 0
 rs232_tx, string, NULL
 rs232_rx, string, NULL
@@ -92,6 +93,7 @@ covox, boolean, 0
 dac3ch, boolean, 0
 phantom_typist_mode, string, "Auto"
 
+# Sound options
 sound_device, string, NULL, 'd'
 sound, boolean, 1
 sound_load, boolean, 1,, loading-sound
@@ -107,6 +109,7 @@ volume_specdrum, numeric, 100
 volume_covox, numeric, 100
 volume_dac3ch, numeric, 100
 
+# Joystick options
 joystick_1, string, NULL, 'j'
 joystick_1_output, numeric, 0
 joystick_1_fire_1, numeric, 4096
@@ -150,6 +153,7 @@ joystick_keyboard_fire, numeric, 32
 
 keyboard_arrows_shifted, boolean, 1
 
+# RZX options
 rzx_compression, boolean, 1,, compress-rzx
 competition_mode, boolean, 0
 competition_code, numeric, 0
@@ -213,6 +217,7 @@ start_scaler_mode, string, "normal", 'g', graphics-filter
 
 speccyboot_tap, string, "tap0",
 
+# Select ROMs / Machine ROMs
 rom_16, string, "48.rom",
 rom_48, string, "48.rom",
 rom_128_0, string, "128-0.rom",
@@ -253,6 +258,8 @@ rom_scorpion_2, string, "256s-2.rom",
 rom_scorpion_3, string, "256s-3.rom",
 rom_spec_se_0, string, "se-0.rom",
 rom_spec_se_1, string, "se-1.rom",
+
+# Select ROMs / Peripheral ROMs
 rom_interface_1, string, "if1-2.rom",,, rominterfacei
 rom_beta128, string, "trdos.rom",
 rom_plusd, string, "plusd.rom",
@@ -266,6 +273,7 @@ rom_speccyboot, string, "speccyboot-1.4.rom",
 rom_ttx2000s, string, "ttx2000s.rom",
 rom_usource, string, "usource.rom",
 
+# Disk Options
 drive_plus3a_type, string, NULL
 drive_plus3b_type, string, NULL
 plus3_detect_speedlock, boolean, 1

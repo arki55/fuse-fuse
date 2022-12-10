@@ -277,12 +277,14 @@ readport( libspectrum_word port )
   b = readport_internal( port );
 
   /* Very ugly to put this here, but unless anything else needs this
-     "writeback" mechanism, no point producing a general framework */
-  if( ( port & 0x8002 ) == 0 &&
-      ( machine_current->machine == LIBSPECTRUM_MACHINE_128   ||
-	machine_current->machine == LIBSPECTRUM_MACHINE_PLUS2    ) )
-    writeport_internal( 0x7ffd, b );
-
+     "writeback" mechanism, no point producing a general framework 
+     Update: Improved it a bit with "writeback" machine info */
+  if (machine_current->writeback != NULL) {
+    if( ( port & machine_current->writeback->mask ) == machine_current->writeback->value ) {
+      writeport_internal( machine_current->writeback->write_port, b );
+    }
+  }
+  
   tstates++;
 
   return b;
