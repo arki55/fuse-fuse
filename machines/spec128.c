@@ -54,7 +54,7 @@ int spec128_init( fuse_machine_info *machine )
   machine->ram.valid_pages	     = 8;
 
   machine->unattached_port = spectrum_unattached_port;
-  machine->writeback = spec128_get_writeback( FALSE );
+  machine->writeback = spec128_get_writeback( 0 );
 
   machine->shutdown = NULL;
 
@@ -74,10 +74,10 @@ spec128_memory_patch( void )
     /* Didaktik D80 can be used under these settings */
     periph_set_present( PERIPH_TYPE_DIDAKTIK80, PERIPH_PRESENT_OPTIONAL );
     /* Patch writeback mechanism */
-    machine_current->writeback = spec128_get_writeback( TRUE );
+    machine_current->writeback = spec128_get_writeback( 1 );
   } else {
     /* reset to default 128k writeback def. */
-    machine_current->writeback = spec128_get_writeback( FALSE );
+    machine_current->writeback = spec128_get_writeback( 0 );
   }
 }
 
@@ -204,7 +204,7 @@ static writeback_port spec128_writeback_orig = { 0x8002, 0x0000, 0x7ffd };
 static writeback_port spec128_writeback_patched = { 0x8022, 0x0020, 0x7ffd };
 
 writeback_port *
-spec128_get_writeback( BOOL patched )
+spec128_get_writeback( int patched )
 {
   if (patched == TRUE) 
     return & spec128_writeback_patched;
