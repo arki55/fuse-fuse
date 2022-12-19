@@ -54,7 +54,7 @@ int spec128_init( fuse_machine_info *machine )
   machine->ram.valid_pages	     = 8;
 
   machine->unattached_port = spectrum_unattached_port;
-  machine->writeback = spec128_get_writeback( FALSE );
+  machine->writeback = spec128_get_writeback( 0 );
 
   machine->shutdown = NULL;
 
@@ -66,19 +66,34 @@ int spec128_init( fuse_machine_info *machine )
 void
 spec128_memory_patch( void )
 {
-  if( settings_current.didaktik_128k_patch ) {
-    /* To allow usage of D80 with 128k speccy, alter paging port decoder.
-       ROM must be set to 48K mode (rom=1) */
+  if(
+    machine_current->machine == LIBSPECTRUM_MACHINE_128 &&
+    settings_current.didaktik_128k_patch
+  ) {
+    /* Spec 128+D80 patch (1/2):
+       To allow usage of D80 with 128k speccy, alter paging port decoder. */
     periph_set_present( PERIPH_TYPE_128_MEMORY, PERIPH_PRESENT_NEVER );
     periph_set_present( PERIPH_TYPE_128_MEMORY_PATCHED, PERIPH_PRESENT_ALWAYS );
     /* Didaktik D80 can be used under these settings */
     periph_set_present( PERIPH_TYPE_DIDAKTIK80, PERIPH_PRESENT_OPTIONAL );
     /* Patch writeback mechanism */
-    machine_current->writeback = spec128_get_writeback( TRUE );
-  } else {
-    /* reset to default 128k writeback def. */
-    machine_current->writeback = spec128_get_writeback( FALSE );
+    machine_current->writeback = spec128_get_writeback( 1 );
   }
+}
+
+int
+spec128_rom_patch( int rom )
+{
+  if(
+    machine_current->machine == LIBSPECTRUM_MACHINE_128 &&
+    settings_current.didaktik_128k_patch
+  ) {
+    /* Spec 128+D80 patch (2/2):
+       Didaktik D80 can be used with 48K ROM only */
+    return 1;
+  }
+
+  return rom;
 }
 
 static int
@@ -157,11 +172,7 @@ spec128_memoryport_write( libspectrum_word port GCC_UNUSED,
 void
 spec128_select_rom( int rom )
 {
-  if( settings_current.didaktik_128k_patch ) {
-    /* Didaktik D80 can be used with 48K rom only */
-    rom = 1;
-  }
-
+  rom = spec128_rom_patch( rom );
   memory_map_16k( 0x0000, memory_map_rom, rom );
   machine_current->ram.current_rom = rom;
 }
@@ -204,7 +215,7 @@ static writeback_port spec128_writeback_orig = { 0x8002, 0x0000, 0x7ffd };
 static writeback_port spec128_writeback_patched = { 0x8022, 0x0020, 0x7ffd };
 
 writeback_port *
-spec128_get_writeback( BOOL patched )
+spec128_get_writeback( int patched )
 {
   if (patched == TRUE) 
     return & spec128_writeback_patched;
