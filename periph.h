@@ -26,6 +26,7 @@
 #define FUSE_PERIPH_H
 
 #include "libspectrum.h"
+#include "settings.h"
 
 /* The types of peripheral Fuse knows about */
 typedef enum periph_type {
@@ -164,7 +165,11 @@ int periph_update( void );
 
 void periph_posthook( void );
 
-int periph_postcheck( void );
+int periph_postcheck( settings_info *original_settings, settings_info *current_settings);
+
+void options_general_posthook( void );
+
+int options_general_postcheck( settings_info *original_settings, settings_info *current_settings );
 
 void periph_disable_optional( void );
 
