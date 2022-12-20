@@ -504,7 +504,7 @@ periph_posthook( void )
 }
 
 int
-periph_postcheck( void )
+periph_postcheck( settings_info *original_settings, settings_info *current_settings )
 {
   int needs_hard_reset = 0;
 
@@ -521,4 +521,35 @@ periph_register_paging_events( const char *type_string, int *page_event,
 {
   *page_event = debugger_event_register( type_string, page_event_string );
   *unpage_event = debugger_event_register( type_string, unpage_event_string );
+}
+
+/* @TODO: Where to put these? */
+
+static int options_general_need_reset = 0;
+
+/* When saving general options:
+   In case some specific options are saved, do the reset */
+void
+options_general_posthook( void )
+{
+    if( options_general_need_reset == 1 ) {
+      options_general_need_reset = 0;
+      machine_reset( 1 );
+    }
+}
+
+/* When saving general options:
+   In case some specific options are saved, ask if to reset */
+int
+options_general_postcheck( settings_info *original_settings, settings_info *current_settings )
+{
+  int needs_hard_reset = 0;
+  if( original_settings->didaktik_128k_patch != current_settings->didaktik_128k_patch ) {
+    needs_hard_reset = 1;
+  }
+
+  /* Save the value ino a static var, will be used
+     by options_general_posthook() right after. */
+  options_general_need_reset = needs_hard_reset;
+  return needs_hard_reset;
 }

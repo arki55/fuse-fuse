@@ -71,6 +71,8 @@ Checkbox, Show status(b)ar, statusbar, INPUT_KEY_b
 Checkbox, Snap (j)oystick prompt, joy_prompt, INPUT_KEY_j
 Checkbox, (C)onfirm actions, confirm_actions, INPUT_KEY_c
 Checkbox, A(u)to-save settings, autosave_settings, INPUT_KEY_u
+Postcheck, options_general_postcheck
+Posthook, options_general_posthook
 
 media
 Media Options
