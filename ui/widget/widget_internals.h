@@ -157,6 +157,7 @@ void widget_help_keyhandler( input_key key );
 int widget_menu_draw( void* data );
 void widget_menu_keyhandler( input_key key );
 
+
 /* More callbacks */
 scaler_type widget_select_scaler( int (*selector)( scaler_type ) );
 
@@ -208,6 +209,7 @@ extern char *widget_text_text;	/* The returned text */
 
 /* The options widgets */
 int widget_options_finish( widget_finish_state finished );
+int widget_general_finish( widget_finish_state finished );
 
 /* The error widget */
 
