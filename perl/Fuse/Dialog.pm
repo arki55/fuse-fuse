@@ -54,7 +54,7 @@ sub read (;$) {
 
 	foreach( @widgets ) {
 
-	    my( $widget_type, $text, $value, $key, $data1, $data2 ) =
+	    my( $widget_type, $text, $value, $value2, $key, $data1, $data2 ) =
 		split /\s*,\s*/;
 
 	    if( lc $widget_type eq 'postcheck' ) {
@@ -77,9 +77,12 @@ sub read (;$) {
 		next;
 		}
 
+		my @value2_split = split(/\|/, $value2);
+
 	    push @widget_data, { type => $widget_type,
 				 text => $text,
 				 value => $value,
+				 value2 => \@value2_split,
 				 key => $key,
 				 data1 => $data1,
 				 data2 => $data2,
