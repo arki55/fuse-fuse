@@ -145,6 +145,9 @@ menu_options_$_->{name}_init( HWND hwndDlg )
   if( buffer[i] ) {};          /* Shut gcc up */
 
 CODE
+
+    print "  $_->{prehook}();\n\n" if $_->{prehook};
+
     foreach my $widget ( @{ $_->{widgets} } ) {
 	my $type = $widget->{type};
 

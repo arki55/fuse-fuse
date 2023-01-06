@@ -49,6 +49,7 @@ sub read (;$) {
 	my @widget_data;
 	my $postcheck;
 	my $posthook;
+	my $prehook;
 
 	foreach( @widgets ) {
 
@@ -65,6 +66,11 @@ sub read (;$) {
 		next;
 	    }
 
+		if( lc $widget_type eq 'prehook' ) {
+		$prehook = $text;
+		next;
+		}
+
 	    push @widget_data, { type => $widget_type,
 				 text => $text,
 				 value => $value,
@@ -78,6 +84,7 @@ sub read (;$) {
 			 title => $title,
 			 postcheck => $postcheck,
 			 posthook => $posthook,
+			 prehook => $prehook,
 			 widgets => \@widget_data };
     }
 

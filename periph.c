@@ -224,6 +224,17 @@ set_type_inactive( gpointer key, gpointer value, gpointer user_data )
   type_data->active = 0;
 }
 
+/* copy activity of peripheral to its setting (align setting with what is actually active atm.) */
+static void
+set_option_from_activity( gpointer key, gpointer value, gpointer user_data GCC_UNUSED )
+{
+  periph_private_t *private = value;
+
+  if (private->periph->option) {
+    *(private->periph->option) = private->active;
+  }
+}
+
 /* Mark all peripherals as being never present on this machine */
 static void
 set_types_inactive( void )
@@ -510,6 +521,14 @@ periph_postcheck( void )
   g_hash_table_foreach( peripherals, get_hard_reset, &needs_hard_reset );
 
   return needs_hard_reset;
+}
+
+/* Do something before opening peripherals options */
+void
+periph_prehook( void )
+{
+  /* Uncheck options for HW that is not active right now */
+  g_hash_table_foreach( peripherals, set_option_from_activity, NULL );
 }
 
 /* Register debugger page/unpage events for a peripheral */
