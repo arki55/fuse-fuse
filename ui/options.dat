@@ -63,6 +63,7 @@ Checkbox, TT(X)2000S, ttx2000s, INPUT_KEY_x
 Checkbox, uSo(u)rce, usource, INPUT_KEY_u
 Checkbox, C(o)vox interface, covox, INPUT_KEY_o
 Prehook, periph_prehook
+Lockedcheck, periph_lockedcheck
 Postcheck, periph_postcheck
 Posthook, periph_posthook
 
@@ -86,6 +87,7 @@ Checkbox, Beta 128 (a)uto-boot in 48K machines, beta128_48boot, INPUT_KEY_a
 Checkbox, (O)pus Discovery interface, opus, INPUT_KEY_o
 Checkbox, ZXMMC i(n)terface, zxmmc_enabled, INPUT_KEY_n
 Prehook, periph_prehook
+Lockedcheck, periph_lockedcheck
 Postcheck, periph_postcheck
 Posthook, periph_posthook
 

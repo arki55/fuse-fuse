@@ -133,7 +133,34 @@ CODE
     my $idcname = uc( "IDC_OPT_$_->{name}" );
     my $optname = uc( "OPT_$_->{name}" );
 
+# Generate onclick event handler for every option widget (checkbox)
+    foreach my $widget ( @{ $_->{widgets} } ) {
+      if( $widget->{type} eq "Checkbox" ) {
+        my $idcname = uc( "$widget->{value}" );
+
 print << "CODE";
+static void
+menu_options_$_->{name}_$widget->{value}_onclick( HWND hwndDlg )
+{
+CODE
+  # Activate check if option should be disabled (callback fnc.)
+  # Locked option ? -> gray out button (all types)
+  if( $_->{lockedcheck} ) {
+      print << "CODE";
+  if( $_->{lockedcheck}( &settings_current.$widget->{value} ) == TRUE ) {
+    EnableWindow( GetDlgItem(hwndDlg, IDC_${optname}_${idcname}), FALSE );
+  }
+
+CODE
+  }
+      print << "CODE";
+}
+
+CODE
+  # Next $widget 
+    }}
+
+      print << "CODE";
 static void
 menu_options_$_->{name}_init( HWND hwndDlg )
 {
@@ -188,10 +215,20 @@ CODE
       }
     }
   }
+
 CODE
 	} else {
           die "Unknown type `$type'";
         }
+
+  # Update editability of widget (checkboxes) and its suboptions
+  if( $widget->{type} eq "Checkbox" ) {
+  print << "CODE";
+  menu_options_$_->{name}_$widget->{value}_onclick( hwndDlg );
+
+CODE
+  }
+  # Next $widget 
     }
 
 print << "CODE";
