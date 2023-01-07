@@ -37,13 +37,13 @@ Checkbox, Random len(g)th MDR cartridge, mdr_random_len,, INPUT_KEY_g
 peripherals_general
 General Peripheral Options
 Checkbox, (K)empston joystick, joy_kempston,, INPUT_KEY_k
-Checkbox, Kempston (m)ouse, kempston_mouse,, INPUT_KEY_m
+Checkbox, Kempston (m)ouse, kempston_mouse, mouse_swap_buttons, INPUT_KEY_m
 Checkbox, (S)wap mouse buttons, mouse_swap_buttons,, INPUT_KEY_s
 Checkbox, (F)uller Box, fuller,, INPUT_KEY_f
 Checkbox, M(e)lodik, melodik,, INPUT_KEY_e
 Checkbox, (I)nterface 1, interface1,, INPUT_KEY_i
 Checkbox, In(t)erface 2, interface2,, INPUT_KEY_t
-Checkbox, Mu(l)tiface One, multiface1,, INPUT_KEY_l
+Checkbox, Mu(l)tiface One, multiface1, multiface1_stealth, INPUT_KEY_l
 Checkbox, Multiface 12(8), multiface128,, INPUT_KEY_8
 Checkbox, Multiface (3), multiface3,, INPUT_KEY_3
 Checkbox, Stealt(h) Multiface One, multiface1_stealth,, INPUT_KEY_h
@@ -54,7 +54,7 @@ Checkbox, Speccy(B)oot interface, speccyboot,, INPUT_KEY_b
 #endif
 Checkbox, Spec(D)rum interface, specdrum,, INPUT_KEY_d
 #ifdef BUILD_SPECTRANET
-Checkbox, Spectra(n)et, spectranet,, INPUT_KEY_n
+Checkbox, Spectra(n)et, spectranet, spectranet_disable, INPUT_KEY_n
 Checkbox, Spe(c)tranet disable, spectranet_disable,, INPUT_KEY_c
 #endif
 #ifdef BUILD_TTX2000S
@@ -70,19 +70,19 @@ Posthook, periph_posthook
 peripherals_disk
 Disk Peripheral Options
 Checkbox, Simple (8)-bit IDE, simpleide_active,, INPUT_KEY_8
-Checkbox, (Z)XATASP interface, zxatasp_active,, INPUT_KEY_z
+Checkbox, (Z)XATASP interface, zxatasp_active, zxatasp_upload|zxatasp_wp, INPUT_KEY_z
 Checkbox, ZXATASP up(l)oad, zxatasp_upload,, INPUT_KEY_l
 Checkbox, Z(X)ATASP write protect, zxatasp_wp,, INPUT_KEY_x
-Checkbox, ZX(C)F interface, zxcf_active,, INPUT_KEY_c
+Checkbox, ZX(C)F interface, zxcf_active, zxcf_upload, INPUT_KEY_c
 Checkbox, ZXCF (u)pload, zxcf_upload,, INPUT_KEY_u
-Checkbox, Div(I)DE interface, divide_enabled,, INPUT_KEY_i
+Checkbox, Div(I)DE interface, divide_enabled, divide_wp, INPUT_KEY_i
 Checkbox, DivIDE (w)rite protect, divide_wp,, INPUT_KEY_w
-Checkbox, Div(M)MC interface, divmmc_enabled,, INPUT_KEY_m
+Checkbox, Div(M)MC interface, divmmc_enabled, divmmc_wp, INPUT_KEY_m
 Checkbox, DivMMC w(r)ite protect, divmmc_wp,, INPUT_KEY_r
 Checkbox, +(D) interface, plusd,, INPUT_KEY_d
 Checkbox, Dida(k)tik 80 interface, didaktik80,, INPUT_KEY_k
 Checkbox, DISCi(P)LE interf(a)ce, disciple,, INPUT_KEY_p
-Checkbox, (B)eta 128 interface, beta128,, INPUT_KEY_b
+Checkbox, (B)eta 128 interface, beta128, beta128_48boot, INPUT_KEY_b
 Checkbox, Beta 128 (a)uto-boot in 48K machines, beta128_48boot,, INPUT_KEY_a
 Checkbox, (O)pus Discovery interface, opus,, INPUT_KEY_o
 Checkbox, ZXMMC i(n)terface, zxmmc_enabled,, INPUT_KEY_n
