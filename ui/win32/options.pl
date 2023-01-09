@@ -2,7 +2,7 @@
 
 # options.pl: generate options dialog boxes
 
-# Copyright (c) 2001-2015 Philip Kendall, Marek Januszewski, Stuart Brady
+# Copyright (c) 2001-2015 Philip Kendall, Marek Januszewski, Stuart Brady, Miroslav Durcik
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -152,6 +152,16 @@ CODE
   }
 
 CODE
+  }
+  # If not checked, disable supoptions
+  if( $widget->{subvalues} ) {
+    foreach my $suboption ( @{ $widget->{subvalues} } ) {
+      my $idcname2 = uc( "$suboption" );
+      print << "CODE";
+  EnableWindow( GetDlgItem(hwndDlg, IDC_${optname}_${idcname2}), 
+                IsDlgButtonChecked( hwndDlg, IDC_${optname}_${idcname} ) );
+CODE
+    }
   }
       print << "CODE";
 }
@@ -352,6 +362,20 @@ menu_options_$_->{name}_proc( HWND hwndDlg, UINT msg, WPARAM wParam GCC_UNUSED,
         case IDCANCEL:
           EndDialog( hwndDlg, 0 );
           return 0;
+
+CODE
+    # Register onclick event callbacks for widgets
+    foreach my $widget ( @{ $_->{widgets} } ) {
+      if( $widget->{type} eq "Checkbox" ) {
+	      my $idcname = uc( "$widget->{value}" );
+        print << "CODE";
+        case IDC_${optname}_${idcname}:
+          menu_options_$_->{name}_$widget->{value}_onclick( hwndDlg );
+          return 0;
+
+CODE
+    }}
+      print << "CODE";
       }
       break;
 
