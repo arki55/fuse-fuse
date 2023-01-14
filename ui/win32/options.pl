@@ -143,23 +143,20 @@ static void
 menu_options_$_->{name}_$widget->{value}_onclick( HWND hwndDlg )
 {
 CODE
-  # Activate check if option should be disabled (callback fnc.)
-  # Locked option ? -> gray out button (all types)
-  if( $_->{lockedcheck} ) {
-      print << "CODE";
-  if( $_->{lockedcheck}( &settings_current.$widget->{value} ) == TRUE ) {
-    EnableWindow( GetDlgItem(hwndDlg, IDC_${optname}_${idcname}), FALSE );
-  }
-
-CODE
-  }
-  # If not checked, disable supoptions
+  # Suboption use whole parent definition for && || support in editability (2/2)
+  # ifdef: Should affect only options within the same dialog box
   if( $widget->{subvalues} ) {
-    foreach my $suboption ( @{ $widget->{subvalues} } ) {
-      my $idcname2 = uc( "$suboption" );
+    foreach my $suboption_arr ( @{ $widget->{subvalues} } ) {
+      my $suboption = $suboption_arr->{sub};
+      my $edit_def = $suboption_arr->{parent_def};
+      ## $edit_def =~ s/([_a-zA-Z0-9]+)/settings_current\.$1 \=\= TRUE/g;
+      $edit_def =~ s/([_a-zA-Z0-9]+)/ \n#ifdef IDC_${optname}_$1\n IsDlgButtonChecked( hwndDlg, IDC_${optname}_$1 ) \n#else\n settings_current\.$1 \=\= TRUE \n#endif\n /g;
+      $edit_def =~ s/(IDC_([_a-zA-Z0-9]+))/uc($1)/ge; # uppercase IDC_*
+      my $idcname2 = sprintf( "IDC_%s_%s", $optname, uc( "$suboption" ) );
       print << "CODE";
-  EnableWindow( GetDlgItem(hwndDlg, IDC_${optname}_${idcname2}), 
-                IsDlgButtonChecked( hwndDlg, IDC_${optname}_${idcname} ) );
+#ifdef $idcname2
+  EnableWindow( GetDlgItem(hwndDlg, $idcname2), ($edit_def) ? TRUE : FALSE );
+#endif
 CODE
     }
   }
@@ -187,16 +184,15 @@ CODE
 
     foreach my $widget ( @{ $_->{widgets} } ) {
 	my $type = $widget->{type};
+  my $idcname = uc( "$widget->{value}" );
 
 	if( $type eq "Checkbox" ) {
-	    my $idcname = uc( "$widget->{value}" );
         print << "CODE";
   SendDlgItemMessage( hwndDlg, IDC_${optname}_${idcname}, BM_SETCHECK,
     settings_current.$widget->{value} ? BST_CHECKED : BST_UNCHECKED, 0 );
 
 CODE
 	} elsif( $widget->{type} eq "Entry" ) {
-	    my $idcname = uc( "$widget->{value}" );
         print << "CODE";
   SendDlgItemMessage( hwndDlg, IDC_${optname}_${idcname}, EM_LIMITTEXT,
                       $widget->{data1}, 0 );
@@ -207,7 +203,6 @@ CODE
 
 CODE
 	} elsif( $type eq "Combo" ) {
-          my $idcname = uc( "$widget->{value}" );
           print << "CODE";
   for( i = 0; i < $_->{name}_$widget->{value}_combo_count; i++ ) {
     /* FIXME This is asuming SendDlgItemMessage is not UNICODE */
@@ -231,7 +226,33 @@ CODE
           die "Unknown type `$type'";
         }
 
-  # Update editability of widget (checkboxes) and its suboptions
+  # Update editablity of this widget (2 ways)
+
+  # (1) If parent setting value is not set [located in any dialog box], disable this widget
+  #     Supports separators (1/2):
+  #     && - If any parent is disabled, then this is disabled too (cascade hierarchy).
+  #     || - If all parents are disabled, then this is disabled too (option used by multiple hw).
+  if( $widget->{parent_value} ) {
+    my $parent = $widget->{parent_value};
+    $parent =~ s/([_a-zA-Z0-9]+)/settings_current\.$1 \=\= TRUE/g;
+      print << "CODE";
+    EnableWindow( GetDlgItem(hwndDlg, IDC_${optname}_${idcname}), ($parent) ? TRUE : FALSE );
+
+CODE
+  }
+
+  # (2) Activate check if option should be disabled (callback fnc.)
+  # Locked option ? -> gray out button (all types)
+  if( $_->{lockedcheck} ) {
+      print << "CODE";
+  if( $_->{lockedcheck}( &settings_current.$widget->{value} ) == TRUE ) {
+    EnableWindow( GetDlgItem(hwndDlg, IDC_${optname}_${idcname}), FALSE );
+  }
+
+CODE
+  }
+
+  # Update editability of its suboptions (for checkboxes only)
   if( $widget->{type} eq "Checkbox" ) {
   print << "CODE";
   menu_options_$_->{name}_$widget->{value}_onclick( hwndDlg );

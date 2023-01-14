@@ -111,8 +111,13 @@ sub read (;$) {
 			my $parent_value1 = $widget->{parent_value};
 			my $widget_value1 = $widget->{value};
 			if( $parent_value1 && $widget_value1 ) {
-				my $val1 = $subvalues_map{"$parent_value1"};
-				push ( @{$val1}, $widget_value1 );
+				my $parent_value2 = $parent_value1;
+				$parent_value2 =~ s/(\&\&|\|\|)/<sep>/g; # replace supported sep. && ||
+				foreach my $parent_value3 ( split (/<sep>/, $parent_value2) ) {
+					# Trigger editability within ANY parent option. Forward original edit.def.
+					my $val2 = $subvalues_map{"$parent_value3"};
+					push ( @{$val2}, { sub => $widget_value1, parent_def => $parent_value1 } );
+				}
 			}
 		}
 	}
