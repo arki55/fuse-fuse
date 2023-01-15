@@ -42,6 +42,7 @@ sub read (;$) {
     local $INPUT_RECORD_SEPARATOR = ""; # Paragraph mode
 
     my %subvalues_map; # Array with references to subvalues arrays. Option's name is the key.
+    my %option2dialog_map; # Array map option name => dialog name
     my @dialogs;
     while( <$fh> ) {
 
@@ -82,16 +83,21 @@ sub read (;$) {
 		my @subvalues = (); # Will be filled later
 		my $subvalues_ref = \@subvalues;
 		$subvalues_map{"$value"} = $subvalues_ref; # Map subvalues array through value/option name
+		$option2dialog_map{"$value"} = $name; # Map option name to dialog name
 
-	    push @widget_data, { type => $widget_type,
-				 text => $text,
-				 value => $value,
-				 parent_value => $parent_value,
-				 subvalues => $subvalues_ref,
-				 key => $key,
-				 data1 => $data1,
-				 data2 => $data2,
-			       };
+		push @widget_data, {
+				# read widget data
+				type => $widget_type,
+				text => $text,
+				value => $value,
+				parent_value => $parent_value,
+				key => $key,
+				data1 => $data1,
+				data2 => $data2,
+				# calculated widget data
+				subvalues => $subvalues_ref, # See Postprocessing(1)
+				onclick => 0 # See Postprocessing(2)
+		};
 	}
 
 	push @dialogs, { name => $name,
@@ -105,7 +111,7 @@ sub read (;$) {
 
 	use Data::Dumper;
 
-	# Postprocessing: GO through all dialogs/widget, generate subvalues arrays.
+	# Postprocessing(1): GO through all dialogs/widget, generate subvalues arrays.
 	foreach my $dialog ( @dialogs ) {
 		foreach my $widget ( @{ $dialog->{widgets} } ) {
 			my $parent_value1 = $widget->{parent_value};
@@ -116,8 +122,26 @@ sub read (;$) {
 				foreach my $parent_value3 ( split (/<sep>/, $parent_value2) ) {
 					# Trigger editability within ANY parent option. Forward original edit.def.
 					my $val2 = $subvalues_map{"$parent_value3"};
-					push ( @{$val2}, { sub => $widget_value1, parent_def => $parent_value1 } );
+					my $parent_value_dialog = $option2dialog_map{"$parent_value3"};
+					# We are interested in suboption(s) only within the same dialog window (**)
+					my $same_dialog = ( $parent_value_dialog eq $dialog->{name} );
+					if( $same_dialog ) {
+						push ( @{$val2}, { sub => $widget_value1, parent_def => $parent_value1} );
+					}
 				}
+			}
+		}
+	}
+
+	# Postprocessing(2): GO through dialogs, generate onclick flag if necessary.
+	#       When? If type is checkbox and it has suboption(s) in the same window (**).
+	foreach my $dialog ( @dialogs ) {
+		foreach my $widget ( @{ $dialog->{widgets} } ) {
+			if ( ( $widget->{type} eq "Checkbox" ) &&
+				( $widget->{subvalues} ) &&
+				( scalar @{ $widget->{subvalues} } )
+			) {
+				$widget->{onclick} = 1;
 			}
 		}
 	}

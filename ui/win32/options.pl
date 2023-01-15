@@ -135,7 +135,7 @@ CODE
 
 # Generate onclick event handler for every option widget (checkbox)
     foreach my $widget ( @{ $_->{widgets} } ) {
-      if( $widget->{type} eq "Checkbox" ) {
+      if( $widget->{onclick} ) {
         my $idcname = uc( "$widget->{value}" );
 
 print << "CODE";
@@ -144,19 +144,15 @@ menu_options_$_->{name}_$widget->{value}_onclick( HWND hwndDlg )
 {
 CODE
   # Suboption use whole parent definition for && || support in editability (2/2)
-  # ifdef: Should affect only options within the same dialog box
   if( $widget->{subvalues} ) {
     foreach my $suboption_arr ( @{ $widget->{subvalues} } ) {
       my $suboption = $suboption_arr->{sub};
       my $edit_def = $suboption_arr->{parent_def};
-      ## $edit_def =~ s/([_a-zA-Z0-9]+)/settings_current\.$1 \=\= TRUE/g;
       $edit_def =~ s/([_a-zA-Z0-9]+)/ \n#ifdef IDC_${optname}_$1\n IsDlgButtonChecked( hwndDlg, IDC_${optname}_$1 ) \n#else\n settings_current\.$1 \=\= TRUE \n#endif\n /g;
       $edit_def =~ s/(IDC_([_a-zA-Z0-9]+))/uc($1)/ge; # uppercase IDC_*
       my $idcname2 = sprintf( "IDC_%s_%s", $optname, uc( "$suboption" ) );
       print << "CODE";
-#ifdef $idcname2
   EnableWindow( GetDlgItem(hwndDlg, $idcname2), ($edit_def) ? TRUE : FALSE );
-#endif
 CODE
     }
   }
@@ -252,8 +248,8 @@ CODE
 CODE
   }
 
-  # Update editability of its suboptions (for checkboxes only)
-  if( $widget->{type} eq "Checkbox" ) {
+  # Update editability of its suboptions (when onclick function is present)
+  if( $widget->{onclick} ) {
   print << "CODE";
   menu_options_$_->{name}_$widget->{value}_onclick( hwndDlg );
 
@@ -387,7 +383,7 @@ menu_options_$_->{name}_proc( HWND hwndDlg, UINT msg, WPARAM wParam GCC_UNUSED,
 CODE
     # Register onclick event callbacks for widgets
     foreach my $widget ( @{ $_->{widgets} } ) {
-      if( $widget->{type} eq "Checkbox" ) {
+      if( $widget->{onclick} ) {
 	      my $idcname = uc( "$widget->{value}" );
         print << "CODE";
         case IDC_${optname}_${idcname}:
