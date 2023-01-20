@@ -85,6 +85,11 @@ sub read (;$) {
 		$subvalues_map{"$value"} = $subvalues_ref; # Map subvalues array through value/option name
 		$option2dialog_map{"$value"} = $name; # Map option name to dialog name
 
+		# Prefix option(s) in parent value def. with "w." if not prefixed
+		# Parent option def. supports || && separators and can be prefixed with w. or s.
+		$parent_value =~ s/^([_a-zA-Z0-9]{3,})/w.$1/; # Prefix first option
+		$parent_value =~ s/(\|\||\&\&)([_a-zA-Z0-9]{3,})/$1w.$2/; # Prefix next options
+
 		push @widget_data, {
 				# read widget data
 				type => $widget_type,
@@ -119,6 +124,7 @@ sub read (;$) {
 			if( $parent_value1 && $widget_value1 ) {
 				my $parent_value2 = $parent_value1;
 				$parent_value2 =~ s/(\&\&|\|\|)/<sep>/g; # replace supported sep. && ||
+				$parent_value2 =~ s/[sw]\.//g; # replace "s." or "w." (default) for key in map
 				foreach my $parent_value3 ( split (/<sep>/, $parent_value2) ) {
 					# Trigger editability within ANY parent option. Forward original edit.def.
 					my $val2 = $subvalues_map{"$parent_value3"};

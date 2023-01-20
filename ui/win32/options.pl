@@ -241,7 +241,7 @@ CODE
   # Locked option ? -> gray out button (all types)
   if( $_->{lockedcheck} ) {
       print << "CODE";
-  if( $_->{lockedcheck}( &settings_current.$widget->{value} ) == TRUE ) {
+  if( $_->{lockedcheck}( &settings_current.$widget->{value} ) == 1 ) {
     EnableWindow( GetDlgItem(hwndDlg, IDC_${optname}_${idcname}), FALSE );
   }
 
