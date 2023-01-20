@@ -167,7 +167,7 @@ int periph_postcheck( void );
 
 void periph_prehook( void );
 
-gboolean periph_lockedcheck( int * option );
+int periph_lockedcheck( int * option );
 
 void periph_disable_optional( void );
 

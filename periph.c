@@ -547,19 +547,19 @@ periph_prehook( void )
   g_hash_table_foreach( peripherals, set_option_from_activity, NULL );
 }
 
-/* Check if option for peripheral should be locked, return TRUE in that case.
+/* Check if option for peripheral should be locked, return TRUE(1) in that case.
   Locate peripheral by its config setting, is locked if not optional */
-gboolean
+int
 periph_lockedcheck( int * option )
 {
   periph_private_t *periph;
   if( ( periph = g_hash_table_find( peripherals, find_by_option, option ) ) != NULL ) {
     /* Peripheral found, check if it is not optional => locked */
-    return ( periph->present == PERIPH_PRESENT_OPTIONAL ) ? FALSE : TRUE;
+    return ( periph->present == PERIPH_PRESENT_OPTIONAL ) ? 0 : 1;
   }
 
   /* No peripheral by searched option variable, not locking */
-  return FALSE;
+  return 0;
 }
 
 /* Register debugger page/unpage events for a peripheral */
