@@ -1,0 +1,39 @@
+name: Fuse App Linux Build - GTK2 UI
+run-name: Build Fuse App for Linux - GTK2 UI / ${{ github.actor }} /
+on: [push]
+jobs:
+  build:
+    name: Build Fuse App for Linux - GTK2 UI
+    runs-on: ubuntu-latest
+    steps:
+      - name: (1) Check out repository code
+        uses: actions/checkout@v3
+
+      - name: (2) Install dependencies
+        run: |
+          echo "Installing dependencies .."
+          sudo apt-get install -y libspectrum-dev
+
+      - name: (3) Autogen.sh
+        run: |
+          echo "Running autogen.sh .."
+          ./autogen.sh
+
+      - name: (4) Configure for linux
+        run: |
+          echo "Running configure .."
+          ./configure --with-gtk --disable-gtk3
+
+      - name: (5) Make
+        run: |
+          echo "Running make .."
+          make
+
+      - name: (6) Install (+sudo)
+        run: |
+          echo "Running make install .."
+          sudo make install
+
+      - name: (7) Finish
+        run: |
+          echo "🍏 Finishing with status ${{ job.status }}."

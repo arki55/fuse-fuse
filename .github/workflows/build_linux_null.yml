@@ -1,9 +1,9 @@
-name: Fuse App Linux Build
-run-name: Build Fuse App for Linux / ${{ github.actor }} /
+name: Fuse App Linux Build - Null UI
+run-name: Build Fuse App for Linux - Null UI / ${{ github.actor }} /
 on: [push]
 jobs:
   build:
-    name: Build Fuse App for Linux
+    name: Build Fuse App for Linux - Null UI
     runs-on: ubuntu-latest
     steps:
       - name: (1) Check out repository code
@@ -22,7 +22,7 @@ jobs:
       - name: (4) Configure for linux
         run: |
           echo "Running configure .."
-          ./configure
+          ./configure --with-null-ui
 
       - name: (5) Make
         run: |
