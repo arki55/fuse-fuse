@@ -148,7 +148,9 @@ CODE
     foreach my $suboption_arr ( @{ $widget->{subvalues} } ) {
       my $suboption = $suboption_arr->{sub};
       my $edit_def = $suboption_arr->{parent_def};
-      $edit_def =~ s/([_a-zA-Z0-9]+)/ \n#ifdef IDC_${optname}_$1\n IsDlgButtonChecked( hwndDlg, IDC_${optname}_$1 ) \n#else\n settings_current\.$1 \=\= TRUE \n#endif\n /g;
+      $edit_def =~ s/(s\.[_a-zA-Z0-9]+)/ (settings_current\.$1 \=\= TRUE) /g;
+      $edit_def =~ s/(w\.[_a-zA-Z0-9]+)/ IsDlgButtonChecked( hwndDlg, IDC_${optname}_$1 ) /g;
+      $edit_def =~ s/([sw]\.)//g; # Cleanup
       $edit_def =~ s/(IDC_([_a-zA-Z0-9]+))/uc($1)/ge; # uppercase IDC_*
       my $idcname2 = sprintf( "IDC_%s_%s", $optname, uc( "$suboption" ) );
       print << "CODE";
@@ -229,10 +231,11 @@ CODE
   #     && - If any parent is disabled, then this is disabled too (cascade hierarchy).
   #     || - If all parents are disabled, then this is disabled too (option used by multiple hw).
   if( $widget->{parent_value} ) {
-    my $parent = $widget->{parent_value};
-    $parent =~ s/([_a-zA-Z0-9]+)/settings_current\.$1 \=\= TRUE/g;
+    my $edit_def = $widget->{parent_value};
+    $edit_def =~ s/([sw]\.)//g; # Initializing window, ignoring w./s.
+    $edit_def =~ s/([_a-zA-Z0-9]+)/ (settings_current\.$1 \=\= TRUE) /g;
       print << "CODE";
-    EnableWindow( GetDlgItem(hwndDlg, IDC_${optname}_${idcname}), ($parent) ? TRUE : FALSE );
+    EnableWindow( GetDlgItem(hwndDlg, IDC_${optname}_${idcname}), ($edit_def) ? TRUE : FALSE );
 
 CODE
   }
