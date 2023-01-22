@@ -1,0 +1,66 @@
+name: Fuse App Windows Build
+run-name: Build Fuse App for Windows / ${{ github.actor }} /
+on: [push]
+jobs:
+  build:
+    name: Build Fuse App with Cygwin
+    runs-on: windows-latest
+    steps:
+      - name: (1) Check out repository code
+        uses: actions/checkout@v3
+
+      - name: (2) Clean up PATH
+        uses: egor-tensin/cleanup-path@v1
+
+      - name: (3) Setup Cygwin with libs
+        uses: egor-tensin/setup-cygwin@v4
+        with:
+          packages: \
+            autoconf \
+            automake \
+            bison \
+            flex \
+            gcc-core \
+            gcc-g++ \
+            gettext-devel \
+            libtool \
+            make \
+            mingw64-i686-bzip2 \
+            mingw64-i686-gcc-core \
+            mingw64-i686-gcc-g++ \
+            mingw64-i686-libgcrypt \
+            mingw64-i686-libgpg-error \
+            mingw64-i686-libpng \
+            mingw64-i686-win-iconv \
+            mingw64-i686-winpthread \
+            mingw64-i686-zlib \
+            pkg-config
+
+      - name: (4) Autogen.sh
+        run: |
+          ./autogen.sh
+        shell: C:\tools\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
+
+      - name: (5) Configure for Windows
+        run: |
+          ./configure \
+              --build=i686-pc-cygwin \
+              --host=i686-w64-mingw32 \
+              --prefix=/usr/local/i686-w64-mingw32 \
+              --with-xml-prefix=/usr/local/i686-w64-mingw32 \
+              --with-win32
+        shell: C:\tools\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
+
+      - name: (6) Make
+        run: |
+          make
+        shell: C:\tools\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
+
+      - name: (7) Install
+        run: |
+          sudo make install-strip
+        shell: C:\tools\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
+
+      - name: (8) Finish
+        run: |
+          echo "🍏 Finishing with status ${{ job.status }}."
