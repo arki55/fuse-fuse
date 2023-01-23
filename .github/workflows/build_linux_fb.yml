@@ -13,6 +13,7 @@ jobs:
         run: |
           echo "Installing dependencies .."
           sudo apt-get install -y libspectrum-dev
+          sudo apt-get install -y libgpm-dev
 
       - name: (3) Autogen.sh
         run: |
