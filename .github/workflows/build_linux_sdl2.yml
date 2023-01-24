@@ -6,6 +6,11 @@ jobs:
     name: Build Fuse App for Linux - SDL2 UI
     runs-on: ubuntu-latest
     steps:
+      - name: SDL2 for UI not supported yet. Skipped.
+        run: |
+          echo "SDL2 for UI not supported yet. Skipping."
+
+    steps-ignore:
       - name: (1) Check out repository code
         uses: actions/checkout@v3
 
