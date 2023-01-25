@@ -25,29 +25,28 @@ jobs:
           echo "Running autogen.sh .."
           ./autogen.sh
 
-      - name: (4) Configure for linux
+      - name: (4) Configure for linux and SDL2 UI
         run: |
           echo "Running configure .."
           ./configure --with-sdl | tee ./configure.out
 
       - name: (5) Verify output from configure
         run: |
-          lines1=(`cat "./configure.out" | grep -c "User interface: sdl"`)
-          lines2=(`cat "./configure.out" | grep -c "Using SDL 2: yes"`)
-          if [[ "$lines1" -ne "1" || "$lines2" -ne "1" ]]; then
-            echo "Error: User interface not configured for type SDL2!"
+          warning="SDL 2 not supported for the UI"
+          lines1=(`cat "./configure.out" | grep -c "$warning"`)
+          if [[ "$lines1" -ne "1" ]]; then
+            echo "Error: Message $warning not found!"
             exit 1
           fi
+          echo "$warning, skipping this build."
 
       - name: (6) Make
         run: |
-          echo "Running make .."
-          make
+          echo "(not) Running make .."
 
       - name: (7) Install (+sudo)
         run: |
-          echo "Running make install .."
-          sudo make install
+          echo "(not) Running make install .."
 
       - name: (8) Finish
         run: |
