@@ -9,8 +9,8 @@ jobs:
       - name: SDL2 for UI not supported yet. Skipped.
         run: |
           echo "SDL2 for UI not supported yet. Skipping."
+          exit 0
 
-    steps-ignore:
       - name: (1) Check out repository code
         uses: actions/checkout@v3
 
