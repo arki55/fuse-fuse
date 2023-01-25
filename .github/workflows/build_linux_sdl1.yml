@@ -23,18 +23,27 @@ jobs:
       - name: (4) Configure for linux
         run: |
           echo "Running configure .."
-          ./configure --with-sdl --disable-sdl2
+          ./configure --with-sdl --disable-sdl2 | tee ./configure.out
 
-      - name: (5) Make
+      - name: (5) Verify output from configure
+        run: |
+          lines1=(`cat "./configure.out" | grep -c "User interface: sdl"`)
+          lines2=(`cat "./configure.out" | grep -c "Using SDL 2: no"`)
+          if [[ "$lines1" -ne "1" || "$lines2" -ne "1" ]]; then
+            echo "Error: User interface not configured for type SDL1!"
+            exit 1
+          fi
+
+      - name: (6) Make
         run: |
           echo "Running make .."
           make
 
-      - name: (6) Install (+sudo)
+      - name: (7) Install (+sudo)
         run: |
           echo "Running make install .."
           sudo make install
 
-      - name: (7) Finish
+      - name: (8) Finish
         run: |
           echo "🍏 Finishing with status ${{ job.status }}."
