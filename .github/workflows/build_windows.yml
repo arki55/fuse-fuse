@@ -8,7 +8,7 @@ jobs:
     steps:
       - name: (1) Prepare git (autocrlf)
         run: git config --global core.autocrlf input
-    
+
       - name: (2) Check out repository code
         uses: actions/checkout@v3
 
