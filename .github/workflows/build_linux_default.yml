@@ -6,7 +6,7 @@ jobs:
     # Reuse libspectrum's build wokflow and artefact
     uses: arki55/fuse-libspectrum/.github/workflows/build_linux.yml@arki55/features/T9-github-build-checks-libspectrum
     with:
-      branch: master
+      branch: arki55/features/T9-github-build-checks-libspectrum
       # repo name is taken from var.LIBSPECTRUM_REPO
 
   build:
