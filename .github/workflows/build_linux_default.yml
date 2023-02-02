@@ -14,17 +14,18 @@ jobs:
     runs-on: ubuntu-latest
     needs: [libspectrum]
     steps:
-      - name: (1) Install dependencies
-        run: |
-          echo "No installable dependencies"
-
-      - name: (2) Check out repository code
+      - name: (1) Check out repository code
         uses: actions/checkout@v3
 
-      - name: (3) Download libspectrum artefact
+      - name: (2) Download libspectrum artefact
         uses: actions/download-artifact@v3
         with:
           name: libspectrum-linux
+
+      - name: (3) Install dependencies
+        run: |
+          echo "Install libspectrum from artefact"
+          ./libtool --mode=install /usr/bin/install -c libspectrum.la '/usr/local/lib'
 
       - name: (4) Autogen.sh
         run: ./autogen.sh
