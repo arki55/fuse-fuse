@@ -2,23 +2,29 @@ name: Fuse App For Linux (Default)
 run-name: Build Fuse App for Linux (Default) / ${{ github.actor }} /
 on: [push]
 jobs:
+  libspectrum:
+    name: Build Libspectrum
+    runs-on: ubuntu-latest
+      uses: arki55/fuse-libspectrum/.github/workflows/build_linux.yml@arki55/features/T9-github-build-checks-libspectrum
+      with:
+        branch: master
+        repo: ${{ env.LIBSPECTRUM_REPO }}
+
   build:
-    name: Build
+    name: Build App
     runs-on: ubuntu-latest
     steps:
       - name: (1) Install dependencies
         run: |
           echo "No installable dependencies"
 
-      - name: (2) Build and install libspectrum
-        uses: arki55/fuse-libspectrum/.github/workflows/build_linux.yml@arki55/features/T9-github-build-checks-libspectrum
-        with:
-          path: libspectrum-master
-          branch: master
-          repo: ${{ env.LIBSPECTRUM_REPO }}
-
-      - name: (3) Check out repository code
+      - name: (2) Check out repository code
         uses: actions/checkout@v3
+
+      - name: (3) Download libspectrum artefact
+        uses: actions/download-artifact@v3
+        with:
+          name: libspectrum-linux
 
       - name: (4) Autogen.sh
         run: ./autogen.sh
