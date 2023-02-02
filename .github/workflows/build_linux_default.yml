@@ -3,10 +3,11 @@ run-name: Build Fuse App for Linux (Default) / ${{ github.actor }} /
 on: [push]
 jobs:
   libspectrum:
+    # Reuse libspectrum's build wokflow and artefact
     uses: arki55/fuse-libspectrum/.github/workflows/build_linux.yml@arki55/features/T9-github-build-checks-libspectrum
     with:
       branch: master
-      repo: ${{ env.LIBSPECTRUM_REPO }}
+      # repo name is taken from env.LIBSPECTRUM_REPO
 
   build:
     name: Build App
