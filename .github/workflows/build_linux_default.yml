@@ -11,7 +11,7 @@ jobs:
           echo "No installable dependencies"
 
       - name: (2) Build and install libspectrum
-        uses: ${{ env.LIBSPECTRUM_REPO }}/.github/workflows/build_linux.yml
+        uses: arki55/fuse-libspectrum/.github/workflows/build_linux.yml@arki55/features/T9-github-build-checks-libspectrum
         with:
           path: libspectrum-master
           branch: master
