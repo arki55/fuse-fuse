@@ -5,10 +5,10 @@ jobs:
   libspectrum:
     name: Build Libspectrum
     runs-on: ubuntu-latest
-      uses: arki55/fuse-libspectrum/.github/workflows/build_linux.yml@arki55/features/T9-github-build-checks-libspectrum
-      with:
-        branch: master
-        repo: ${{ env.LIBSPECTRUM_REPO }}
+    uses: arki55/fuse-libspectrum/.github/workflows/build_linux.yml@arki55/features/T9-github-build-checks-libspectrum
+    with:
+      branch: master
+      repo: ${{ env.LIBSPECTRUM_REPO }}
 
   build:
     name: Build App
