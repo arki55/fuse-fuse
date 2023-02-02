@@ -1,20 +1,21 @@
-name: Fuse App Linux (Default) Build
+name: Fuse App For Linux (Default)
 run-name: Build Fuse App for Linux (Default) / ${{ github.actor }} /
 on: [push]
 jobs:
   build:
-    name: Build Fuse App for Linux (Default)
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - name: (1) Install dependencies
         run: |
           echo "No installable dependencies"
 
-      - name: (2) Checkout and build libspectrum
-        uses: ${{ secrets.LIBSPECTRUM_REPO }}
+      - name: (2) Build and install libspectrum
+        uses: ${{ env.LIBSPECTRUM_REPO }}/.github/workflows/build_linux.yml
         with:
           path: libspectrum-master
           branch: master
+          repo: ${{ env.LIBSPECTRUM_REPO }}
 
       - name: (3) Check out repository code
         uses: actions/checkout@v3
