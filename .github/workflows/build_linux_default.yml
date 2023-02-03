@@ -20,12 +20,15 @@ jobs:
       - name: (2) Download libspectrum artefact
         uses: actions/download-artifact@v3
         with:
-          name: libspectrum-linux
+          name: libspectrum-compiled-linux
+          path: libspectrum
 
       - name: (3) Install dependencies
         run: |
           echo "Install libspectrum from artefact"
-          ./libtool --mode=install /usr/bin/install -c libspectrum.la '/usr/local/lib'
+          cd libspectrum
+          make install
+          cd ..
 
       - name: (4) Autogen.sh
         run: ./autogen.sh
