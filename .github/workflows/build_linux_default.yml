@@ -37,6 +37,9 @@ jobs:
           pwd
           ls -la
           
+          echo "Unzip.."
+          tar -xvf libspectrum-compiled-linux.tar
+          
           echo "Make install-strip.."
           make install-strip
           
