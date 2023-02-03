@@ -29,6 +29,9 @@ jobs:
 
       - name: (3) Install dependencies
         run: |
+          echo "Dependencies for libspectrum"
+          sudo apt install -y libaudiofile-dev
+          
           echo "Install libspectrum from artefact"
           pwd
           
