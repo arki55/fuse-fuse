@@ -44,7 +44,7 @@ jobs:
           tar -xvf libspectrum-compiled-linux.tar
           
           echo "Make install-strip.."
-          make install-strip
+          sudo make install-strip
           
           echo "Go back to parent dir.."
           cd ..         
