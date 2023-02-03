@@ -1,49 +1,75 @@
-name: Fuse App Linux Build - GTK2 UI
-run-name: Build Fuse App for Linux - GTK2 UI / ${{ github.actor }} /
+name: Fuse App For Linux (GTK2 UI)
+run-name: Build Fuse App for Linux (GTK2 UI) / ${{ github.actor }} /
 on: [push]
 jobs:
+  libspectrum:
+    # Reuse libspectrum's build wokflow and artefact
+    uses: arki55/fuse-libspectrum/.github/workflows/build_linux.yml@arki55/features/T9-github-build-checks-libspectrum
+    with:
+      branch: arki55/features/T9-github-build-checks-libspectrum
+      # repo name is taken from var.LIBSPECTRUM_REPO
+
   build:
-    name: Build Fuse App for Linux - GTK2 UI
+    name: Build App
     runs-on: ubuntu-latest
+    needs: [libspectrum]
+    timeout-minutes: 15
+    defaults:
+      run:
+        shell: bash
     steps:
       - name: (1) Check out repository code
         uses: actions/checkout@v3
 
-      - name: (2) Install dependencies
+      - name: (2) Download libspectrum artefact
+        uses: actions/download-artifact@v3
+        with:
+          name: libspectrum-compiled-linux
+          path: libspectrum
+
+      - name: (3) Install dependencies
         run: |
-          echo "Installing dependencies .."
-          sudo apt-get install -y libspectrum-dev
+          echo "Dependencies for libspectrum.."
+          sudo apt install -y libaudiofile-dev
+          
+          echo "Dependencies for app.."
           sudo apt-get install -y gtk2.0
+          
+          echo "Install libspectrum from artefact.."
+          cd libspectrum
+          tar -xvf libspectrum-compiled-linux.tar
+          sudo make install-strip
+          cd ..
+          
+          echo "Done"
 
-      - name: (3) Autogen.sh
-        run: |
-          echo "Running autogen.sh .."
-          ./autogen.sh
+      - name: (4) Autogen.sh
+        run: ./autogen.sh
 
-      - name: (4) Configure for linux
+      - name: (5) Configure for Linux & GTK2 UI
         run: |
-          echo "Running configure .."
           ./configure --with-gtk --disable-gtk3 | tee ./configure.out
 
-      - name: (5) Verify output from configure
+      - name: (6) Verify output from configure
         run: |
-          lines1=(`cat "./configure.out" | grep -c "User interface: gtk"`)
-          lines2=(`cat "./configure.out" | grep -c "Using GTK 3: no"`)
-          if [[ "$lines1" -ne "1" || "$lines2" -ne "1" ]]; then
-            echo "Error: User interface not configured for type GTK2!"
-            exit 1
-          fi
+          .github/scripts/in_config.sh "Fuse options"
+          .github/scripts/in_config.sh "User interface: gtk"
+          .github/scripts/in_config.sh "Using GTK 3: no"
+          .github/scripts/in_config.sh "zlib support: yes"
+          .github/scripts/in_config.sh "libxml2 support: yes"
+          .github/scripts/in_config.sh "libpng support: yes"
+          .github/scripts/in_config.sh "Selected audio driver: oss"
+          .github/scripts/in_config.sh "Spectranet support: yes"
+          .github/scripts/in_config.sh "SpeccyBoot support: yes"
+          .github/scripts/in_config.sh "TTX2000 S support: yes"
+          .github/scripts/in_config.sh "Desktop integration: no"
 
-      - name: (6) Make
-        run: |
-          echo "Running make .."
-          make
+      - name: (7) Make
+        run: make
 
-      - name: (7) Install (+sudo)
-        run: |
-          echo "Running make install .."
-          sudo make install
+      - name: (8) Install
+        run: sudo make install
 
-      - name: (8) Finish
+      - name: (9) Finish
         run: |
           echo "🍏 Finishing with status ${{ job.status }}."

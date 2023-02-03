@@ -29,39 +29,46 @@ jobs:
 
       - name: (3) Install dependencies
         run: |
-          echo "Dependencies for libspectrum"
+          echo "Dependencies for libspectrum.."
           sudo apt install -y libaudiofile-dev
           
-          echo "Install libspectrum from artefact"
-          pwd
+          echo "Dependencies for app.."
+          echo "None"
           
-          echo "Go to subdir.."
+          echo "Install libspectrum from artefact.."
           cd libspectrum
-          pwd
-          ls -la
-          
-          echo "Unzip.."
           tar -xvf libspectrum-compiled-linux.tar
-          
-          echo "Make install-strip.."
           sudo make install-strip
+          cd ..
           
-          echo "Go back to parent dir.."
-          cd ..         
-          pwd
+          echo "Done"
 
       - name: (4) Autogen.sh
         run: ./autogen.sh
 
-      - name: (5) Configure for linux
-        run: ./configure
+      - name: (5) Configure for Linux & default UI
+        run: |
+          ./configure | tee ./configure.out
 
-      - name: (6) Make
+      - name: (6) Verify output from configure
+        run: |
+          .github/scripts/in_config.sh "Fuse options"
+          .github/scripts/in_config.sh "User interface: xlib"
+          .github/scripts/in_config.sh "zlib support: yes"
+          .github/scripts/in_config.sh "libxml2 support: yes"
+          .github/scripts/in_config.sh "libpng support: yes"
+          .github/scripts/in_config.sh "Selected audio driver: oss"
+          .github/scripts/in_config.sh "Spectranet support: yes"
+          .github/scripts/in_config.sh "SpeccyBoot support: yes"
+          .github/scripts/in_config.sh "TTX2000 S support: yes"
+          .github/scripts/in_config.sh "Desktop integration: no"
+
+      - name: (7) Make
         run: make
 
-      - name: (7) Install
+      - name: (8) Install
         run: sudo make install
 
-      - name: (8) Finish
+      - name: (9) Finish
         run: |
           echo "🍏 Finishing with status ${{ job.status }}."
