@@ -12,7 +12,7 @@ jobs:
   # Default build without any configure params (xlib)
   default-ui:
     needs: [libspectrum]
-    uses: _build_linux_sub.yml@arki55/features/T9-github-build-checks-fuse
+    uses: ./.github/workflows/_build_linux_sub.yml@arki55/features/T9-github-build-checks-fuse
     with:
       name: Default
       dependencies: "libaudiofile-dev"
@@ -27,7 +27,7 @@ jobs:
   # NULL UI
   null-ui:
     needs: [libspectrum]
-    uses: _build_linux_sub.yml@arki55/features/T9-github-build-checks-fuse
+    uses: ./.github/workflows/_build_linux_sub.yml@arki55/features/T9-github-build-checks-fuse
     with:
       name: "NULL UI"
       dependencies: "libaudiofile-dev"
@@ -38,7 +38,7 @@ jobs:
   # GTK 3 UI
   gtk3-ui:
     needs: [libspectrum]
-    uses: _build_linux_sub.yml@arki55/features/T9-github-build-checks-fuse
+    uses: ./.github/workflows/_build_linux_sub.yml@arki55/features/T9-github-build-checks-fuse
     with:
       name: GTK3 UI
       dependencies: "libaudiofile-dev gtk3.0"
@@ -49,7 +49,7 @@ jobs:
   # SDL 1 UI
   sdl1-ui:
     needs: [libspectrum]
-    uses: _build_linux_sub.yml@arki55/features/T9-github-build-checks-fuse
+    uses: ./.github/workflows/_build_linux_sub.yml@arki55/features/T9-github-build-checks-fuse
     with:
       name: SDL1 UI
       dependencies: "libaudiofile-dev libsdl1.2-dev"
@@ -60,7 +60,7 @@ jobs:
   # SDL 2 UI (not supported for UI yet)
   sdl2-ui:
     needs: [libspectrum]
-    uses: _build_linux_sub.yml@arki55/features/T9-github-build-checks-fuse
+    uses: ./.github/workflows/_build_linux_sub.yml@arki55/features/T9-github-build-checks-fuse
     with:
       name: SDL2 UI (not supported yet)
       dependencies: "libaudiofile-dev libsdl2-dev"
@@ -75,7 +75,7 @@ jobs:
   # FB UI (deprecated)
   fb-ui:
     needs: [libspectrum]
-    uses: _build_linux_sub.yml@arki55/features/T9-github-build-checks-fuse
+    uses: ./.github/workflows/_build_linux_sub.yml@arki55/features/T9-github-build-checks-fuse
     with:
       name: "FB UI (deprecated)"
       dependencies: "libaudiofile-dev libgpm-dev"
@@ -86,7 +86,7 @@ jobs:
   # XLIB UI (deprecated)
   xlib-ui:
     needs: [libspectrum]
-    uses: _build_linux_sub.yml@arki55/features/T9-github-build-checks-fuse
+    uses: ./.github/workflows/_build_linux_sub.yml@arki55/features/T9-github-build-checks-fuse
     with:
       name: X-lib UI (deprecated)
       dependencies: "libaudiofile-dev"
@@ -97,7 +97,7 @@ jobs:
   # GTK 2 UI (deprecated)
   gtk2-ui:
     needs: [libspectrum]
-    uses: _build_linux_sub.yml@arki55/features/T9-github-build-checks-fuse
+    uses: ./.github/workflows/_build_linux_sub.yml@arki55/features/T9-github-build-checks-fuse
     with:
       name: GTK2 UI (deprecated)
       dependencies: "libaudiofile-dev gtk2.0"
