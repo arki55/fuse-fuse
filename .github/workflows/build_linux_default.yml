@@ -52,6 +52,8 @@ jobs:
 
       - name: (6) Verify output from configure
         run: |
+          pwd
+          ls -la .github/scripts/
           .github/scripts/in_config.sh "Fuse options"
           .github/scripts/in_config.sh "User interface: xlib"
           .github/scripts/in_config.sh "zlib support: yes"
