@@ -66,7 +66,7 @@ jobs:
       configure_params: "--with-sdl"
       verify_ui: "sdl"
       verify_audio: "sdl"
-      verify_other: "SDL 2 not supported for the UI"
+      verify_other: "SDL 2 not supported for the UI, using SDL 1 instead"
 
 ##########################################
 ### DEPRECATED Linux UI configurations ###
