@@ -39,7 +39,8 @@ jobs:
     steps:
       - name: (1) Install dependencies
         if: ${{ inputs.dependencies }}
-        run: |          
+        run: |
+          sudo apt-get update
           sudo apt-get install -y ${{ inputs.dependencies }}
 
       - name: (2) Check out repository code
