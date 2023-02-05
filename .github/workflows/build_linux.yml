@@ -18,7 +18,6 @@ jobs:
       dependencies: "libaudiofile-dev"
       configure_params: ""
       verify_ui: "xlib"
-      verify_other: ""
 
 #########################################
 ### SUPPORTED Linux UI configurations ###
@@ -33,7 +32,6 @@ jobs:
       dependencies: "libaudiofile-dev"
       configure_params: "--with-null-ui"
       verify_ui: "null"
-      verify_other: ""
 
   # GTK 3 UI
   gtk3-ui:
@@ -46,7 +44,7 @@ jobs:
       verify_ui: "gtk"
       verify_other: "Using GTK 3: yes"
 
-  # SDL 1 UI
+  # SDL 1 UI + Sound
   sdl1-ui:
     needs: [libspectrum]
     uses: ./.github/workflows/_build_linux_sub.yml
@@ -55,9 +53,10 @@ jobs:
       dependencies: "libaudiofile-dev libsdl1.2-dev"
       configure_params: "--with-sdl --disable-sdl2"
       verify_ui: "sdl"
+      verify_audio: "sdl"
       verify_other: "Using SDL 2: no"
 
-  # SDL 2 UI (not supported for UI yet)
+  # SDL 2 UI + Sound (not supported for UI yet)
   sdl2-ui:
     needs: [libspectrum]
     uses: ./.github/workflows/_build_linux_sub.yml
@@ -66,6 +65,7 @@ jobs:
       dependencies: "libaudiofile-dev libsdl2-dev"
       configure_params: "--with-sdl"
       verify_ui: "sdl"
+      verify_audio: "sdl"
       verify_other: "SDL 2 not supported for the UI"
 
 ##########################################
@@ -81,7 +81,6 @@ jobs:
       dependencies: "libaudiofile-dev libgpm-dev"
       configure_params: "--with-fb"
       verify_ui: "fb"
-      verify_other: ""
 
   # XLIB UI (deprecated)
   xlib-ui:
@@ -92,7 +91,6 @@ jobs:
       dependencies: "libaudiofile-dev"
       configure_params: "--with-x"
       verify_ui: "xlib"
-      verify_other: ""
 
   # GTK 2 UI (deprecated)
   gtk2-ui:
