@@ -39,7 +39,7 @@ jobs:
     uses: ./.github/workflows/_build_linux_sub.yml
     with:
       name: GTK3 UI
-      dependencies: "libaudiofile-dev gtk3.0"
+      dependencies: "libaudiofile-dev gtk3.0 libgtk-3-dev"
       configure_params: "--with-gtk"
       verify_ui: "gtk"
       verify_other: "Using GTK 3: yes"
@@ -98,7 +98,7 @@ jobs:
     uses: ./.github/workflows/_build_linux_sub.yml
     with:
       name: GTK2 UI (deprecated)
-      dependencies: "libaudiofile-dev gtk2.0"
+      dependencies: "libaudiofile-dev gtk2.0 libgtk2.0-dev"
       configure_params: "--with-gtk --disable-gtk3"
       verify_ui: "gtk"
       verify_other: "Using GTK 3: no"
