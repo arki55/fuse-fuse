@@ -12,7 +12,7 @@ jobs:
 
   # Default build without any configure params (xlib)
   default-ui:
-    name: "Fuse app (Linux Default UI)"
+    name: "Fuse Default UI (Linux)"
     needs: [libspectrum]
     uses: ./.github/workflows/_build_linux_sub.yml
     with:
@@ -27,7 +27,7 @@ jobs:
 
   # NULL UI
   null-ui:
-    name: "Fuse app (Linux NULL UI)"
+    name: "Fuse NULL UI (Linux)"
     needs: [libspectrum]
     uses: ./.github/workflows/_build_linux_sub.yml
     with:
@@ -38,7 +38,7 @@ jobs:
 
   # GTK 3 UI
   gtk3-ui:
-    name: "Fuse app (Linux GTK 3 UI)"
+    name: "Fuse GTK 3 UI (Linux)"
     needs: [libspectrum]
     uses: ./.github/workflows/_build_linux_sub.yml
     with:
@@ -50,7 +50,7 @@ jobs:
 
   # SDL 1 UI + Sound
   sdl1-ui:
-    name: "Fuse app (Linux SDL 1 UI + sound)"
+    name: "Fuse SDL 1 UI + sound (Linux)"
     needs: [libspectrum]
     uses: ./.github/workflows/_build_linux_sub.yml
     with:
@@ -63,7 +63,7 @@ jobs:
 
   # SDL 2 UI + Sound (not supported for UI yet)
   sdl2-ui:
-    name: "Fuse app (Linux SDL 2 UI + sound) (not supported yet)"
+    name: "Fuse SDL 2 UI + sound (Linux) (not supported yet)"
     needs: [libspectrum]
     uses: ./.github/workflows/_build_linux_sub.yml
     with:
@@ -80,7 +80,7 @@ jobs:
 
   # FB UI (deprecated)
   fb-ui:
-    name: "Fuse app (Linux FB UI) (deprecated)"
+    name: "Fuse FB UI (Linux) (deprecated)"
     needs: [libspectrum]
     uses: ./.github/workflows/_build_linux_sub.yml
     with:
@@ -91,7 +91,7 @@ jobs:
 
   # XLIB UI (deprecated)
   xlib-ui:
-    name: "Fuse app (Linux X-lib UI) (deprecated)"
+    name: "Fuse X-lib UI (Linux) (deprecated)"
     needs: [libspectrum]
     uses: ./.github/workflows/_build_linux_sub.yml
     with:
@@ -102,7 +102,7 @@ jobs:
 
   # GTK 2 UI (deprecated)
   gtk2-ui:
-    name: "Fuse app (Linux GTK 2 UI) (deprecated)"
+    name: "Fuse GTK 2 UI (Linux) (deprecated)"
     needs: [libspectrum]
     uses: ./.github/workflows/_build_linux_sub.yml
     with:
