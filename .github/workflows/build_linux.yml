@@ -4,6 +4,7 @@ on: [push]
 jobs:
   libspectrum:
     # Reuse libspectrum's build wokflow and artefact
+    name: "Libspectrum lib (Linux)"
     uses: arki55/fuse-libspectrum/.github/workflows/build_linux.yml@arki55/features/T9-github-build-checks-libspectrum
     with:
       branch: arki55/features/T9-github-build-checks-libspectrum
@@ -11,6 +12,7 @@ jobs:
 
   # Default build without any configure params (xlib)
   default-ui:
+    name: "Fuse app (Linux Default UI)"
     needs: [libspectrum]
     uses: ./.github/workflows/_build_linux_sub.yml
     with:
@@ -25,6 +27,7 @@ jobs:
 
   # NULL UI
   null-ui:
+    name: "Fuse app (Linux NULL UI)"
     needs: [libspectrum]
     uses: ./.github/workflows/_build_linux_sub.yml
     with:
@@ -35,6 +38,7 @@ jobs:
 
   # GTK 3 UI
   gtk3-ui:
+    name: "Fuse app (Linux GTK 3 UI)"
     needs: [libspectrum]
     uses: ./.github/workflows/_build_linux_sub.yml
     with:
@@ -46,6 +50,7 @@ jobs:
 
   # SDL 1 UI + Sound
   sdl1-ui:
+    name: "Fuse app (Linux SDL 1 UI + sound)"
     needs: [libspectrum]
     uses: ./.github/workflows/_build_linux_sub.yml
     with:
@@ -58,6 +63,7 @@ jobs:
 
   # SDL 2 UI + Sound (not supported for UI yet)
   sdl2-ui:
+    name: "Fuse app (Linux SDL 2 UI + sound) (not supported yet)"
     needs: [libspectrum]
     uses: ./.github/workflows/_build_linux_sub.yml
     with:
@@ -74,6 +80,7 @@ jobs:
 
   # FB UI (deprecated)
   fb-ui:
+    name: "Fuse app (Linux FB UI) (deprecated)"
     needs: [libspectrum]
     uses: ./.github/workflows/_build_linux_sub.yml
     with:
@@ -84,6 +91,7 @@ jobs:
 
   # XLIB UI (deprecated)
   xlib-ui:
+    name: "Fuse app (Linux X-lib UI) (deprecated)"
     needs: [libspectrum]
     uses: ./.github/workflows/_build_linux_sub.yml
     with:
@@ -94,6 +102,7 @@ jobs:
 
   # GTK 2 UI (deprecated)
   gtk2-ui:
+    name: "Fuse app (Linux GTK 2 UI) (deprecated)"
     needs: [libspectrum]
     uses: ./.github/workflows/_build_linux_sub.yml
     with:
