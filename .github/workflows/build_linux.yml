@@ -62,7 +62,7 @@ jobs:
     uses: ./.github/workflows/_build_linux_sub.yml
     with:
       name: SDL2 UI (not supported yet)
-      dependencies: "libaudiofile-dev libsdl2-dev"
+      dependencies: "libaudiofile-dev libsdl2-dev libsdl1.2-dev"
       configure_params: "--with-sdl"
       verify_ui: "sdl"
       verify_audio: "sdl"
