@@ -36,6 +36,13 @@ jobs:
     defaults:
       run:
         shell: bash.exe --login --norc -eo pipefail -o igncr '{0}'
+    env:
+      CYGWIN_NOWINPATH: 1
+      
+      # Custom build libraries
+      CPPFLAGS: "-I/usr/local/i686-w64-mingw32/include"
+      LDFLAGS: "-L/usr/local/i686-w64-mingw32/lib"
+      PKG_CONFIG_LIBDIR: "/usr/local/i686-w64-mingw32/lib/pkgconfig:/usr/i686-w64-mingw32/sys-root/mingw/lib/pkgconfig"    
     steps:
       - name: (1) Prepare environment
         run: |
