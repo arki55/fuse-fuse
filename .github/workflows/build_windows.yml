@@ -18,12 +18,25 @@ jobs:
 ########################################
 
   # Win32 UI
-  win32-ui:
-    name: "Fuse Win32 UI (Windows)"
+  win32-default:
+    name: "Fuse Win32 UI - libxml2 (Windows)"
     needs: [libspectrum]
     uses: ./.github/workflows/_build_windows_sub.yml
     with:
-      name: "WIN32 UI"
+      name: "WIN32 UI - libxml2"
       dependencies: ""
       configure_params: "--with-win32"
       verify_ui: "win32"
+      verify_libxml2: "no"
+
+  # Win32 UI
+  win32-libxml2:
+    name: "Fuse Win32 UI + libxml2 (Windows)"
+    needs: [libspectrum]
+    uses: ./.github/workflows/_build_windows_sub.yml
+    with:
+      name: "WIN32 UI + libxml2"
+      dependencies: ""
+      configure_params: "--with-win32"
+      verify_ui: "win32"
+      verify_libxml2: "yes"
