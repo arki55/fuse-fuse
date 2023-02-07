@@ -8,9 +8,9 @@ jobs:
   libspectrum:
     # Reuse libspectrum's build wokflow and artefact
     name: "Libspectrum lib (Windows)"
-    uses: arki55/fuse-libspectrum/.github/workflows/build_windows.yml@arki55/features/T9-github-build-checks-fuse
+    uses: arki55/fuse-libspectrum/.github/workflows/build_windows.yml@arki55/features/T9-github-build-checks-libspectrum
     with:
-      branch: arki55/features/T9-github-build-checks-fuse
+      branch: arki55/features/T9-github-build-checks-libspectrum
       # repo name is taken from var.LIBSPECTRUM_REPO
 
 ########################################
