@@ -1,0 +1,153 @@
+# Reusable workflow for all Windows builds
+name: Fuse App For Windows
+run-name: Build Fuse App for windows / ${{ github.actor }} /
+
+on:
+  workflow_call:
+    inputs:
+      name:
+        type: string
+        required: true
+      dependencies:
+        type: string
+        required: false
+        default: ""
+      configure_params:
+        type: string
+        required: false
+        default: ""
+      verify_ui:
+        type: string
+        required: true
+      verify_audio:
+        type: string
+        required: false
+        default: "oss"
+      verify_other:
+        type: string
+        required: false
+        default: ""
+
+jobs:
+  build:
+    name: Build App
+    runs-on: windows-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        shell: bash.exe --login --norc -eo pipefail -o igncr '{0}'
+    steps:
+      - name: (1) Prepare environment
+        run: |
+          cd ${GITHUB_WORKSPACE}
+
+          echo "Adjust autocrlf in git.."
+          git config --global core.autocrlf input
+          
+          echo -n "Current directory: "
+          pwd
+          ls -la
+
+      - name: (2) Check out repository code
+        uses: actions/checkout@v3
+
+      - name: (3) Install Cygwin (32 bit) with libs
+        uses: cygwin/cygwin-install-action@master
+        with:
+          platform: x86
+          packages: \
+            autoconf \
+            automake \
+            bison \
+            flex \
+            gcc-core \
+            gcc-g++ \
+            gettext-devel \
+            libtool \
+            make \
+            mingw64-i686-bzip2 \
+            mingw64-i686-gcc-core \
+            mingw64-i686-gcc-g++ \
+            mingw64-i686-libgcrypt \
+            mingw64-i686-libgpg-error \
+            mingw64-i686-libpng \
+            mingw64-i686-win-iconv \
+            mingw64-i686-winpthread \
+            mingw64-i686-zlib \
+            pkg-config \
+            ${{ inputs.dependencies }}
+
+      - name: (4) Download libspectrum artefact
+        uses: actions/download-artifact@v3
+        with:
+          name: libspectrum-compiled-windows
+          path: libspectrum
+
+      - name: (5) Install libspectrum from artefact
+        run: |
+          cd ${GITHUB_WORKSPACE}
+          
+          cd libspectrum
+          tar -xvf libspectrum-compiled-windows.tar
+          make install-strip
+          cd ..
+          echo "Done"
+
+      - name: (6) Autogen.sh
+        run: |
+          cd ${GITHUB_WORKSPACE}
+          
+          echo "Running autogen.sh .."
+          ./autogen.sh
+
+      - name: (7) Configure for Windows
+        run: |
+          cd ${GITHUB_WORKSPACE}
+          
+          echo "Running configure .."
+          ./configure \
+          --build=i686-pc-cygwin \
+          --host=i686-w64-mingw32 \
+          --prefix=/usr/local/i686-w64-mingw32 \
+          --disable-static \
+          ${{ inputs.configure_params }} \
+          |& tee ./configure.out
+
+      - name: (8) Verify output from configure
+        # Most of the tested strings are common for all Windows builds
+        # Only the strings related to UI selection differ
+        run: |          
+          cd ${GITHUB_WORKSPACE}
+          
+          .github/scripts/in_config.sh "Fuse options"
+          .github/scripts/in_config.sh "zlib support: yes"
+          .github/scripts/in_config.sh "libxml2 support: yes"
+          .github/scripts/in_config.sh "libpng support: yes"
+          .github/scripts/in_config.sh "Spectranet support: yes"
+          .github/scripts/in_config.sh "SpeccyBoot support: yes"
+          .github/scripts/in_config.sh "TTX2000 S support: yes"
+          .github/scripts/in_config.sh "Desktop integration: no"
+          
+          .github/scripts/in_config.sh "User interface: ${{ inputs.verify_ui }}"
+          .github/scripts/in_config.sh "Selected audio driver: ${{ inputs.verify_audio }}"
+      - if: ${{ inputs.verify_other }}
+        run: |
+          .github/scripts/in_config.sh "${{ inputs.verify_other }}"
+
+      - name: (9) Make
+        run: |
+          cd ${GITHUB_WORKSPACE}
+          
+          echo "Running make .."
+          make
+
+      - name: (10) Install
+        run: |
+          cd ${GITHUB_WORKSPACE}
+          
+          echo "Running make dist-win32-dir .."
+          make install dist-win32-dir
+
+      - name: (11) Finish
+        run: |
+          echo "🍏 Finishing with status ${{ job.status }}."

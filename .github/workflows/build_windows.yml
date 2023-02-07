@@ -1,59 +1,29 @@
-name: Fuse App Windows Build
+name: Fuse App For Windows
 run-name: Build Fuse App for Windows / ${{ github.actor }} /
-on: [push]
+
+# Executed upon each commit pushed, merge commit in PR
+on: [push, pull_request]
+
 jobs:
-  build:
-    name: Build Fuse App with Cygwin
-    runs-on: windows-latest
-    steps:
-      - name: (1) Prepare git (autocrlf)
-        run: git config --global core.autocrlf input
+  libspectrum:
+    # Reuse libspectrum's build wokflow and artefact
+    name: "Libspectrum lib (Windows)"
+    uses: arki55/fuse-libspectrum/.github/workflows/build_windows.yml@arki55/features/T9-github-build-checks-fuse
+    with:
+      branch: arki55/features/T9-github-build-checks-fuse
+      # repo name is taken from var.LIBSPECTRUM_REPO
 
-      - name: (2) Check out repository code
-        uses: actions/checkout@v3
+########################################
+### SUPPORTED Windows configurations ###
+########################################
 
-      - name: (3) Install Cygwin (32 bit) with libs
-        uses: cygwin/cygwin-install-action@master
-        with:
-          platform: x86
-          packages: \
-            autoconf \
-            automake \
-            bison \
-            flex \
-            gcc-core \
-            gcc-g++ \
-            gettext-devel \
-            libtool \
-            make \
-            mingw64-i686-bzip2 \
-            mingw64-i686-gcc-core \
-            mingw64-i686-gcc-g++ \
-            mingw64-i686-libgcrypt \
-            mingw64-i686-libgpg-error \
-            mingw64-i686-libpng \
-            mingw64-i686-win-iconv \
-            mingw64-i686-winpthread \
-            mingw64-i686-zlib \
-            pkg-config
-
-      - name: (4) Autogen.sh
-        run: bash ./autogen.sh
-
-      - name: (5) Configure for Windows
-        run: bash ./configure \
-              --build=i686-pc-cygwin \
-              --host=i686-w64-mingw32 \
-              --prefix=/usr/local/i686-w64-mingw32 \
-              --with-xml-prefix=/usr/local/i686-w64-mingw32 \
-              --with-win32
-
-      - name: (6) Make
-        run: bash make
-
-      - name: (7) Install
-        run: bash sudo make install-strip
-
-      - name: (8) Finish
-        run: |
-          echo "🍏 Finishing with status ${{ job.status }}."
+  # Win32 UI
+  win32-ui:
+    name: "Fuse Win32 UI (Windows)"
+    needs: [libspectrum]
+    uses: ./.github/workflows/_build_windows_sub.yml
+    with:
+      name: "WIN32 UI"
+      dependencies: ""
+      configure_params: "--with-win32"
+      verify_ui: "win32"
