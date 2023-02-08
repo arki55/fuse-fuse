@@ -17,26 +17,50 @@ jobs:
 ### SUPPORTED Windows configurations ###
 ########################################
 
-  # Win32 UI
+  # Win32 / 1
   win32-default:
-    name: "Fuse Win32 UI - libxml2 (Windows)"
-    needs: [libspectrum]
-    uses: ./.github/workflows/_build_windows_sub.yml
-    with:
-      name: "WIN32 UI - libxml2"
-      dependencies: ""
-      configure_params: "--with-win32"
-      verify_ui: "win32"
-      verify_libxml2: "no"
-
-  # Win32 UI
-  win32-libxml2:
     name: "Fuse Win32 UI + libxml2 (Windows)"
     needs: [libspectrum]
     uses: ./.github/workflows/_build_windows_sub.yml
     with:
-      name: "WIN32 UI + libxml2"
-      dependencies: ""
-      configure_params: "--with-win32"
+      dependencies: "--with-win32"
+      configure_params: ""
       verify_ui: "win32"
       verify_libxml2: "yes"
+      verify_audio: "directsound"
+
+  # Win32 / 2
+  win32-no-libxml2:
+    name: "Fuse Win32 UI w/o libxml2 (Windows)"
+    needs: [libspectrum]
+    uses: ./.github/workflows/_build_windows_sub.yml
+    with:
+      dependencies: ""
+      configure_params: "--with-win32 --without-libxml2"
+      verify_ui: "win32"
+      verify_libxml2: "no"
+      verify_audio: "directsound"
+
+  # Win32 / 3
+  win32-no-libxml2:
+    name: "Fuse Win32 UI + win32sound (Windows)"
+    needs: [libspectrum]
+    uses: ./.github/workflows/_build_windows_sub.yml
+    with:
+      dependencies: ""
+      configure_params: "--with-win32 --with-audio-driver=win32sound"
+      verify_ui: "win32"
+      verify_libxml2: "no"
+      verify_audio: "win32sound"
+
+  # Win32 / 4
+  win32-no-libxml2:
+    name: "Fuse Win32 UI + null sound (Windows)"
+    needs: [libspectrum]
+    uses: ./.github/workflows/_build_windows_sub.yml
+    with:
+      dependencies: ""
+      configure_params: "--with-win32 --with-audio-driver=null"
+      verify_ui: "win32"
+      verify_libxml2: "no"
+      verify_audio: "null"
