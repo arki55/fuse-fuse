@@ -88,7 +88,7 @@ jobs:
       - name: (4) Download libspectrum artefact
         uses: actions/download-artifact@v3
         with:
-          name: libspectrum-compiled-windows
+          name: libspectrum-installed-windows
           path: libspectrum
 
       - name: (5) Install libspectrum from artefact
@@ -96,8 +96,8 @@ jobs:
           cd ${GITHUB_WORKSPACE}
           
           cd libspectrum
-          tar -xvf libspectrum-compiled-windows.tar
-          make install-strip
+          tar -xvf libspectrum-installed-windows.tar \
+            /usr/local/i686-w64-mingw32/
           cd ..
           echo "Done"
 
