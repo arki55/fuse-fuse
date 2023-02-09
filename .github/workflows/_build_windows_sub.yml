@@ -95,7 +95,7 @@ jobs:
           # Extract (-x) according to saved absolute paths
           tar -xvPf ${GITHUB_WORKSPACE}/libspectrum/libspectrum-installed-windows.tar
           echo "Done"
-        shell: bash
+        shell: "C:\cygwin\bin\bash.exe" --login --norc -eo pipefail -o igncr '{0}'
 
       - name: (6) Autogen.sh
         run: |
