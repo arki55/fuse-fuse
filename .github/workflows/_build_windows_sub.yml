@@ -91,7 +91,16 @@ jobs:
 
       - name: (5) Install libspectrum from artefact
         run: |
+          cd /usr/local/i686-w64-mingw32/lib
+          ls -la
+          cd /usr/local/i686-w64-mingw32
+          ls -la
+          cd /usr/local
+          ls -la
+          cd /usr
+          ls -la
           cd /
+          ls -la
           # Extract (-x) according to saved absolute paths
           tar -xvPf ${GITHUB_WORKSPACE}/libspectrum/libspectrum-installed-windows.tar
           echo "Done"
