@@ -94,15 +94,16 @@ jobs:
           mkdir /usr || true
           mkdir /usr/local/ || true
           mkdir /usr/local/i686-w64-mingw32/ || true
-          cd /usr/local/i686-w64-mingw32/lib
+          mkdir /usr/local/i686-w64-mingw32/lib/ || true
+          cd /usr/local/i686-w64-mingw32/lib || true
           ls -la
-          cd /usr/local/i686-w64-mingw32
+          cd /usr/local/i686-w64-mingw32 || true
           ls -la
-          cd /usr/local
+          cd /usr/local || true
           ls -la
-          cd /usr
+          cd /usr || true
           ls -la
-          cd /
+          cd / || true
           ls -la
           # Extract (-x) according to saved absolute paths
           tar -xvPf ${GITHUB_WORKSPACE}/libspectrum/libspectrum-installed-windows.tar
