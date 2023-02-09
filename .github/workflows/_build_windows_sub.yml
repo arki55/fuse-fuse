@@ -93,9 +93,8 @@ jobs:
         run: |
           cd ${GITHUB_WORKSPACE}
           # Extract (-x) files into /usr/local (cannot work with root /)
-          tar --directory /usr/local/ -xvf libspectrum/libspectrum-installed-windows.tar usr/local/
-          ls -la /usr/local/ || true
-          ls -la /usr/local/i686-w64-mingw32/ || true
+          mkdir /usr/local/i686-w64-mingw32 || true
+          tar --directory /usr/local/i686-w64-mingw32 -xvf libspectrum/libspectrum-installed-windows.tar
           echo "Done"
         shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
 
