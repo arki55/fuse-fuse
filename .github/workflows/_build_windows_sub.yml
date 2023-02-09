@@ -91,6 +91,9 @@ jobs:
 
       - name: (5) Install libspectrum from artefact
         run: |
+          mkdir /usr || true
+          mkdir /usr/local/ || true
+          mkdir /usr/local/i686-w64-mingw32/ || true
           cd /usr/local/i686-w64-mingw32/lib
           ls -la
           cd /usr/local/i686-w64-mingw32
