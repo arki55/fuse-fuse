@@ -36,7 +36,7 @@ jobs:
     timeout-minutes: 15
     defaults:
       run:
-        shell: bash.exe --login --norc -eo pipefail -o igncr '{0}'
+        shell: C:\cygwin\bin\bash.exe --norc --noprofile --noprofile --norc -eo pipefail -o igncr '{0}'
     env:
       CYGWIN_NOWINPATH: 1
       
@@ -63,7 +63,7 @@ jobs:
         uses: cygwin/cygwin-install-action@master
         with:
           platform: x86
-          packages: \
+          packages: |
             autoconf \
             automake \
             bison \
