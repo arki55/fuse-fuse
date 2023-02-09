@@ -94,11 +94,8 @@ jobs:
       - name: (5) Install libspectrum from artefact
         run: |
           cd ${GITHUB_WORKSPACE}
-          
-          cd libspectrum
-          tar -xvf libspectrum-installed-windows.tar \
-            /usr/local/i686-w64-mingw32/
-          cd ..
+          # Extract (-x) according to saved absolute paths (-P)
+          tar -xvPf libspectrum/libspectrum-installed-windows.tar
           echo "Done"
 
       - name: (6) Autogen.sh
