@@ -34,9 +34,6 @@ jobs:
     name: Build App
     runs-on: windows-latest
     timeout-minutes: 15
-    defaults:
-      run:
-        shell: C:\cygwin\bin\bash.exe --norc --noprofile --noprofile --norc -eo pipefail -o igncr '{0}'
     env:
       CYGWIN_NOWINPATH: 1
       
@@ -51,10 +48,11 @@ jobs:
 
           echo "Adjust autocrlf in git.."
           git config --global core.autocrlf input
-          
+
           echo -n "Current directory: "
           pwd
           ls -la
+        shell: bash
 
       - name: (2) Check out repository code
         uses: actions/checkout@v3
@@ -97,18 +95,20 @@ jobs:
           # Extract (-x) according to saved absolute paths
           tar -xvPf ${GITHUB_WORKSPACE}/libspectrum/libspectrum-installed-windows.tar
           echo "Done"
+        shell: bash
 
       - name: (6) Autogen.sh
         run: |
           cd ${GITHUB_WORKSPACE}
-          
+
           echo "Running autogen.sh .."
           ./autogen.sh
+        shell: bash
 
       - name: (7) Configure for Windows
         run: |
           cd ${GITHUB_WORKSPACE}
-          
+
           echo "Running configure .."
           ./configure \
           --build=i686-pc-cygwin \
@@ -117,6 +117,7 @@ jobs:
           --disable-static \
           ${{ inputs.configure_params }} \
           |& tee ./configure.out
+        shell: bash
 
       - name: (8) Verify output from configure
         # Most of the tested strings are common for all Windows builds
@@ -135,9 +136,11 @@ jobs:
           .github/scripts/in_config.sh "User interface: ${{ inputs.verify_ui }}"
           .github/scripts/in_config.sh "libxml2 support: ${{ inputs.verify_libxml2 }}"
           .github/scripts/in_config.sh "Selected audio driver: ${{ inputs.verify_audio }}"
+        shell: bash
       - if: ${{ inputs.verify_other }}
         run: |
           .github/scripts/in_config.sh "${{ inputs.verify_other }}"
+        shell: bash
 
       - name: (9) Make
         run: |
@@ -145,6 +148,7 @@ jobs:
           
           echo "Running make .."
           make
+        shell: bash
 
       - name: (10) Install
         run: |
@@ -152,6 +156,7 @@ jobs:
           
           echo "Running make dist-win32-dir .."
           make install dist-win32-dir
+        shell: bash
 
       - name: (11) Finish
         run: |
