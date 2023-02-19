@@ -8,7 +8,7 @@ jobs:
   libspectrum:
     # Reuse libspectrum's build wokflow and artefact (all libs enabled, real glib)
     name: "Libspectrum lib (Linux)"
-    uses: arki55/fuse-libspectrum/.github/workflows/build_linux.yml@arki55/github-workflows
+    uses: arki55/fuse-libspectrum/.github/workflows/build_linux_sub.yml@arki55/github-workflows
     with:
       branch: arki55/github-workflows
       # repo name is taken from var.LIBSPECTRUM_REPO
