@@ -49,15 +49,14 @@ jobs:
       - name: (3) Download libspectrum artefact
         uses: actions/download-artifact@v3
         with:
-          name: libspectrum-compiled-linux
+          name: libspectrum-installed-linux-fuse-app
           path: libspectrum
 
       - name: (4) Install libspectrum from artefact
         run: |
           cd libspectrum
-          tar -xvf libspectrum-compiled-linux.tar
-          sudo make install-strip
-          cd ..
+          # Extract (-x) files into /usr/local
+          sudo tar --directory / -xvf libspectrum/libspectrum-installed-linux-fuse-app.tar
           echo "Done"
 
       - name: (5) Autogen.sh

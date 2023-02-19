@@ -86,7 +86,7 @@ jobs:
       - name: (4) Download libspectrum artefact
         uses: actions/download-artifact@v3
         with:
-          name: libspectrum-installed-windows
+          name: libspectrum-installed-windows-fuse-app
           path: libspectrum
 
       - name: (5) Install libspectrum from artefact
