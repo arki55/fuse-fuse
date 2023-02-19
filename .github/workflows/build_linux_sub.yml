@@ -54,7 +54,6 @@ jobs:
 
       - name: (4) Install libspectrum from artefact
         run: |
-          cd libspectrum
           # Extract (-x) files into /usr/local
           sudo tar --directory / -xvf libspectrum/libspectrum-installed-linux.tar
           echo "Done"
