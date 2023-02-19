@@ -56,7 +56,7 @@ jobs:
         run: |
           cd libspectrum
           # Extract (-x) files into /usr/local
-          sudo tar --directory / -xvf libspectrum/libspectrum-installed-linux-fuse-app.tar
+          sudo tar --directory / -xvf libspectrum/libspectrum-installed-linux.tar
           echo "Done"
 
       - name: (5) Autogen.sh
