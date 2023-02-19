@@ -80,6 +80,7 @@ jobs:
             mingw64-i686-win-iconv \
             mingw64-i686-winpthread \
             mingw64-i686-zlib \
+            mingw64-i686-audiofile \
             pkg-config \
             ${{ inputs.dependencies }}
 

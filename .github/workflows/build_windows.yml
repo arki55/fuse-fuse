@@ -24,8 +24,8 @@ jobs:
     needs: [libspectrum]
     uses: ./.github/workflows/build_windows_sub.yml
     with:
-      dependencies: "--with-win32"
-      configure_params: ""
+      dependencies: "mingw64-i686-libxml2"
+      configure_params: "--with-win32"
       verify_ui: "win32"
       verify_libxml2: "yes"
       verify_audio: "directsound"
