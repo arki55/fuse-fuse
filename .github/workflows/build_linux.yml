@@ -6,18 +6,18 @@ on: [push, pull_request]
 
 jobs:
   libspectrum:
-    # Reuse libspectrum's build wokflow and artefact
+    # Reuse libspectrum's build wokflow and artefact (all libs enabled, real glib)
     name: "Libspectrum lib (Linux)"
-    uses: arki55/fuse-libspectrum/.github/workflows/build_linux.yml@arki55/features/T9-github-build-checks-libspectrum
+    uses: arki55/fuse-libspectrum/.github/workflows/build_linux.yml@arki55/github-workflows
     with:
-      branch: arki55/features/T9-github-build-checks-libspectrum
+      branch: arki55/github-workflows
       # repo name is taken from var.LIBSPECTRUM_REPO
 
   # Default build without any configure params (xlib)
   default-ui:
     name: "Fuse Default UI (Linux)"
     needs: [libspectrum]
-    uses: ./.github/workflows/_build_linux_sub.yml
+    uses: ./.github/workflows/build_linux_sub.yml
     with:
       name: Default
       dependencies: "libaudiofile-dev"
@@ -32,7 +32,7 @@ jobs:
   null-ui:
     name: "Fuse NULL UI (Linux)"
     needs: [libspectrum]
-    uses: ./.github/workflows/_build_linux_sub.yml
+    uses: ./.github/workflows/build_linux_sub.yml
     with:
       name: "NULL UI"
       dependencies: "libaudiofile-dev"
@@ -43,7 +43,7 @@ jobs:
   gtk3-ui:
     name: "Fuse GTK 3 UI (Linux)"
     needs: [libspectrum]
-    uses: ./.github/workflows/_build_linux_sub.yml
+    uses: ./.github/workflows/build_linux_sub.yml
     with:
       name: GTK3 UI
       dependencies: "libaudiofile-dev gtk3.0 libgtk-3-dev"
@@ -55,7 +55,7 @@ jobs:
   sdl1-ui:
     name: "Fuse SDL 1 UI + sound (Linux)"
     needs: [libspectrum]
-    uses: ./.github/workflows/_build_linux_sub.yml
+    uses: ./.github/workflows/build_linux_sub.yml
     with:
       name: SDL1 UI
       dependencies: "libaudiofile-dev libsdl1.2-dev"
@@ -68,7 +68,7 @@ jobs:
   sdl2-ui:
     name: "Fuse SDL 2 UI + sound (Linux) (not supported yet)"
     needs: [libspectrum]
-    uses: ./.github/workflows/_build_linux_sub.yml
+    uses: ./.github/workflows/build_linux_sub.yml
     with:
       name: SDL2 UI (not supported yet)
       dependencies: "libaudiofile-dev libsdl2-dev libsdl1.2-dev"
@@ -85,7 +85,7 @@ jobs:
   fb-ui:
     name: "Fuse FB UI (Linux) (deprecated)"
     needs: [libspectrum]
-    uses: ./.github/workflows/_build_linux_sub.yml
+    uses: ./.github/workflows/build_linux_sub.yml
     with:
       name: "FB UI (deprecated)"
       dependencies: "libaudiofile-dev libgpm-dev"
@@ -96,7 +96,7 @@ jobs:
   xlib-ui:
     name: "Fuse X-lib UI (Linux) (deprecated)"
     needs: [libspectrum]
-    uses: ./.github/workflows/_build_linux_sub.yml
+    uses: ./.github/workflows/build_linux_sub.yml
     with:
       name: X-lib UI (deprecated)
       dependencies: "libaudiofile-dev"
@@ -107,7 +107,7 @@ jobs:
   gtk2-ui:
     name: "Fuse GTK 2 UI (Linux) (deprecated)"
     needs: [libspectrum]
-    uses: ./.github/workflows/_build_linux_sub.yml
+    uses: ./.github/workflows/build_linux_sub.yml
     with:
       name: GTK2 UI (deprecated)
       dependencies: "libaudiofile-dev gtk2.0 libgtk2.0-dev"
