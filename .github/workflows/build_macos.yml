@@ -21,7 +21,7 @@ jobs:
     uses: ./.github/workflows/build_macos_sub.yml
     with:
       name: Default
-      dependencies: "libaudiofile-dev"
+      dependencies: ""
       configure_params: ""
       verify_ui: "xlib"
 
@@ -36,7 +36,7 @@ jobs:
     uses: ./.github/workflows/build_macos_sub.yml
     with:
       name: "NULL UI"
-      dependencies: "libaudiofile-dev"
+      dependencies: ""
       configure_params: "--with-null-ui"
       verify_ui: "null"
 
@@ -47,7 +47,7 @@ jobs:
     uses: ./.github/workflows/build_macos_sub.yml
     with:
       name: GTK3 UI
-      dependencies: "libaudiofile-dev gtk3.0 libgtk-3-dev"
+      dependencies: "gtk3.0 libgtk-3-dev"
       configure_params: "--with-gtk"
       verify_ui: "gtk"
       verify_other: "Using GTK 3: yes"
@@ -59,7 +59,7 @@ jobs:
     uses: ./.github/workflows/build_macos_sub.yml
     with:
       name: SDL1 UI
-      dependencies: "libaudiofile-dev libsdl1.2-dev"
+      dependencies: "libsdl1.2-dev"
       configure_params: "--with-sdl --disable-sdl2"
       verify_ui: "sdl"
       verify_audio: "sdl"
@@ -72,7 +72,7 @@ jobs:
     uses: ./.github/workflows/build_macos_sub.yml
     with:
       name: SDL2 UI (not supported yet)
-      dependencies: "libaudiofile-dev libsdl2-dev libsdl1.2-dev"
+      dependencies: "libsdl2-dev libsdl1.2-dev"
       configure_params: "--with-sdl"
       verify_ui: "sdl"
       verify_audio: "sdl"
@@ -89,7 +89,7 @@ jobs:
     uses: ./.github/workflows/build_macos_sub.yml
     with:
       name: "FB UI (deprecated)"
-      dependencies: "libaudiofile-dev libgpm-dev"
+      dependencies: "libgpm-dev"
       configure_params: "--with-fb"
       verify_ui: "fb"
 
@@ -100,7 +100,7 @@ jobs:
     uses: ./.github/workflows/build_macos_sub.yml
     with:
       name: X-lib UI (deprecated)
-      dependencies: "libaudiofile-dev"
+      dependencies: ""
       configure_params: "--with-x"
       verify_ui: "xlib"
 
@@ -111,7 +111,7 @@ jobs:
     uses: ./.github/workflows/build_macos_sub.yml
     with:
       name: GTK2 UI (deprecated)
-      dependencies: "libaudiofile-dev gtk2.0 libgtk2.0-dev"
+      dependencies: "gtk2.0 libgtk2.0-dev"
       configure_params: "--with-gtk --disable-gtk3"
       verify_ui: "gtk"
       verify_other: "Using GTK 3: no"
