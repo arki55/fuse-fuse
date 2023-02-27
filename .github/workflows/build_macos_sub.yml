@@ -38,8 +38,11 @@ jobs:
         shell: bash
     steps:
       - name: (1) Install dependencies
-        if: ${{ inputs.dependencies }}
         run: |
+          echo "Inspect if brew installed .."
+          brew doctor || true
+          
+          echo "Installing dependencies .."
           brew install \
             automake \
             audiofile \
