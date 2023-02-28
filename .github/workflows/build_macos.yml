@@ -29,16 +29,17 @@ jobs:
 ### SUPPORTED MacOS UI configurations ###
 #########################################
 
-  # NULL UI
+  # NULL UI + sound
   null-ui:
-    name: "Fuse NULL UI (MacOS)"
+    name: "Fuse NULL UI + sound (MacOS)"
     needs: [libspectrum]
     uses: ./.github/workflows/build_macos_sub.yml
     with:
       name: "NULL UI"
       dependencies: ""
-      configure_params: "--with-null-ui"
+      configure_params: "--with-null-ui --with-audio-driver=null"
       verify_ui: "null"
+      verify_audio: "null"
 
   # GTK 3 UI
   gtk3-ui:
