@@ -56,7 +56,6 @@ jobs:
           which -a bash
           bash --version
           sudo sh -c 'echo /usr/local/bin/bash >> /etc/shells'
-          chsh -s /usr/local/bin/bash
           
           echo "Installing dependencies .."
           brew install \
