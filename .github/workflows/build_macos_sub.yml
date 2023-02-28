@@ -51,6 +51,13 @@ jobs:
           echo "Inspect if brew installed .."
           brew doctor || true
           
+          echo "Upgrade bash (fix |& ) .."
+          brew install bash
+          which -a bash
+          bash --version
+          sudo sh -c 'echo /usr/local/bin/bash >> /etc/shells'
+          chsh -s /usr/local/bin/bash
+          
           echo "Installing dependencies .."
           brew install \
             automake \
@@ -80,7 +87,7 @@ jobs:
       - name: (7) Configure for MacOS
         run: |
           ./configure ${{ inputs.configure_params }} \
-          | tee ./configure.out
+          |& tee ./configure.out
 
       - name: (8) Verify output from configure
         # Most of the tested strings are common for all MacOS builds
