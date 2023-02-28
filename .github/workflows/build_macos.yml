@@ -73,7 +73,7 @@ jobs:
     uses: ./.github/workflows/build_macos_sub.yml
     with:
       name: SDL2 UI (not supported yet)
-      dependencies: "sdl2"
+      dependencies: "sdl2 sdl12-compat"
       configure_params: "--with-sdl"
       verify_ui: "sdl"
       verify_audio: "sdl"
@@ -82,17 +82,6 @@ jobs:
 ##########################################
 ### DEPRECATED MacOS UI configurations ###
 ##########################################
-
-  # FB UI (deprecated)
-  fb-ui:
-    name: "Fuse FB UI (MacOS) (deprecated)"
-    needs: [libspectrum]
-    uses: ./.github/workflows/build_macos_sub.yml
-    with:
-      name: "FB UI (deprecated)"
-      dependencies: "libgpm-dev"
-      configure_params: "--with-fb"
-      verify_ui: "fb"
 
   # XLIB UI (deprecated)
   xlib-ui:
