@@ -37,7 +37,16 @@ jobs:
       run:
         shell: bash
     steps:
-      - name: (1) Install dependencies
+      - name: (1) Prepare environment
+        run: |
+          echo -n "Current directory: "
+          pwd
+          ls -la
+
+      - name: (2) Check out repository code
+        uses: actions/checkout@v3
+
+      - name: (3) Install dependencies
         run: |
           echo "Inspect if brew installed .."
           brew doctor || true
@@ -53,30 +62,27 @@ jobs:
             ${{ inputs.dependencies }}
           autoreconf -i
 
-      - name: (2) Check out repository code
-        uses: actions/checkout@v3
-
-      - name: (3) Download libspectrum artefact
+      - name: (4) Download libspectrum artefact
         uses: actions/download-artifact@v3
         with:
           name: libspectrum-installed-macos-fuse-app
           path: libspectrum
 
-      - name: (4) Install libspectrum from artefact
+      - name: (5) Install libspectrum from artefact
         run: |
           # Extract (-x) files into /usr/local
           sudo tar --directory / -xvf libspectrum/libspectrum-installed-macos.tar
           echo "Done"
 
-      - name: (5) Autogen.sh
+      - name: (6) Autogen.sh
         run: ./autogen.sh
 
-      - name: (6) Configure for MacOS
+      - name: (7) Configure for MacOS
         run: |
           ./configure ${{ inputs.configure_params }} \
           |& tee ./configure.out
 
-      - name: (7) Verify output from configure
+      - name: (8) Verify output from configure
         # Most of the tested strings are common for all MacOS builds
         # Only the strings related to UI selection differ
         run: |          
@@ -95,12 +101,12 @@ jobs:
         run: |
           .github/scripts/in_config.sh "${{ inputs.verify_other }}"
 
-      - name: (7) Make
+      - name: (9) Make
         run: make
 
-      - name: (8) Install
+      - name: (10) Install
         run: sudo make install
 
-      - name: (9) Finish
+      - name: (11) Finish
         run: |
           echo "🍏 Finishing with status ${{ job.status }}."
