@@ -80,7 +80,7 @@ jobs:
       - name: (7) Configure for MacOS
         run: |
           ./configure ${{ inputs.configure_params }} \
-          |& tee ./configure.out
+          | tee ./configure.out
 
       - name: (8) Verify output from configure
         # Most of the tested strings are common for all MacOS builds
