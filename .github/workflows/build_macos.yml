@@ -60,7 +60,7 @@ jobs:
     uses: ./.github/workflows/build_macos_sub.yml
     with:
       name: SDL1 UI
-      dependencies: "libsdl1.2-dev"
+      dependencies: "sdl12-compat"
       configure_params: "--with-sdl --disable-sdl2"
       verify_ui: "sdl"
       verify_audio: "sdl"
@@ -73,7 +73,7 @@ jobs:
     uses: ./.github/workflows/build_macos_sub.yml
     with:
       name: SDL2 UI (not supported yet)
-      dependencies: "libsdl2-dev libsdl1.2-dev"
+      dependencies: "sdl2"
       configure_params: "--with-sdl"
       verify_ui: "sdl"
       verify_audio: "sdl"
