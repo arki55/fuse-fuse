@@ -22,7 +22,7 @@ on:
       verify_audio:
         type: string
         required: false
-        default: "oss"
+        default: "coreaudio"
       verify_other:
         type: string
         required: false
@@ -91,7 +91,7 @@ jobs:
           .github/scripts/in_config.sh "libxml2 support: yes"
           .github/scripts/in_config.sh "libpng support: yes"
           .github/scripts/in_config.sh "Spectranet support: yes"
-          .github/scripts/in_config.sh "SpeccyBoot support: yes"
+          .github/scripts/in_config.sh "SpeccyBoot support: no"
           .github/scripts/in_config.sh "TTX2000 S support: yes"
           .github/scripts/in_config.sh "Desktop integration: no"
           
