@@ -34,12 +34,22 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     container: devkitpro/devkitppc
+#    env:
+#      # Custom build libraries
+#      CPPFLAGS: "-I/opt/devkitpro/devkitPPC/include"
+#      LDFLAGS: "-L/opt/devkitpro/devkitPPC/lib"
+#      PKG_CONFIG_LIBDIR: "/opt/devkitpro/devkitPPC/lib/pkgconfig:/usr/i686-w64-mingw32/sys-root/mingw/lib/pkgconfig"        
     defaults:
       run:
         shell: bash
     steps:
       - name: (1) Prepare environment
         run: |
+          echo "Env variables:"
+          echo "CPPFLAGS: $CPPFLAGS"
+          echo "LDFLAGS: $LDFLAGS"
+          echo "PKG_CONFIG_LIBDIR: $PKG_CONFIG_LIBDIR"
+          
           echo "Available pacman packages:"
           dkp-pacman -Sl
           echo ""
