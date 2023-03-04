@@ -107,10 +107,10 @@ jobs:
         # Only the strings related to UI selection differ
         run: |          
           .github/scripts/in_config.sh "Fuse options"
-          .github/scripts/in_config.sh "zlib support: yes"
-          .github/scripts/in_config.sh "libxml2 support: yes"
-          .github/scripts/in_config.sh "libpng support: yes"
-          .github/scripts/in_config.sh "Spectranet support: yes"
+          .github/scripts/in_config.sh "zlib support: no"
+          .github/scripts/in_config.sh "libxml2 support: no"
+          .github/scripts/in_config.sh "libpng support: no"
+          .github/scripts/in_config.sh "Spectranet support: no"
           .github/scripts/in_config.sh "SpeccyBoot support: yes"
           .github/scripts/in_config.sh "TTX2000 S support: yes"
           .github/scripts/in_config.sh "Desktop integration: no"
