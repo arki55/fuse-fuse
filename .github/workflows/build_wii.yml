@@ -32,7 +32,7 @@ jobs:
     with:
       name: "NULL UI"
       dependencies: ""
-      configure_params: "--with-null-ui"
+      configure_params: "--with-null-ui --with-audio-driver=null"
       verify_ui: "null"
       verify_audio: "null"
 
