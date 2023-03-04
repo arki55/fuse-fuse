@@ -34,22 +34,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     container: devkitpro/devkitppc
-    env:
-      # Custom build libraries
-      CPPFLAGS: "-I/opt/devkitpro/devkitPPC/include"
-      LDFLAGS: "-L/opt/devkitpro/devkitPPC/lib"
-      PKG_CONFIG_LIBDIR: "/opt/devkitpro/devkitPPC/lib/pkgconfig"
     defaults:
       run:
         shell: bash
     steps:
       - name: (1) Prepare environment
         run: |
-          echo "Env variables:"
-          echo "CPPFLAGS: $CPPFLAGS"
-          echo "LDFLAGS: $LDFLAGS"
-          echo "PKG_CONFIG_LIBDIR: $PKG_CONFIG_LIBDIR"
-          
           echo "Available pacman packages:"
           dkp-pacman -Sl
           echo ""
@@ -98,7 +88,15 @@ jobs:
           ./configure \
           --target=powerpc-eabi \
           --host=powerpc-eabi \
-          --prefix=$DEVKITPPC \
+          --without-gpm \
+          --without-libxml2 \
+          --without-libiconv \
+          --without-x \
+          CFLAGS="-g -I$DEVKITPPC/include -I$DEVKITPRO/libogc/include -DGEKKO" \
+	      LDFLAGS="-g -mrvl -mcpu=750 -meabi -mhard-float \
+                     -Wl,-Map,fuse.elf.map -L$DEVKITPPC/lib \
+                     -L$DEVKITPRO/libogc/lib/wii" \
+          LIBS="-lfat -lwiiuse -lbte -logc -lm" \
           ${{ inputs.configure_params }} \
           |& tee ./configure.out
 
@@ -122,7 +120,13 @@ jobs:
           .github/scripts/in_config.sh "${{ inputs.verify_other }}"
 
       - name: (9) Make
-        run: make
+        run: |
+          EXEEXT=".elf" make -e
+          
+          if [[ ! -f "fuse.elf" ]]; then
+            echo "Fuse.elf was not created!"
+            exit -2
+          fi
 
       - name: (10) Install
         run: sudo make install

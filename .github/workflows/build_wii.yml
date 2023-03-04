@@ -24,18 +24,6 @@ jobs:
 ### SUPPORTED WII UI configurations ###
 #########################################
 
-  # Default build without any configure params (xlib)
-  default-ui:
-    name: "Fuse Default UI (WII)"
-    needs: [libspectrum]
-    uses: ./.github/workflows/build_wii_sub.yml
-    with:
-      name: Default
-      dependencies: ""
-      configure_params: ""
-      verify_ui: "xlib"
-      verify_audio: "oss"
-
   # NULL UI + sound
   null-ui:
     name: "Fuse NULL UI (WII)"
