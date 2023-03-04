@@ -90,9 +90,8 @@ jobs:
           --host=powerpc-eabi \
           --without-gpm \
           --without-libxml2 \
-          --without-libiconv \
           --without-x \
-          CFLAGS="-g -I$DEVKITPPC/include -I$DEVKITPRO/libogc/include -DGEKKO" \
+          CFLAGS="-g -I$DEVKITPPC/include -I$DEVKITPRO/libogc/include -DEABI" \
           LDFLAGS="-g -mrvl -mcpu=750 -meabi -mhard-float -Wl,-Map,fuse.elf.map \
             -L$DEVKITPPC/lib -L$DEVKITPRO/libogc/lib/wii" \
           LIBS="-lfat -lwiiuse -lbte -logc -lm" \
