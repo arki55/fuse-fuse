@@ -6,12 +6,18 @@ on: [push, pull_request]
 
 jobs:
   libspectrum:
-    # Reuse libspectrum's build wokflow and artefact (all libs enabled, real glib)
+    # Reuse libspectrum's build wokflow and artefact
+    # Only one case possible - without any libs, fake glib
     name: "Libspectrum lib (WII)"
     uses: arki55/fuse-libspectrum/.github/workflows/build_wii_sub.yml@arki55/github-workflows
     with:
       branch: arki55/github-workflows
       key: fuse-app
+      use_zlib: false
+      use_bzip2: false
+      use_libgcrypt: false
+      use_libaudiofile: false
+      use_fake_glib: true
       # repo name is taken from var.LIBSPECTRUM_REPO
 
   # Default build without any configure params (xlib)
