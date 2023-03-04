@@ -24,17 +24,18 @@ jobs:
 ### SUPPORTED WII UI configurations ###
 #########################################
 
-  # NULL UI + sound
-  null-ui:
-    name: "Fuse NULL UI (WII)"
-    needs: [libspectrum]
-    uses: ./.github/workflows/build_wii_sub.yml
-    with:
-      name: "NULL UI"
-      dependencies: ""
-      configure_params: "--with-null-ui --with-audio-driver=null"
-      verify_ui: "null"
-      verify_audio: "null"
+### FIXME: Needs "yacc"
+#  # NULL UI + sound
+#  null-ui:
+#    name: "Fuse NULL UI (WII)"
+#    needs: [libspectrum]
+#    uses: ./.github/workflows/build_wii_sub.yml
+#    with:
+#      name: "NULL UI"
+#      dependencies: ""
+#      configure_params: "--with-null-ui --with-audio-driver=null"
+#      verify_ui: "null"
+#      verify_audio: "null"
 
   # WII UI
   wii-ui:
