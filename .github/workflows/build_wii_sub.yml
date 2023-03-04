@@ -34,11 +34,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     container: devkitpro/devkitppc
-#    env:
-#      # Custom build libraries
-#      CPPFLAGS: "-I/opt/devkitpro/devkitPPC/include"
-#      LDFLAGS: "-L/opt/devkitpro/devkitPPC/lib"
-#      PKG_CONFIG_LIBDIR: "/opt/devkitpro/devkitPPC/lib/pkgconfig:/usr/i686-w64-mingw32/sys-root/mingw/lib/pkgconfig"        
+    env:
+      # Custom build libraries
+      CPPFLAGS: "-I/opt/devkitpro/devkitPPC/include"
+      LDFLAGS: "-L/opt/devkitpro/devkitPPC/lib"
+      PKG_CONFIG_LIBDIR: "/opt/devkitpro/devkitPPC/lib/pkgconfig"
     defaults:
       run:
         shell: bash
