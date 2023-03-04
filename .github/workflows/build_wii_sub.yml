@@ -71,8 +71,13 @@ jobs:
 
       - name: (5) Install libspectrum from artefact
         run: |
-          # Extract (-x) files into /usr/local
+          # Extract (-x) files into /opt/devkitpro/devkitPPC/
+          echo "Extract libspectrum lib files .."
           sudo tar --directory / -xvf libspectrum/libspectrum-installed-wii.tar
+          
+          echo "Verify if files are there .."
+          ls -la -R /opt/devkitpro/devkitPPC/
+          
           echo "Done"
 
       - name: (6) Autogen.sh
