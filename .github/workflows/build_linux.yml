@@ -1,0 +1,117 @@
+name: Fuse App For Linux
+run-name: Build Fuse App for Linux / ${{ github.actor }} /
+
+# Executed upon each commit pushed, merge commit in PR
+on: [push, pull_request]
+
+jobs:
+  libspectrum:
+    # Reuse libspectrum's build wokflow and artefact (all libs enabled, real glib)
+    name: "Libspectrum lib (Linux)"
+    uses: arki55/fuse-libspectrum/.github/workflows/build_linux_sub.yml@arki55/github-workflows
+    with:
+      branch: arki55/github-workflows
+      key: fuse-app
+      # repo name is taken from var.LIBSPECTRUM_REPO
+
+  # Default build without any configure params (xlib)
+  default-ui:
+    name: "Fuse Default UI (Linux)"
+    needs: [libspectrum]
+    uses: ./.github/workflows/build_linux_sub.yml
+    with:
+      name: Default
+      dependencies: "libaudiofile-dev"
+      configure_params: ""
+      verify_ui: "xlib"
+
+#########################################
+### SUPPORTED Linux UI configurations ###
+#########################################
+
+  # NULL UI
+  null-ui:
+    name: "Fuse NULL UI (Linux)"
+    needs: [libspectrum]
+    uses: ./.github/workflows/build_linux_sub.yml
+    with:
+      name: "NULL UI"
+      dependencies: "libaudiofile-dev"
+      configure_params: "--with-null-ui"
+      verify_ui: "null"
+
+  # GTK 3 UI
+  gtk3-ui:
+    name: "Fuse GTK 3 UI (Linux)"
+    needs: [libspectrum]
+    uses: ./.github/workflows/build_linux_sub.yml
+    with:
+      name: GTK3 UI
+      dependencies: "libaudiofile-dev gtk3.0 libgtk-3-dev"
+      configure_params: "--with-gtk"
+      verify_ui: "gtk"
+      verify_other: "Using GTK 3: yes"
+
+  # SDL 1 UI + Sound
+  sdl1-ui:
+    name: "Fuse SDL 1 UI + sound (Linux)"
+    needs: [libspectrum]
+    uses: ./.github/workflows/build_linux_sub.yml
+    with:
+      name: SDL1 UI
+      dependencies: "libaudiofile-dev libsdl1.2-dev"
+      configure_params: "--with-sdl --disable-sdl2"
+      verify_ui: "sdl"
+      verify_audio: "sdl"
+      verify_other: "Using SDL 2: no"
+
+  # SDL 2 UI + Sound (not supported for UI yet)
+  sdl2-ui:
+    name: "Fuse SDL 2 UI + sound (Linux) (not supported yet)"
+    needs: [libspectrum]
+    uses: ./.github/workflows/build_linux_sub.yml
+    with:
+      name: SDL2 UI (not supported yet)
+      dependencies: "libaudiofile-dev libsdl2-dev libsdl1.2-dev"
+      configure_params: "--with-sdl"
+      verify_ui: "sdl"
+      verify_audio: "sdl"
+      verify_other: "SDL 2 not supported for the UI, using SDL 1 instead"
+
+##########################################
+### DEPRECATED Linux UI configurations ###
+##########################################
+
+  # FB UI (deprecated)
+  fb-ui:
+    name: "Fuse FB UI (Linux) (deprecated)"
+    needs: [libspectrum]
+    uses: ./.github/workflows/build_linux_sub.yml
+    with:
+      name: "FB UI (deprecated)"
+      dependencies: "libaudiofile-dev libgpm-dev"
+      configure_params: "--with-fb"
+      verify_ui: "fb"
+
+  # XLIB UI (deprecated)
+  xlib-ui:
+    name: "Fuse X-lib UI (Linux) (deprecated)"
+    needs: [libspectrum]
+    uses: ./.github/workflows/build_linux_sub.yml
+    with:
+      name: X-lib UI (deprecated)
+      dependencies: "libaudiofile-dev"
+      configure_params: "--with-x"
+      verify_ui: "xlib"
+
+  # GTK 2 UI (deprecated)
+  gtk2-ui:
+    name: "Fuse GTK 2 UI (Linux) (deprecated)"
+    needs: [libspectrum]
+    uses: ./.github/workflows/build_linux_sub.yml
+    with:
+      name: GTK2 UI (deprecated)
+      dependencies: "libaudiofile-dev gtk2.0 libgtk2.0-dev"
+      configure_params: "--with-gtk --disable-gtk3"
+      verify_ui: "gtk"
+      verify_other: "Using GTK 3: no"
