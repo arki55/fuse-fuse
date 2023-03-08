@@ -135,6 +135,11 @@
     <glob pattern="*.sna"/>
     <glob pattern="*.snapshot"/>
   </mime-type>
+  <mime-type type="application/x-spectrum-s">
+    <comment>ZX Spectrum snapshot</comment>
+    <icon name="application-x-spectrum"/>
+    <glob pattern="*.s"/>
+  </mime-type>
   <mime-type type="application/x-spectrum-snp">
     <comment>ZX Spectrum snapshot</comment>
     <icon name="application-x-spectrum"/>

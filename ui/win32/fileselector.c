@@ -38,7 +38,7 @@ static char *current_folder;
    between UIs */
 static LPCTSTR file_filter = TEXT(
 "Supported Files\0"
-"*.mgtsnp;*.slt;*.sna;*.snapshot;*.snp;*.sp;*.szx;*.z80;*.zx-state;"
+"*.mgtsnp;*.slt;*.sna;*.snapshot;*.snp;*.sp;*.szx;*.z80;*.zx-state;*.s;"
 "*.csw;*.ltp;*.pzx;*.raw;*.spc;*.sta;*.tzx;*.tap;*.wav;"
 "*.d40;*.d80;*.dsk;*.fdi;*.img;*.mgt;*.opd;*.opu;*.sad;*.scl;*.td0;*.trd;*.udi;"
 "*.dck;*.rom;*.hdf;*.mdr;*.fmf;*.rzx;"
@@ -75,7 +75,7 @@ static LPCTSTR file_filter = TEXT(
 "Recording Files (*.rzx)\0"
 "*.rzx\0"
 "Snapshot Files (*.szx;*.z80;*.sna;...)\0"
-"*.mgtsnp;*.slt;*.sna;*.snapshot;*.snp;*.sp;*.szx;*.z80;*.zx-state\0"
+"*.mgtsnp;*.slt;*.sna;*.snapshot;*.snp;*.sp;*.szx;*.z80;*.zx-state;*.s\0"
 "Tape Files (*.tap;*.tzx;*.pzx;*.wav;*.csw;...)\0"
 "*.csw;*.ltp;*.pzx;*.raw;*.spc;*.sta;*.tzx;*.tap;*.wav\0"
 "\0" );

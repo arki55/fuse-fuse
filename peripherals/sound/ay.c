@@ -32,7 +32,7 @@
 #include "machine.h"
 #include "module.h"
 #include "periph.h"
-#include "printer.h"
+#include "peripherals/printer.h"
 #include "psg.h"
 #include "sound.h"
 

@@ -29,7 +29,7 @@
 #include "compat.h"
 #include "fuller.h"
 #include "infrastructure/startup_manager.h"
-#include "joystick.h"
+#include "peripherals/joystick.h"
 #include "module.h"
 #include "periph.h"
 #include "settings.h"

@@ -671,7 +671,7 @@ widget_t widget_data[] = {
 
   { widget_filesel_load_draw, widget_filesel_finish, widget_filesel_keyhandler  },
   { widget_filesel_save_draw, widget_filesel_finish, widget_filesel_keyhandler  },
-  { widget_general_draw,  widget_options_finish, widget_general_keyhandler  },
+  { widget_general_draw,  widget_general_finish, widget_general_keyhandler  },
   { widget_picture_draw,  NULL,                  widget_picture_keyhandler  },
   { widget_about_draw,    NULL,                  widget_about_keyhandler    },
   { widget_menu_draw,	  NULL,			 widget_menu_keyhandler     },
@@ -689,6 +689,7 @@ widget_t widget_data[] = {
   { widget_memory_draw,   NULL,			 widget_memory_keyhandler   },
   { widget_roms_draw,     widget_roms_finish,	 widget_roms_keyhandler     },
   { widget_peripherals_general_draw, widget_options_finish, widget_peripherals_general_keyhandler },
+  { widget_peripherals_sound_draw, widget_options_finish, widget_peripherals_sound_keyhandler },
   { widget_peripherals_disk_draw, widget_options_finish, widget_peripherals_disk_keyhandler },
   { widget_query_draw,    widget_query_finish,	 widget_query_keyhandler    },
   { widget_query_save_draw,widget_query_finish,	 widget_query_save_keyhandler },

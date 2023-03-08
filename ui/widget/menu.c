@@ -484,6 +484,12 @@ menu_options_peripherals_general( int action )
 }
 
 void
+menu_options_peripherals_sound( int action )
+{
+  widget_do_peripherals_sound();
+}
+
+void
 menu_options_peripherals_disk( int action )
 {
   widget_do_peripherals_disk();

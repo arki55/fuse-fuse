@@ -56,6 +56,7 @@ typedef enum widget_type {
   WIDGET_TYPE_MEMORYBROWSER,	/* Memory browser widget */
   WIDGET_TYPE_ROM,		/* ROM selector widget */
   WIDGET_TYPE_PERIPHERALS_GENERAL, /* General peripherals options */
+  WIDGET_TYPE_PERIPHERALS_SOUND, /* Sound peripherals options */
   WIDGET_TYPE_PERIPHERALS_DISK, /* Disk peripherals options */
   WIDGET_TYPE_QUERY,		/* Query (yes/no) */
   WIDGET_TYPE_QUERY_SAVE,	/* Query (save/don't save/cancel) */
@@ -242,6 +243,12 @@ static inline int widget_do_rom( widget_roms_info *data )
 static inline int widget_do_peripherals_general( void )
 {
   return widget_do( WIDGET_TYPE_PERIPHERALS_GENERAL, NULL );
+}
+
+/* Sound peripherals options */
+static inline int widget_do_peripherals_sound( void )
+{
+  return widget_do( WIDGET_TYPE_PERIPHERALS_SOUND, NULL );
 }
 
 /* Disk peripherals options */

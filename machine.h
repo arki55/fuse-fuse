@@ -29,9 +29,10 @@
 #include "libspectrum.h"
 
 #include "display.h"
-#include "peripherals/ay.h"
-#include "peripherals/covox.h"
-#include "peripherals/specdrum.h"
+#include "peripherals/sound/ay.h"
+#include "peripherals/sound/covox.h"
+#include "peripherals/sound/specdrum.h"
+#include "peripherals/sound/dac3ch.h"
 #include "spectrum.h"
 
 typedef libspectrum_byte (*spectrum_unattached_port_fn)( void );
@@ -76,11 +77,15 @@ typedef struct fuse_machine_info {
 						  from a port which isn't
 						  attached to anything */
 
+  writeback_port *writeback; /* Writeback port (one is enough) */
+
   ayinfo ay;		/* The AY-3-8912 chip */
 
   specdrum_info specdrum; /* SpecDrum settings */
 
   covox_info covox; /* Covox settings */
+
+  dac3ch_info dac3ch; /* DAC 3ch settings */
 
   int (*shutdown)( void );
 

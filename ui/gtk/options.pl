@@ -314,7 +314,7 @@ CODE
     if( $_->{postcheck} ) {
 
       print << "CODE";
-  int needs_hard_reset = $_->{postcheck}();
+  int needs_hard_reset = $_->{postcheck}(&original_settings, &settings_current);
 
   /* Confirm reset */
   if( needs_hard_reset && !gtkui_confirm("Some options need to reset the machine. Reset?" ) ) {
