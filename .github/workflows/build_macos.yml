@@ -1,0 +1,107 @@
+name: Fuse App For MacOS
+run-name: Build Fuse App for MacOS / ${{ github.actor }} /
+
+# Executed upon each commit pushed, merge commit in PR
+on: [push, pull_request]
+
+jobs:
+  libspectrum:
+    # Reuse libspectrum's build wokflow and artefact (all libs enabled, real glib)
+    name: "Libspectrum lib (MacOS)"
+    uses: arki55/fuse-libspectrum/.github/workflows/build_macos_sub.yml@arki55/github-workflows
+    with:
+      branch: arki55/github-workflows
+      key: fuse-app
+      # repo name is taken from var.LIBSPECTRUM_REPO
+
+  # Default build without any configure params (xlib)
+  default-ui:
+    name: "Fuse Default UI (MacOS)"
+    needs: [libspectrum]
+    uses: ./.github/workflows/build_macos_sub.yml
+    with:
+      name: Default
+      dependencies: ""
+      configure_params: ""
+      verify_ui: "xlib"
+
+#########################################
+### SUPPORTED MacOS UI configurations ###
+#########################################
+
+  # NULL UI + sound
+  null-ui:
+    name: "Fuse NULL UI + sound (MacOS)"
+    needs: [libspectrum]
+    uses: ./.github/workflows/build_macos_sub.yml
+    with:
+      name: "NULL UI"
+      dependencies: ""
+      configure_params: "--with-null-ui --with-audio-driver=null"
+      verify_ui: "null"
+      verify_audio: "null"
+
+  # GTK 3 UI
+  gtk3-ui:
+    name: "Fuse GTK 3 UI (MacOS)"
+    needs: [libspectrum]
+    uses: ./.github/workflows/build_macos_sub.yml
+    with:
+      name: GTK3 UI
+      dependencies: "gtk+3"
+      configure_params: "--with-gtk"
+      verify_ui: "gtk"
+      verify_other: "Using GTK 3: yes"
+
+  # SDL 1 UI + Sound
+  sdl1-ui:
+    name: "Fuse SDL 1 UI + sound (MacOS)"
+    needs: [libspectrum]
+    uses: ./.github/workflows/build_macos_sub.yml
+    with:
+      name: SDL1 UI
+      dependencies: "sdl12-compat"
+      configure_params: "--with-sdl --disable-sdl2"
+      verify_ui: "sdl"
+      verify_audio: "sdl"
+      verify_other: "Using SDL 2: no"
+
+  # SDL 2 UI + Sound (not supported for UI yet)
+  sdl2-ui:
+    name: "Fuse SDL 2 UI + sound (MacOS) (not supported yet)"
+    needs: [libspectrum]
+    uses: ./.github/workflows/build_macos_sub.yml
+    with:
+      name: SDL2 UI (not supported yet)
+      dependencies: "sdl2 sdl12-compat"
+      configure_params: "--with-sdl"
+      verify_ui: "sdl"
+      verify_audio: "sdl"
+      verify_other: "SDL 2 not supported for the UI, using SDL 1 instead"
+
+##########################################
+### DEPRECATED MacOS UI configurations ###
+##########################################
+
+  # XLIB UI (deprecated)
+  xlib-ui:
+    name: "Fuse X-lib UI (MacOS) (deprecated)"
+    needs: [libspectrum]
+    uses: ./.github/workflows/build_macos_sub.yml
+    with:
+      name: X-lib UI (deprecated)
+      dependencies: ""
+      configure_params: "--with-x"
+      verify_ui: "xlib"
+
+  # GTK 2 UI (deprecated)
+  gtk2-ui:
+    name: "Fuse GTK 2 UI (MacOS) (deprecated)"
+    needs: [libspectrum]
+    uses: ./.github/workflows/build_macos_sub.yml
+    with:
+      name: GTK2 UI (deprecated)
+      dependencies: "gtk+"
+      configure_params: "--with-gtk --disable-gtk3"
+      verify_ui: "gtk"
+      verify_other: "Using GTK 3: no"

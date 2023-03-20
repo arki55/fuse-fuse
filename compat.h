@@ -177,6 +177,7 @@ int compat_get_tap( const char *interface_name );
 
 #ifdef WIN32
 #include <winsock2.h>
+#include <ws2tcpip.h>
 #define COMPAT_ENOTCONN WSAENOTCONN
 #define COMPAT_EWOULDBLOCK WSAEWOULDBLOCK
 #define COMPAT_EINPROGRESS WSAEINPROGRESS
