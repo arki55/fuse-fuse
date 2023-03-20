@@ -394,6 +394,12 @@ readbyte( libspectrum_word address )
         return spectranet_w5100_read( mapping, address );
       if( spectranet_w5100_paged_b && address >= 0x2000 && address < 0x3000 )
         return spectranet_w5100_read( mapping, address );
+      if( address < 0x1000 )
+        return spectranet_flash_rom_read( mapping, address );
+      if( spectranet_flash_paged_a && address >= 0x1000 && address < 0x2000 )
+        return spectranet_flash_rom_read( mapping, address );
+      if( spectranet_flash_paged_b && address >= 0x2000 && address < 0x3000 )
+        return spectranet_flash_rom_read( mapping, address );
     }
 
     if( ttx2000s_paged && address >= 0x2000 )
