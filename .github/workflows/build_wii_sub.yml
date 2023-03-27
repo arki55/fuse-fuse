@@ -49,6 +49,11 @@ jobs:
           echo "Available devkitPro packages:"
           dkp-pacman -Sl dkp-libs
           echo ""
+          
+          echo "WII specific libraries:"
+          dkp-pacman -S wii-dev
+          dkp-pacman -S libogc
+          echo ""
 
       - name: (2) Install dependencies
         if: 
