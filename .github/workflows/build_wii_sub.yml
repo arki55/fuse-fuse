@@ -51,7 +51,7 @@ jobs:
           echo ""
           
           echo "WII specific libraries:"
-          dkp-pacman -S wii-dev
+          find $DEVKITPRO -maxdepth 2 -type d
           dkp-pacman -S libogc
           echo ""
 
