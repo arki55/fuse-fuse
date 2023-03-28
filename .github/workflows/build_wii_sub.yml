@@ -52,7 +52,6 @@ jobs:
           
           echo "WII specific libraries:"
           find $DEVKITPRO -maxdepth 2 -type d
-          dkp-pacman -S libogc
           echo ""
 
       - name: (2) Install dependencies
@@ -100,6 +99,11 @@ jobs:
           --without-gpm \
           --without-libxml2 \
           --without-x \
+          CFLAGS="-g -I$DEVKITPPC/include -I$DEVKITPRO/libogc/include" \
+          LDFLAGS="-g -mrvl -mcpu=750 -meabi -mhard-float \
+                     -Wl,-Map,fuse.elf.map -L$DEVKITPPC/lib \
+                     -L$DEVKITPRO/libogc/lib/wii" \
+          LIBS="-lfat -lwiiuse -lbte -logc -lm" \
           ${{ inputs.configure_params }} \
           |& tee ./configure.out
 
