@@ -91,6 +91,7 @@ jobs:
         run: ./autogen.sh
 
       - name: (7) Configure for WII
+        id: run-configure
         run: |
           ./configure \
           --target=powerpc-eabi \
@@ -106,6 +107,12 @@ jobs:
           LIBS="-lfat -lwiiuse -lbte -logc -lm" \
           ${{ inputs.configure_params }} \
           |& tee ./configure.out
+
+      - name: Check config.log (on failure)
+        if: failure() && steps.run-configure.outcome != 'success'
+        run: |
+          echo "Reading config.log file .."
+          cat config.log
 
       - name: (8) Verify output from configure
         # Most of the tested strings are common for all WII builds
