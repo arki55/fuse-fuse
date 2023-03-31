@@ -53,6 +53,8 @@ jobs:
           echo "WII specific libraries:"
           find $DEVKITPRO -maxdepth 2 -type d
           echo ""
+          
+          PATH=$PATH:$DEVKITPPC/bin
 
       - name: (2) Install dependencies
         if: 
