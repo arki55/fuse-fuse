@@ -182,6 +182,10 @@ fuse_window_proc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
       if( paused ) menu_machine_pause( 0 );
       return 0;
 
+    case WM_NCLBUTTONDBLCLK:
+      /* Don't allow double click on title bar, suppressing window maximizing */
+      return 0;
+
     case WM_ENTERMENULOOP:
     case WM_ENTERSIZEMOVE:
     {
