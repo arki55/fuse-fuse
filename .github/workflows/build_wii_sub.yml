@@ -148,7 +148,7 @@ jobs:
           fi
 
       - name: (10) Install
-        run: sudo make install
+        run: make install
 
       - name: (11) Finish
         run: |
