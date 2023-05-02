@@ -54,7 +54,8 @@ jobs:
           find $DEVKITPRO -maxdepth 2 -type d
           echo ""
           
-          PATH=$PATH:$DEVKITPPC/bin
+          # Override path to allow cross-compiling (add to file)
+          echo "$DEVKITPPC/bin" >> $GITHUB_PATH
 
       - name: (2) Install dependencies
         if: 
@@ -120,6 +121,8 @@ jobs:
         # Most of the tested strings are common for all WII builds
         # Only the strings related to UI selection differ
         run: |          
+          .github/scripts/in_config.sh "checking whether we are cross compiling... yes"
+          .github/scripts/in_config.sh "checking for powerpc-eabi-gcc... powerpc-eabi-gcc"
           .github/scripts/in_config.sh "Fuse options"
           .github/scripts/in_config.sh "zlib support: no"
           .github/scripts/in_config.sh "libxml2 support: no"

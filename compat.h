@@ -130,12 +130,7 @@ int compat_is_absolute_path( const char *path );
 int compat_get_next_path( path_context *ctx );
 
 typedef FILE* compat_fd;
-
-#ifndef GEKKO
 typedef DIR* compat_dir;
-#else                           /* #ifndef GEKKO */
-typedef DIR_ITER* compat_dir;
-#endif                          /* #ifndef GEKKO */
 
 extern const compat_fd COMPAT_FILE_OPEN_FAILED;
 
@@ -174,6 +169,7 @@ void compat_timer_sleep( int ms );
 int compat_get_tap( const char *interface_name );
 
 /* Socket handling */
+#ifdef HAVE_SOCKETS
 
 #ifdef WIN32
 #include <winsock2.h>
@@ -214,5 +210,7 @@ void compat_socket_selfpipe_free( compat_socket_selfpipe_t *self );
 compat_socket_t compat_socket_selfpipe_get_read_fd( compat_socket_selfpipe_t *self );
 void compat_socket_selfpipe_wake( compat_socket_selfpipe_t *self );
 void compat_socket_selfpipe_discard_data( compat_socket_selfpipe_t *self );
+
+#endif /* #ifndef HAVE_SOCKETS */
 
 #endif				/* #ifndef FUSE_COMPAT_H */

@@ -46,7 +46,8 @@
 #endif /* #if defined UI_SDL || (defined USE_JOYSTICK && !defined HAVE_JSW_H && (defined UI_X || defined UI_GTK) ) */
 
 #ifdef GEKKO
-#include <fat.h>
+/* #include <fat.h>
+ that requires disc_io.h which does not exist for wii? */
 #endif				/* #ifdef GEKKO */
 
 #ifdef HAVE_LIB_XML2
