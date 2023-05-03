@@ -180,8 +180,10 @@ int compat_get_tap( const char *interface_name );
 typedef SOCKET compat_socket_t;
 typedef SOCKADDR compat_sockaddr;
 #elif GEKKO
-  /* no sockets under WII */
-#else  /* #ifndef WIN32 */
+/* no sockets under WII, just define the minimum
+   to feed the below compat_ declarations  */
+typedef int compat_socket_t;
+#else  /* #ifndef WIN32 && GEKKO */
 #include <sys/socket.h>
 #include <netdb.h>
 #include <errno.h>
