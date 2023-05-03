@@ -169,7 +169,6 @@ void compat_timer_sleep( int ms );
 int compat_get_tap( const char *interface_name );
 
 /* Socket handling */
-#ifdef HAVE_SOCKETS
 
 #ifdef WIN32
 #include <winsock2.h>
@@ -180,6 +179,8 @@ int compat_get_tap( const char *interface_name );
 #define COMPAT_ECONNREFUSED WSAECONNREFUSED
 typedef SOCKET compat_socket_t;
 typedef SOCKADDR compat_sockaddr;
+#elif GEKKO
+  /* no sockets under WII */
 #else  /* #ifndef WIN32 */
 #include <sys/socket.h>
 #include <netdb.h>
@@ -210,7 +211,5 @@ void compat_socket_selfpipe_free( compat_socket_selfpipe_t *self );
 compat_socket_t compat_socket_selfpipe_get_read_fd( compat_socket_selfpipe_t *self );
 void compat_socket_selfpipe_wake( compat_socket_selfpipe_t *self );
 void compat_socket_selfpipe_discard_data( compat_socket_selfpipe_t *self );
-
-#endif /* #ifndef HAVE_SOCKETS */
 
 #endif				/* #ifndef FUSE_COMPAT_H */
