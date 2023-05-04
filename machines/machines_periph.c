@@ -49,8 +49,8 @@ static const periph_port_t spec128_memory_ports[] = {
 };
 
 static const periph_port_t spec128_memory_ports_patched[] = {
-  // Alternative memory port for 128K (avoiding conflict with D80)
-  // MASK 0x8002=>0x8022, value 0x0000=>0020 as per Didaktik M 128k's HW patch (A5 = 1)
+  /* Alternative memory port for 128K (avoiding conflict with D80)
+     MASK 0x8002=>0x8022, value 0x0000=>0020 as per Didaktik M 128k's HW patch (A5 = 1) */
   { 0x8022, 0x0020, NULL, spec128_memoryport_write },
   { 0, 0, NULL, NULL }
 };
