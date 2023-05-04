@@ -160,13 +160,13 @@ dac3ch_write_control( libspectrum_word port GCC_UNUSED, libspectrum_byte val )
 
   machine_current->dac3ch.dac3ch_control = val;
 
-  // Control - sound works only if port 0x7C = 128
-  // Works only if 8255's mode has been set to all channels out.
+  /* Control - sound works only if port 0x7C = 128
+     Works only if 8255's mode has been set to all channels out. */
   if (val == 128) {
-    // Standard all channels OUT mode
+    /* Standard all channels OUT mode */
     machine_current->dac3ch.dac3ch_active = 1;
   } else {
-    // Deactivated - reset all
+    /* Deactivated - reset all */
     machine_current->dac3ch.dac3ch_active = 0;
     machine_current->dac3ch.dac3ch_channel_a = 0;
     machine_current->dac3ch.dac3ch_channel_b = 0;
