@@ -45,6 +45,9 @@ jobs:
       CPPFLAGS: "-I/usr/local/i686-w64-mingw32/include"
       LDFLAGS: "-L/usr/local/i686-w64-mingw32/lib"
       PKG_CONFIG_LIBDIR: "/usr/local/i686-w64-mingw32/lib/pkgconfig:/usr/i686-w64-mingw32/sys-root/mingw/lib/pkgconfig"    
+      
+      # Small help when copying dlls
+      CYGWIN_LIBDIR: "/usr/i686-w64-mingw32/sys-root/mingw/bin/"
     steps:
       - name: (1) Prepare environment
         run: |
@@ -164,7 +167,7 @@ jobs:
           
           DEST_DIR="fuse-${FUSE_VERSION}-win32"
           echo "Dest dir: $DEST_DIR"
-          if [[! -d "$DEST_DIR" ]]; then 
+          if [[ ! -d "$DEST_DIR" ]]; then 
             mkdir $DEST_DIR
           fi
           
