@@ -5,6 +5,10 @@ run-name: Build Fuse App for windows / ${{ github.actor }} /
 on:
   workflow_call:
     inputs:
+      # Name this setup (no spaces please)
+      key:
+        type: string
+        required: true
       dependencies:
         type: string
         required: false
@@ -150,14 +154,68 @@ jobs:
           make
         shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
 
-      - name: (10) Install
+      - name: (10) Copy dependency dlls
+        run: |
+          cd ${GITHUB_WORKSPACE}
+          echo "Create distrib folder if missing .."
+          
+          FUSE_VERSION=`./configure --version | grep -Eo "([0-9]+\.[0-9]+\.[0-9]+)"`
+          echo "Fuse version: $FUSE_VERSION"
+          
+          DEST_DIR="fuse-${FUSE_VERSION}-win32"
+          echo "Dest dir: $DEST_DIR"
+          if [[! -d "$DEST_DIR" ]]; then mkdir $DEST_DIR fi
+          
+          echo "Copying mandatory dependency dlls.."
+          cp ${CYGWIN_LIBDIR}libgcc_s_sjlj-1.dll $DEST_DIR
+          cp ${CYGWIN_LIBDIR}libwinpthread-1.dll $DEST_DIR
+          cp ${CYGWIN_LIBDIR}libgpg-error-0.dll $DEST_DIR
+          cp ${CYGWIN_LIBDIR}libstdc++-6.dll $DEST_DIR
+          cp ${CYGWIN_LIBDIR}libpng16-16.dll $DEST_DIR
+          
+          echo "Copying optional dependency dlls .."
+          # Don't have logic to check what was enabled, so copying all
+          cp ${CYGWIN_LIBDIR}zlib1.dll $DEST_DIR || true
+          cp ${CYGWIN_LIBDIR}libbz2-1.dll $DEST_DIR || true
+          cp ${CYGWIN_LIBDIR}libgcrypt-20.dll $DEST_DIR || true
+          cp ${CYGWIN_LIBDIR}libaudiofile-1.dll $DEST_DIR || true
+          cp ${CYGWIN_LIBDIR}libFLAC-8.dll $DEST_DIR || true
+          cp ${CYGWIN_LIBDIR}libOGG-0.dll $DEST_DIR || true
+          cp ${CYGWIN_LIBDIR}libxml2-2.dll $DEST_DIR || true
+          
+          echo "Copying libspectrum dll.."
+          cp /usr/local/i686-w64-mingw32/bin/libspectrum-9.dll $DEST_DIR || true
+          
+          # Copy them to z80 folder as well
+          cp -r $DEST_DIR/*.dll z80/
+        shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
+          
+      - name: (11) Run tests
+        id: run-tests
         run: |
           cd ${GITHUB_WORKSPACE}
           
-          echo "Running make dist-win32-dir .."
-          make install dist-win32-dir
+          echo "Bulding and running tests .."
+          cd z80
+          ./coretest.exe
         shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
 
-      - name: (11) Finish
+      - name: (12) Create distribution file(s)
+        run: |
+          cd ${GITHUB_WORKSPACE}
+          
+          echo "Running make dist-win32-zip .."
+          make dist-win32-zip
+        shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
+
+      - name: (13) Upload generated file(s)
+        uses: actions/upload-artifact@v3
+        with: 
+          name: fuse-windows-${{ inputs.key }}
+          path: |
+            ${DEST_DIR}.zip
+            ${DEST_DIR}.zip.sha1
+
+      - name: (14) Finish
         run: |
           echo "🍏 Finishing with status ${{ job.status }}."
