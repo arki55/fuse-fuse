@@ -164,7 +164,9 @@ jobs:
           
           DEST_DIR="fuse-${FUSE_VERSION}-win32"
           echo "Dest dir: $DEST_DIR"
-          if [[! -d "$DEST_DIR" ]]; then mkdir $DEST_DIR fi
+          if [[! -d "$DEST_DIR" ]]; then 
+            mkdir $DEST_DIR
+          fi
           
           echo "Copying mandatory dependency dlls.."
           cp ${CYGWIN_LIBDIR}libgcc_s_sjlj-1.dll $DEST_DIR
@@ -184,7 +186,7 @@ jobs:
           cp ${CYGWIN_LIBDIR}libxml2-2.dll $DEST_DIR || true
           
           echo "Copying libspectrum dll.."
-          cp /usr/local/i686-w64-mingw32/bin/libspectrum-9.dll $DEST_DIR || true
+          cp /usr/local/i686-w64-mingw32/bin/libspectrum-9.dll $DEST_DIR
           
           # Copy them to z80 folder as well
           cp -r $DEST_DIR/*.dll z80/
