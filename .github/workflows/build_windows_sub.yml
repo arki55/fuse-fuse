@@ -226,13 +226,13 @@ jobs:
       - name: (13) Upload generated file(s)
         uses: actions/upload-artifact@v3
         with: 
-          name: fuse-windows-${{ inputs.key }}
+          name: fuse-windows-${{ inputs.key }}.zip
           if-no-files-found: error
           path: |
             ${{ steps.copy-dlls.outputs.FUSE_DISTR_DIR }}.zip
       - uses: actions/upload-artifact@v3
         with: 
-          name: fuse-windows-${{ inputs.key }}
+          name: fuse-windows-${{ inputs.key }}.zip.sha1
           if-no-files-found: error
           path: |
             ${{ steps.copy-dlls.outputs.FUSE_DISTR_DIR }}.zip.sha1
