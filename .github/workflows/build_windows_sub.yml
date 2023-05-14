@@ -78,6 +78,7 @@ jobs:
             gettext-devel \
             libtool \
             make \
+            zip \
             mingw64-i686-bzip2 \
             mingw64-i686-gcc-core \
             mingw64-i686-gcc-g++ \
@@ -85,7 +86,7 @@ jobs:
             mingw64-i686-libgpg-error \
             mingw64-i686-libpng \
             mingw64-i686-win-iconv \
-            mingw64-i686-winpthread \
+            mingw64-i686-winpthreads \
             mingw64-i686-zlib \
             mingw64-i686-audiofile \
             pkg-config \
