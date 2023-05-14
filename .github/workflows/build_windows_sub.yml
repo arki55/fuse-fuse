@@ -182,13 +182,25 @@ jobs:
           
           echo "Copying optional dependency dlls .."
           # Don't have logic to check what was enabled, so copying all
-          cp ${CYGWIN_LIBDIR}zlib1.dll $DEST_DIR || true
-          cp ${CYGWIN_LIBDIR}libbz2-1.dll $DEST_DIR || true
-          cp ${CYGWIN_LIBDIR}libgcrypt-20.dll $DEST_DIR || true
-          cp ${CYGWIN_LIBDIR}libaudiofile-1.dll $DEST_DIR || true
-          cp ${CYGWIN_LIBDIR}libFLAC-8.dll $DEST_DIR || true
-          cp ${CYGWIN_LIBDIR}libOGG-0.dll $DEST_DIR || true
-          cp ${CYGWIN_LIBDIR}libxml2-2.dll $DEST_DIR || true
+          
+          # Zlib dlls
+          cp ${CYGWIN_LIBDIR}zlib1.dll $DEST_DIR
+          
+          # Bzip2 dlls
+          cp ${CYGWIN_LIBDIR}libbz2-1.dll $DEST_DIR
+          
+          # libgcrypt dlls
+          cp ${CYGWIN_LIBDIR}libgcrypt-20.dll $DEST_DIR
+          
+          # Audiofile dlls
+          cp ${CYGWIN_LIBDIR}libaudiofile-1.dll $DEST_DIR
+          cp ${CYGWIN_LIBDIR}libFLAC-8.dll $DEST_DIR
+          cp ${CYGWIN_LIBDIR}libOGG-0.dll $DEST_DIR
+          
+          # LibXML2 dlls
+          cp ${CYGWIN_LIBDIR}libxml2-2.dll $DEST_DIR
+          cp ${CYGWIN_LIBDIR}iconv.dll $DEST_DIR
+          cp ${CYGWIN_LIBDIR}liblzma-5.dll $DEST_DIR
           
           echo "Copying libspectrum dll .."
           cp /usr/local/i686-w64-mingw32/bin/libspectrum-9.dll $DEST_DIR
