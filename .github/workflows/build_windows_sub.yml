@@ -194,6 +194,10 @@ jobs:
           
           # Copy them to z80 folder as well
           cp -r $DEST_DIR/*.dll z80/
+          
+          echo "Remember dist name .."
+          echo "$DEST_DIR" > ./.dest-dir
+          
           echo "Done."
           
         shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
@@ -223,8 +227,8 @@ jobs:
         with: 
           name: fuse-windows-${{ inputs.key }}
           path: |
-            ${DEST_DIR}.zip
-            ${DEST_DIR}.zip.sha1
+            `cat ./.dest-dir`.zip
+            `cat ./.dest-dir`.zip.sha1
 
       - name: (14) Finish
         run: |
