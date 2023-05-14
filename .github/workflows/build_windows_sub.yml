@@ -196,7 +196,7 @@ jobs:
           cp -r $DEST_DIR/*.dll z80/
           
           echo "Remember dist name .."
-          echo "$DEST_DIR" > ./.dest-dir
+          echo "FUSE_DISTR_DIR=green" >> "$GITHUB_OUTPUT"
           
           echo "Done."
           
@@ -227,8 +227,12 @@ jobs:
         with: 
           name: fuse-windows-${{ inputs.key }}
           path: |
-            `cat ./.dest-dir`.zip
-            `cat ./.dest-dir`.zip.sha1
+            ${{ steps.random-color-generator.outputs.FUSE_DISTR_DIR }}.zip
+      - uses: actions/upload-artifact@v3
+        with: 
+          name: fuse-windows-${{ inputs.key }}
+          path: |
+            ${{ steps.random-color-generator.outputs.FUSE_DISTR_DIR }}.zip.sha1
 
       - name: (14) Finish
         run: |
