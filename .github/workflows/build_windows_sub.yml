@@ -197,7 +197,7 @@ jobs:
           cp -r $DEST_DIR/*.dll z80/
           
           echo "Remember distribution path .."
-          echo "FUSE_DISTR_DIR=green" >> "$GITHUB_OUTPUT"
+          echo "FUSE_DISTR_DIR=${DEST_DIR}" >> "$GITHUB_OUTPUT"
           
           echo "Done."
           
@@ -227,11 +227,13 @@ jobs:
         uses: actions/upload-artifact@v3
         with: 
           name: fuse-windows-${{ inputs.key }}
+          if-no-files-found: error
           path: |
             ${{ steps.copy-dlls.outputs.FUSE_DISTR_DIR }}.zip
       - uses: actions/upload-artifact@v3
         with: 
           name: fuse-windows-${{ inputs.key }}
+          if-no-files-found: error
           path: |
             ${{ steps.copy-dlls.outputs.FUSE_DISTR_DIR }}.zip.sha1
 
