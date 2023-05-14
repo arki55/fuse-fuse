@@ -159,6 +159,7 @@ jobs:
         shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
 
       - name: (10) Copy dependency dlls
+        id: copy-dlls
         run: |
           cd ${GITHUB_WORKSPACE}
           echo "Create distrib folder if missing .."
@@ -195,7 +196,7 @@ jobs:
           # Copy them to z80 folder as well
           cp -r $DEST_DIR/*.dll z80/
           
-          echo "Remember dist name .."
+          echo "Remember distribution path .."
           echo "FUSE_DISTR_DIR=green" >> "$GITHUB_OUTPUT"
           
           echo "Done."
@@ -227,12 +228,12 @@ jobs:
         with: 
           name: fuse-windows-${{ inputs.key }}
           path: |
-            ${{ steps.random-color-generator.outputs.FUSE_DISTR_DIR }}.zip
+            ${{ steps.copy-dlls.outputs.FUSE_DISTR_DIR }}.zip
       - uses: actions/upload-artifact@v3
         with: 
           name: fuse-windows-${{ inputs.key }}
           path: |
-            ${{ steps.random-color-generator.outputs.FUSE_DISTR_DIR }}.zip.sha1
+            ${{ steps.copy-dlls.outputs.FUSE_DISTR_DIR }}.zip.sha1
 
       - name: (14) Finish
         run: |
