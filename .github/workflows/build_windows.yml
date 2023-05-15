@@ -72,7 +72,7 @@ jobs:
     needs: [libspectrum]
     uses: ./.github/workflows/build_windows_sub.yml
     with:
-      dependencies: "libSDL-devel"
+      dependencies: "mingw64-i686-SDL"
       configure_params: "--without-win32 --with-sdl --disable-sdl2 --with-audio-driver=sdl"
       verify_ui: "sdl"
       verify_libxml2: "no"
