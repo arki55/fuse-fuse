@@ -41,6 +41,8 @@ jobs:
       CPPFLAGS: "-I/usr/local/i686-w64-mingw32/include"
       LDFLAGS: "-L/usr/local/i686-w64-mingw32/lib"
       PKG_CONFIG_LIBDIR: "/usr/local/i686-w64-mingw32/lib/pkgconfig:/usr/i686-w64-mingw32/sys-root/mingw/lib/pkgconfig"    
+      # In case of SDL
+      SDL_CONFIG: "/usr/i686-w64-mingw32/sys-root/mingw/bin/sdl-config"
     steps:
       - name: (1) Prepare environment
         run: |
@@ -139,8 +141,10 @@ jobs:
         shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
       - if: ${{ inputs.verify_other }}
         run: |
+          cd ${GITHUB_WORKSPACE}
+          
           .github/scripts/in_config.sh "${{ inputs.verify_other }}"
-        shell: bash
+        shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
 
       - name: (9) Make
         run: |

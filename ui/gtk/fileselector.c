@@ -319,7 +319,8 @@ add_filter_snapshot_files( GtkFileFilter *filter )
   gtk_file_filter_add_pattern( filter, "*.sp" );
   gtk_file_filter_add_pattern( filter, "*.szx" );
   gtk_file_filter_add_pattern( filter, "*.z80" );
-  gtk_file_filter_add_pattern( filter, "*.zx-state" );  
+  gtk_file_filter_add_pattern( filter, "*.zx-state" );
+  gtk_file_filter_add_pattern( filter, "*.s" );
 
   gtk_file_filter_add_pattern( filter, "*.MGTSNP" );
   gtk_file_filter_add_pattern( filter, "*.SLT" );
@@ -329,7 +330,8 @@ add_filter_snapshot_files( GtkFileFilter *filter )
   gtk_file_filter_add_pattern( filter, "*.SP" );
   gtk_file_filter_add_pattern( filter, "*.SZX" );
   gtk_file_filter_add_pattern( filter, "*.Z80" );
-  gtk_file_filter_add_pattern( filter, "*.ZX-STATE" );  
+  gtk_file_filter_add_pattern( filter, "*.ZX-STATE" );
+  gtk_file_filter_add_pattern( filter, "*.S" );
 }
 
 static void
