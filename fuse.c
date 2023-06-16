@@ -46,7 +46,8 @@
 #endif /* #if defined UI_SDL || (defined USE_JOYSTICK && !defined HAVE_JSW_H && (defined UI_X || defined UI_GTK) ) */
 
 #ifdef GEKKO
-#include <fat.h>
+/* #include <fat.h>
+ that requires disc_io.h which does not exist for wii? */
 #endif				/* #ifdef GEKKO */
 
 #ifdef HAVE_LIB_XML2
@@ -65,12 +66,13 @@
 #include "module.h"
 #include "movie.h"
 #include "mempool.h"
-#include "peripherals/ay.h"
 #include "peripherals/dck.h"
+#include "peripherals/sound/ay.h"
+#include "peripherals/sound/fuller.h"
+#include "peripherals/sound/melodik.h"
 #include "peripherals/disk/beta.h"
 #include "peripherals/disk/didaktik.h"
 #include "peripherals/disk/fdd.h"
-#include "peripherals/fuller.h"
 #include "peripherals/ide/divide.h"
 #include "peripherals/ide/divmmc.h"
 #include "peripherals/ide/simpleide.h"
@@ -81,7 +83,6 @@
 #include "peripherals/if1.h"
 #include "peripherals/if2.h"
 #include "peripherals/kempmouse.h"
-#include "peripherals/melodik.h"
 #include "peripherals/multiface.h"
 #include "peripherals/printer.h"
 #include "peripherals/scld.h"

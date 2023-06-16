@@ -212,7 +212,7 @@ option.
 .B \-\-covox
 .RS
 Emulate a Covox sound interface for Pentagon/Scorpion. Same as the
-General Peripherals Options dialog's
+Sound Peripherals Options dialog's
 .I "Covox"
 option.
 .RE
@@ -480,7 +480,7 @@ are `320' (which corresponds to a 320\(mu240\(mu256 mode), the default and
 .PP
 .B \-\-fuller
 .RS
-Emulate a Fuller Box interface. Same as the General Peripherals Options dialog's
+Emulate a Fuller Box interface. Same as the Sound Peripherals Options dialog's
 .I "Fuller Box"
 option.
 .RE
@@ -846,7 +846,7 @@ and
 .B \-\-melodik
 .RS
 Emulate a Melodik AY\ interface for 16/48k\ Spectrums. Same as the
-General Peripherals Options dialog's
+Sound Peripherals Options dialog's
 .I "Melodik"
 option.
 .RE
@@ -1783,7 +1783,7 @@ Specify the TAP device to use for SpeccyBoot emulation.
 .PP
 .B \-\-specdrum
 .RS
-Emulate a SpecDrum interface. Same as the General Peripherals Options dialog's
+Emulate a SpecDrum interface. Same as the Sound Peripherals Options dialog's
 .I "SpecDrum"
 option. See the World of Spectrum Infoseek web page at
 .I http://www.worldofspectrum.org/infoseekid.cgi?id=1000062
@@ -2729,21 +2729,6 @@ If this option is enabled, the left and right mouse buttons will be swapped
 when emulating a Kempston mouse.
 .RE
 .PP
-.I "Fuller Box"
-.RS
-If this option is selected, Fuse will emulate a Fuller Box AY sound and
-joystick interface. This emulation is only available for the 16k, 48k and
-TC2048 machines.
-.RE
-.PP
-.I "Melodik"
-.RS
-If this option is selected, Fuse will emulate a Melodik AY sound interface.
-These interfaces and many similar ones were produced to make the 48K\ Spectrum
-compatible with the same AY music as the 128K\ Spectrum. This emulation is only
-available for the 16k, 48k and TC2048 machines.
-.RE
-.PP
 .I "Interface\ 1"
 .RS
 If this option is selected, Fuse will emulate the simple Sinclair
@@ -2812,15 +2797,6 @@ web page at
 for more details.
 .RE
 .PP
-.I "SpecDrum interface"
-.RS
-If this option is selected, Fuse will emulate a Cheetah SpecDrum sound
-interface.  See the World of Spectrum Infoseek web page at
-.I http://www.worldofspectrum.org/infoseekid.cgi?id=1000062
-for manuals, software and more. This emulation is only available for
-the 48k, 128k and TC2048 machines.
-.RE
-.PP
 .I "Spectranet"
 .RS
 If this option is selected, Fuse will emulate the Spectranet interface,
@@ -2852,6 +2828,20 @@ See the World of Spectrum Infoseek web page at
 .I http://www.worldofspectrum.org/infoseekid.cgi?id=1000080
 for the manual.
 .RE
+.RE
+.PP
+.I "Options, Peripherals, Sound..."
+.RS
+Display the Sound Peripherals Options dialog, letting you configure the
+sound interface peripherals which Fuse will consider to be attached to
+the emulated machine. (With the widget UI, the keys shown in brackets
+toggle the options,
+.I Enter
+confirms any changes, and
+.I Esc
+aborts). Note that any changed settings only apply to the
+currently-running Fuse. Also note that any changes that enable and disable
+peripherals may result in a hard reset of the emulated machine.
 .PP
 .I "Covox interface"
 .RS
@@ -2859,6 +2849,30 @@ If this option is selected, Fuse will emulate a Covox digital sound
 interface. This emulation is only available for the Pentagon, Pentagon 512k,
 Pentagon 1024k and Scorpion machines. The Pentagon variants use port 0xfb and
 the Scorpion version uses port 0xdd.
+.RE
+.PP
+.I "Fuller Box"
+.RS
+If this option is selected, Fuse will emulate a Fuller Box AY sound and
+joystick interface. This emulation is only available for the 16k, 48k and
+TC2048 machines.
+.RE
+.PP
+.I "Melodik"
+.RS
+If this option is selected, Fuse will emulate a Melodik AY sound interface.
+These interfaces and many similar ones were produced to make the 48K\ Spectrum
+compatible with the same AY music as the 128K\ Spectrum. This emulation is only
+available for the 16k, 48k and TC2048 machines.
+.RE
+.PP
+.I "SpecDrum interface"
+.RS
+If this option is selected, Fuse will emulate a Cheetah SpecDrum sound
+interface.  See the World of Spectrum Infoseek web page at
+.I http://www.worldofspectrum.org/infoseekid.cgi?id=1000062
+for manuals, software and more. This emulation is only available for
+the 48k, 128k and TC2048 machines.
 .RE
 .RE
 .PP
