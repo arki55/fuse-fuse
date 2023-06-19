@@ -2,7 +2,7 @@ name: Deploy Fuse App For Windows
 run-name: Deploy Fuse App for Windows / ${{ github.actor }} /
 
 # Executed upon manual request
-on: [workflow_dispatch]
+on: [workflow_dispatch, push]
 
 jobs:
   libspectrum:
