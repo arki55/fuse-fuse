@@ -387,6 +387,13 @@ ui_init( int *argc, char ***argv )
 
   ui_mouse_present = 1;
 
+#ifdef FUSE_TEST_BUILD
+  ui_error( UI_ERROR_WARNING,
+    FUSE_TEST_LINE "\n"
+    FUSE_TEST_BUILD
+  );
+#endif
+
   return 0;
 }
 

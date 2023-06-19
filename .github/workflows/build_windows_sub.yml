@@ -32,6 +32,18 @@ on:
         type: string
         required: false
         default: ""
+      upload_artifacts:
+        type: boolean
+        required: false
+        default: true
+      deploy_zip:
+        type: boolean
+        required: false
+        default: false
+      deploy_sha1:
+        type: boolean
+        required: false
+        default: false
 
 jobs:
   build:
@@ -235,15 +247,56 @@ jobs:
           make dist-win32-zip
         shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
 
-      - name: (13) Upload generated file(s)
+      - name: (13) Rename distribution files, patch SHA1 file
+        id: rename-files
+        run: |
+          cd ${GITHUB_WORKSPACE}
+
+          base_name="fuse-windows-${{ inputs.key }}"
+
+          zip_from=${{ steps.copy-dlls.outputs.FUSE_DISTR_DIR }}.zip
+          zip_to="${base_name}.zip"
+
+          echo "Renaming ZIP file from $zip_from to $zip_to"
+          mv $zip_from $zip_to
+
+          sha1_from=${{ steps.copy-dlls.outputs.FUSE_DISTR_DIR }}.zip.sha1
+          sha1_to="${base_name}.zip.sha1"
+
+          echo "Renaming SHA1 file from $sha1_from to $sha1_to"
+          mv $sha1_from $sha1_to
+
+          echo "Remember new file names"
+          echo "FUSE_DISTR_BASE=${base_name}" >> "$GITHUB_OUTPUT"
+          echo "FUSE_DISTR_ZIP=${zip_to}" >> "$GITHUB_OUTPUT"
+          echo "FUSE_DISTR_SHA1=${sha1_to}" >> "$GITHUB_OUTPUT"
+
+        shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
+
+      - name: (14) Upload generated artifact(s)
+        if: ${{ inputs.upload_artifacts }}
         uses: actions/upload-artifact@v3
         with: 
-          name: fuse-windows-${{ inputs.key }}
+          name: ${{ steps.rename-files.outputs.FUSE_DISTR_BASE }}
           if-no-files-found: error
           path: |
-            ${{ steps.copy-dlls.outputs.FUSE_DISTR_DIR }}.zip
-            ${{ steps.copy-dlls.outputs.FUSE_DISTR_DIR }}.zip.sha1
+            ${{ steps.rename-files.outputs.FUSE_DISTR_ZIP }}
+            ${{ steps.rename-files.outputs.FUSE_DISTR_SHA1 }}
 
-      - name: (14) Finish
+      - name: (15) Deploy ZIP file to FTP server
+        if: ${{ inputs.deploy_zip }}
+        run: |
+          echo "Deploying file ${{ steps.rename-files.outputs.FUSE_DISTR_ZIP }}"
+          echo "Not implemented yet"
+        shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
+
+      - name: (16) Deploy SHA1 file (different location)
+        if: ${{ inputs.deploy_sha1 }}
+        run: |
+          echo "Deploying file ${{ steps.rename-files.outputs.FUSE_DISTR_SHA1 }}"
+          echo "Not implemented yet"
+        shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
+
+      - name: (17) Finish
         run: |
           echo "🍏 Finishing with status ${{ job.status }}."

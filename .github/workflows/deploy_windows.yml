@@ -1,0 +1,35 @@
+name: Deploy Fuse App For Windows
+run-name: Deploy Fuse App for Windows / ${{ github.actor }} /
+
+# Executed upon manual request
+on: [workflow_dispatch]
+
+jobs:
+  libspectrum:
+    # Reuse libspectrum's build wokflow and artefact (all libs enabled, fake glib)
+    name: "Libspectrum lib (Windows)"
+    uses: arki55/fuse-libspectrum/.github/workflows/build_windows_sub.yml@arki55/github-workflows
+    with:
+      branch: arki55/github-workflows
+      key: fuse-app
+      # repo name is taken from var.LIBSPECTRUM_REPO
+
+########################################
+### SUPPORTED Windows configurations ###
+########################################
+
+  # Win32 / 1
+  win32-ui-default:
+    name: "Fuse Win32 UI + libxml2 (Windows)"
+    needs: [libspectrum]
+    uses: ./.github/workflows/build_windows_sub.yml
+    with:
+      key: "win32-ui-default"
+      dependencies: "mingw64-i686-libxml2"
+      configure_params: "--with-win32 --with-test-build='Ticket: {TODO}\nBranch: ${GITHUB_REF}\nDate: {TODO}'"
+      verify_ui: "win32"
+      verify_libxml2: "yes"
+      verify_audio: "directsound"
+      upload_artifacts: true
+      deploy_zip: true
+      deploy_sha1: true
