@@ -130,6 +130,7 @@ jobs:
         shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
 
       - name: (7) Configure for Windows
+        id: run-configure
         run: |
           cd ${GITHUB_WORKSPACE}
           echo "Running configure .."
@@ -140,6 +141,13 @@ jobs:
           --disable-static \
           ${{ inputs.configure_params }} \
           |& tee ./configure.out
+        shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
+
+      - name: Check config.log (on failure)
+        if: failure() && steps.run-configure.outcome != 'success'
+        run: |
+          echo "Reading config.log file .."
+          cat config.log
         shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
 
       - name: (8) Verify output from configure

@@ -67,7 +67,8 @@ AC_ARG_WITH(test-build,
 if test "$withval" = ""; then
   echo 'not a testing build'
 else
-  echo "$withval"
+  withval=${withval/#NOW#/`date -u`}
+  echo "\n$withval"
   AC_DEFINE_UNQUOTED([FUSE_TEST_LINE], ["This is a special build for testing purposes:"], [Testing warning line])
   AC_DEFINE_UNQUOTED([FUSE_TEST_BUILD], ["$withval"], [Testing build information])
   test_build="$withval"
