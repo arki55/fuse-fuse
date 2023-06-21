@@ -301,11 +301,60 @@ jobs:
             ${{ steps.rename-files.outputs.FUSE_DISTR_SHA1 }}
 
       - name: (12) Deploy ZIP file to FTP server
+        id: deploy-zip
         if: ${{ inputs.deploy_zip }}
         run: |
           echo "Deploying file ${{ steps.rename-files.outputs.FUSE_DISTR_ZIP }}"
-          echo "Not implemented yet"
+
+          deploy_zip_path=${{ secrets.DEPLOY_ZIP_PATH || '' }}
+          deploy_zip_host=${{ secrets.DEPLOY_ZIP_HOST || '' }}
+          deploy_zip_user=${{ secrets.DEPLOY_ZIP_USER || '' }}
+          deploy_zip_pass=${{ secrets.DEPLOY_ZIP_PASS || '' }}
+
+          error=0
+          if [[ -z "$deploy_zip_path" ]]; then
+            echo "::error::DEPLOY_ZIP_PATH secret missing"
+            error=1
+          fi
+
+          if [[ -z "$deploy_zip_host" ]]; then
+            echo "::error::DEPLOY_ZIP_HOST secret missing"
+            error=1
+          fi
+
+          if [[ -z "$deploy_zip_user" ]]; then
+            echo "::error::DEPLOY_ZIP_USER secret missing"
+            error=1
+          fi
+
+          if [[ -z "$deploy_zip_pass" ]]; then
+            echo "::error::DEPLOY_ZIP_PASS secret missing"
+            error=1
+          fi
+
+          if [[ $error -eq 1 ]]; then
+            exit 1
+          fi
+
+          src="${GITHUB_WORKSPACE}/${{ steps.rename-files.outputs.FUSE_DISTR_ZIP }}"
+          dest="$deploy_zip_path/${{ steps.rename-files.outputs.FUSE_DISTR_ZIP }}"
+
+          echo "Source file: $src"
+          echo "Destination file: $dest"
+
+          echo "src=${src}" >> "$GITHUB_OUTPUT"
+          echo "dest=${dest}" >> "$GITHUB_OUTPUT"
+
         shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
+
+      - name: (12b) 📂 Send file
+        uses: bayssmekanique/action-simple-file-upload@v1
+        with:
+          host: ${{ secrets.DEPLOY_ZIP_HOST }}
+          user: ${{ secrets.DEPLOY_ZIP_USER }}
+          password: ${{ secrets.DEPLOY_ZIP_PASS }}
+          src: ${{ steps.deploy-zip.outputs.src }}
+          dest: ${{ steps.deploy-zip.outputs.dest }}
 
       - name: (12b) Deploy SHA1 file (different location)
         if: ${{ inputs.deploy_sha1 }}
