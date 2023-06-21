@@ -337,7 +337,7 @@ jobs:
           fi
 
           src="${GITHUB_WORKSPACE}/${{ steps.rename-files.outputs.FUSE_DISTR_ZIP }}"
-          dest="$deploy_zip_path/${{ steps.rename-files.outputs.FUSE_DISTR_ZIP }}"
+          dest="$deploy_zip_path/${{ github.ref_name }}/${{ steps.rename-files.outputs.FUSE_DISTR_ZIP }}"
 
           echo "Source file: $src"
           echo "Destination file: $dest"
