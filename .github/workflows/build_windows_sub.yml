@@ -146,6 +146,8 @@ jobs:
       - name: Check config.log (on failure)
         if: failure() && steps.run-configure.outcome != 'success'
         run: |
+          cd ${GITHUB_WORKSPACE}
+          
           echo "Reading config.log file .."
           cat config.log
         shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
