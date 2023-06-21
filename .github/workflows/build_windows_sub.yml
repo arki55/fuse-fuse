@@ -113,7 +113,7 @@ jobs:
           name: libspectrum-installed-windows-fuse-app
           path: libspectrum
 
-      - name: (5) Install libspectrum from artefact
+      - name: (4b) Install libspectrum from artefact
         run: |
           cd ${GITHUB_WORKSPACE}
           # Extract (-x) files into /usr/local (cannot work with root /)
@@ -122,14 +122,14 @@ jobs:
           echo "Done"
         shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
 
-      - name: (6) Autogen.sh
+      - name: (5) Autogen.sh
         run: |
           cd ${GITHUB_WORKSPACE}
           echo "Running autogen.sh .."
           ./autogen.sh
         shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
 
-      - name: (7) Configure for Windows
+      - name: (6) Configure for Windows
         id: run-configure
         run: |
           cd ${GITHUB_WORKSPACE}
@@ -143,16 +143,16 @@ jobs:
           |& tee ./configure.out
         shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
 
-      - name: Check config.log (on failure)
+      - name: (6b) Check config.log (on failure)
         if: failure() && steps.run-configure.outcome != 'success'
         run: |
           cd ${GITHUB_WORKSPACE}
-          
+
           echo "Reading config.log file .."
           cat config.log
         shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
 
-      - name: (8) Verify output from configure
+      - name: (6c) Verify output from configure
         # Most of the tested strings are common for all Windows builds
         # Only the strings related to UI selection differ
         run: |          
@@ -170,14 +170,16 @@ jobs:
           .github/scripts/in_config.sh "libxml2 support: ${{ inputs.verify_libxml2 }}"
           .github/scripts/in_config.sh "Selected audio driver: ${{ inputs.verify_audio }}"
         shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
-      - if: ${{ inputs.verify_other }}
+
+      - name: (6d) Verify optional parameter
+        if: ${{ inputs.verify_other }}
         run: |
           cd ${GITHUB_WORKSPACE}
           
           .github/scripts/in_config.sh "${{ inputs.verify_other }}"
         shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
 
-      - name: (9) Make
+      - name: (7) Make
         run: |
           cd ${GITHUB_WORKSPACE}
           
@@ -185,7 +187,7 @@ jobs:
           make
         shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
 
-      - name: (10) Copy dependency dlls
+      - name: (8) Copy dependency dlls
         id: copy-dlls
         run: |
           cd ${GITHUB_WORKSPACE}
@@ -242,7 +244,7 @@ jobs:
           
         shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
           
-      - name: (11) Run tests
+      - name: (9) Run tests
         id: run-tests
         run: |
           cd ${GITHUB_WORKSPACE}
@@ -254,7 +256,7 @@ jobs:
           
         shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
 
-      - name: (12) Create distribution file(s)
+      - name: (10) Create distribution file(s)
         run: |
           cd ${GITHUB_WORKSPACE}
           
@@ -262,7 +264,7 @@ jobs:
           make dist-win32-zip
         shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
 
-      - name: (13) Rename distribution files, patch SHA1 file
+      - name: (10b) Rename distribution files, patch SHA1 file
         id: rename-files
         run: |
           cd ${GITHUB_WORKSPACE}
@@ -288,7 +290,7 @@ jobs:
 
         shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
 
-      - name: (14) Upload generated artifact(s)
+      - name: (11) Upload generated artifact(s)
         if: ${{ inputs.upload_artifacts }}
         uses: actions/upload-artifact@v3
         with: 
@@ -298,20 +300,20 @@ jobs:
             ${{ steps.rename-files.outputs.FUSE_DISTR_ZIP }}
             ${{ steps.rename-files.outputs.FUSE_DISTR_SHA1 }}
 
-      - name: (15) Deploy ZIP file to FTP server
+      - name: (12) Deploy ZIP file to FTP server
         if: ${{ inputs.deploy_zip }}
         run: |
           echo "Deploying file ${{ steps.rename-files.outputs.FUSE_DISTR_ZIP }}"
           echo "Not implemented yet"
         shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
 
-      - name: (16) Deploy SHA1 file (different location)
+      - name: (12b) Deploy SHA1 file (different location)
         if: ${{ inputs.deploy_sha1 }}
         run: |
           echo "Deploying file ${{ steps.rename-files.outputs.FUSE_DISTR_SHA1 }}"
           echo "Not implemented yet"
         shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
 
-      - name: (17) Finish
+      - name: (13) Finish
         run: |
           echo "🍏 Finishing with status ${{ job.status }}."
