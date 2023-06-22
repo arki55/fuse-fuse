@@ -306,10 +306,10 @@ jobs:
         run: |
           echo "Deploying file ${{ steps.rename-files.outputs.FUSE_DISTR_ZIP }}"
 
-          deploy_zip_path="${{ secrets.DEPLOY_ZIP_PATH || '' }}"
-          deploy_zip_host="${{ secrets.DEPLOY_ZIP_HOST || '' }}"
-          deploy_zip_user="${{ secrets.DEPLOY_ZIP_USER || '' }}"
-          deploy_zip_pass="${{ secrets.DEPLOY_ZIP_PASS || '' }}"
+          deploy_zip_path="${{ secrets.DEPLOY_ZIP_PATH }}"
+          deploy_zip_host="${{ secrets.DEPLOY_ZIP_HOST }}"
+          deploy_zip_user="${{ secrets.DEPLOY_ZIP_USER }}"
+          deploy_zip_pass="${{ secrets.DEPLOY_ZIP_PASS }}"
 
           error=0
           if [[ -z "$deploy_zip_path" ]]; then
