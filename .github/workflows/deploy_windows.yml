@@ -62,7 +62,7 @@ jobs:
   deploy-win32-ui-default:
     name: "Deploy ZIP to FTP"
     needs: [build-win32-ui-default]
-    uses: ./.github/workflows/deploy_build.yml@arki55/features/T13-github-distribution-workflow
+    uses: ./.github/workflows/deploy_build.yml
     with:
       artefact: fuse-windows-win32-ui-default
       deploy_zip: true
@@ -72,7 +72,7 @@ jobs:
   deploy-sdl-ui-sdl-sound:
     name: "Deploy ZIP to FTP"
     needs: [build-sdl-ui-sdl-sound]
-    uses: ./.github/workflows/deploy_build.yml@arki55/features/T13-github-distribution-workflow
+    uses: ./.github/workflows/deploy_build.yml
     with:
       artefact: fuse-windows-sdl-ui-sdl-sound
       deploy_zip: true
