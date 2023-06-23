@@ -29,10 +29,7 @@ jobs:
     with:
       key: "win32-ui-default"
       dependencies: "mingw64-i686-libxml2"
-      configure_params: |
-        "--with-win32 \
-         --with-test-build='Reason: ${{ inputs.reason }}\\nTriggered by: ${{ github.actor }}\\nBranch: ${{ github.ref_name }}\\nDate: #NOW#' \
-        "
+      configure_params: "--with-win32 --with-test-build='Reason: ${{ inputs.reason }}\\nTriggered by: ${{ github.actor }}\\nBranch: ${{ github.ref_name }}\\nDate: #NOW#'"
       verify_ui: "win32"
       verify_libxml2: "yes"
       verify_audio: "directsound"
@@ -46,10 +43,7 @@ jobs:
     with:
       key: "sdl1-ui-sdl1-sound"
       dependencies: "mingw64-i686-SDL"
-      configure_params: |
-        "--without-win32 --with-sdl --disable-sdl2 --with-audio-driver=sdl \
-         --with-test-build='Reason: ${{ inputs.reason }}\\nTriggered by: ${{ github.actor }}\\nBranch: ${{ github.ref_name }}\\nDate: #NOW#' \
-        "
+      configure_params: "--without-win32 --with-sdl --disable-sdl2 --with-audio-driver=sdl --with-test-build='Reason: ${{ inputs.reason }}\\nTriggered by: ${{ github.actor }}\\nBranch: ${{ github.ref_name }}\\nDate: #NOW#'"
       verify_ui: "sdl"
       verify_libxml2: "no"
       verify_audio: "sdl"
