@@ -1,6 +1,6 @@
 # Reusable workflow for deploying build file(s) via FTP
-name: Deploy build
-run-name: Deploy build file(s) via FTP / ${{ github.actor }} /
+name: Upload to FTP
+run-name: Upload build file(s) to FTP / ${{ github.actor }} /
 
 on:
   workflow_call:
@@ -32,7 +32,7 @@ on:
 
 jobs:
   build:
-    name: Deploy build
+    name: Upload to FTP
     runs-on: ubuntu-latest
     timeout-minutes: 5
     env:

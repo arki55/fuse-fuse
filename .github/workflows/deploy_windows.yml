@@ -1,5 +1,5 @@
-name: Deploy Fuse App For Windows
-run-name: Deploy Fuse App for Windows / ${{ github.actor }} /
+name: Deploy Test version of Fuse App For Windows
+run-name: Deploy Test version of Fuse App For Windows / ${{ github.actor }} /
 
 # Executed upon manual request
 on: [workflow_dispatch, push]
@@ -10,7 +10,7 @@ jobs:
 ########################################
   libspectrum:
     # Reuse libspectrum's build wokflow and artefact (all libs enabled, fake glib)
-    name: "Libspectrum lib (Windows)"
+    name: "Libspectrum lib"
     uses: arki55/fuse-libspectrum/.github/workflows/build_windows_sub.yml@arki55/github-workflows
     with:
       branch: arki55/github-workflows
@@ -23,7 +23,7 @@ jobs:
 
   # Win32 / 1 (Build)
   build-win32-ui-default:
-    name: "Fuse Win32 UI + libxml2 (Windows)"
+    name: "Fuse Win32 UI + libxml2"
     needs: [libspectrum]
     uses: ./.github/workflows/build_windows_sub.yml
     with:
@@ -37,7 +37,7 @@ jobs:
 
   # SDL / 1 (Build)
   build-sdl-ui-sdl-sound:
-    name: "Fuse SDL 1 UI + sound (Windows)"
+    name: "Fuse SDL1 (UI + sound)"
     needs: [libspectrum]
     uses: ./.github/workflows/build_windows_sub.yml
     with:
@@ -56,7 +56,7 @@ jobs:
 
   # Win32 / 1 (Deploy)
   deploy-win32-ui-default:
-    name: "Deploy ZIP to FTP"
+    name: "Deploy Win32 ZIP"
     needs: [build-win32-ui-default]
     uses: ./.github/workflows/deploy_build.yml
     with:
@@ -71,11 +71,11 @@ jobs:
 
   # SDL / 1 (Deploy)
   deploy-sdl-ui-sdl-sound:
-    name: "Deploy ZIP to FTP"
+    name: "Deploy SDL ZIP"
     needs: [build-sdl-ui-sdl-sound]
     uses: ./.github/workflows/deploy_build.yml
     with:
-      artefact: fuse-windows-sdl-ui-sdl-sound
+      artefact: fuse-windows-sdl1-ui-sdl1-sound
       deploy_zip: true
       deploy_sha1: false
     secrets:
