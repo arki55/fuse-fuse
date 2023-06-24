@@ -1,0 +1,51 @@
+name: Test version of Fuse App
+run-name: Build & Deploy Test version of Fuse App / ${{ github.actor }} /
+
+# Executed upon manual request
+on: [workflow_dispatch, push]
+
+jobs:
+
+  ########################################
+  ###  Make dependecies (Libspectrum)  ###
+  ########################################
+
+  libspectrum:
+    # Reuse libspectrum's build wokflow and artefact (all libs enabled, fake glib)
+    name: "Libspectrum lib"
+    uses: arki55/fuse-libspectrum/.github/workflows/build_windows_sub.yml@arki55/github-workflows
+    with:
+      branch: arki55/github-workflows
+      key: fuse-app
+      # repo name is taken from var.LIBSPECTRUM_REPO
+
+  ########################################
+  ### Make Testing builds for Windows  ###
+  ########################################
+
+  # Win32 UI
+  build-win32-ui-default:
+    name: "Fuse Win32 UI"
+    needs: [libspectrum]
+    uses: ./.github/workflows/test_release_windows_sub.yml
+    with:
+      reason: "aaaa"
+      key: "win32-ui-default"
+      dependencies: ""
+      configure_params: "--with-win32"
+      verify_ui: "win32"
+      verify_audio: "directsound"
+
+  # SDL1 UI+sound
+  build-sdl-ui-sdl-sound:
+    name: "Fuse SDL1 (UI + sound)"
+    needs: [libspectrum]
+    uses: ./.github/workflows/test_release_windows_sub.yml
+    with:
+      reason: "bbbb"
+      key: "sdl1-ui-sdl1-sound"
+      dependencies: "mingw64-i686-SDL"
+      configure_params: "--without-win32 --with-sdl --disable-sdl2 --with-audio-driver=sdl"
+      verify_ui: "sdl"
+      verify_audio: "sdl"
+      verify_other: "Using SDL 2: no"
