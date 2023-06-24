@@ -16,6 +16,19 @@ on:
         type: boolean
         required: false
         default: false
+    secrets:
+      DEPLOY_ZIP_PATH:
+        description: "Relative path that prefixes uploaded ZIP file on FTP server"
+        required: true
+      DEPLOY_ZIP_HOST:
+        description: "Hostname of FTP server where ZIP package will be uploaded"
+        required: true
+      DEPLOY_ZIP_USER:
+        description: "Username that will be used for uploading ZIP file to FTP server"
+        required: true
+      DEPLOY_ZIP_PASS:
+        description: "Password for user that will be used for uploading ZIP package to FTP server"
+        required: true
 
 jobs:
   build:
