@@ -49,7 +49,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ${{ env.file_path_artefact }}
-          path: ${GITHUB_WORKSPACE}
 
       - name: (2) Verify FTP/DEPLOY secrets are set
         if: ${{ inputs.deploy_zip }}
@@ -86,6 +85,8 @@ jobs:
         if: ${{ inputs.deploy_zip }}
         run: |
           cd ${GITHUB_WORKSPACE}
+          echo "Content of directory:"
+          ls -laR
 
           echo "Deploying file ${{ env.file_path_zip }}"
 
