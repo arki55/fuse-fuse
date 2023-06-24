@@ -188,7 +188,7 @@ jobs:
           FUSE_VERSION=`./configure --version | grep -Eo "([0-9]+\.[0-9]+\.[0-9]+)"`
           echo "Fuse version: $FUSE_VERSION"
           
-          DEST_DIR="fuse-${FUSE_VERSION}-win32"
+          DEST_DIR="fuse-${FUSE_VERSION}-${{ inputs.verify_ui }}"
           echo "Dest dir: $DEST_DIR"
           if [[ ! -d "$DEST_DIR" ]]; then 
             mkdir $DEST_DIR
