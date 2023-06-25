@@ -100,7 +100,7 @@ jobs:
           echo "dest=${dest}" >> "$GITHUB_OUTPUT"
 
       - name: (3b) 📂 Send zip file
-        uses: bayssmekanique/action-simple-file-upload@v1
+        uses: bayssmekanique/action-simple-file-upload@v1.1.3
         with:
           host: "${{ env.deploy_zip_host }}"
           user: "${{ env.deploy_zip_user }}"
