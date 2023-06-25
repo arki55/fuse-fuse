@@ -96,17 +96,17 @@ jobs:
           echo "Source file: $src"
           echo "Destination file: $dest"
 
-          echo "src=${src}" >> "$GITHUB_OUTPUT"
-          echo "dest=${dest}" >> "$GITHUB_OUTPUT"
+          echo "src='${src}'" >> "$GITHUB_OUTPUT"
+          echo "dest='${dest}'" >> "$GITHUB_OUTPUT"
 
       - name: (3b) 📂 Send zip file
         uses: bayssmekanique/action-simple-file-upload@v1
         with:
-          host: ${{ env.deploy_zip_host }}
-          user: ${{ env.deploy_zip_user }}
-          password: ${{ env.deploy_zip_pass }}
-          src: ${{ steps.deploy-zip.outputs.src }}
-          dest: ${{ steps.deploy-zip.outputs.dest }}
+          host: "${{ env.deploy_zip_host }}"
+          user: "${{ env.deploy_zip_user }}"
+          password: "${{ env.deploy_zip_pass }}"
+          src: "${{ steps.deploy-zip.outputs.src }}"
+          dest: "${{ steps.deploy-zip.outputs.dest }}"
 
       - name: (3) Deploy SHA1 file (different location)
         if: ${{ inputs.deploy_sha1 }}
