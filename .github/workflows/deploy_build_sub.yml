@@ -96,8 +96,8 @@ jobs:
           echo "Source file: $src"
           echo "Destination file: $dest"
 
-          echo "src='${src}'" >> "$GITHUB_OUTPUT"
-          echo "dest='${dest}'" >> "$GITHUB_OUTPUT"
+          echo "src=${src}" >> "$GITHUB_OUTPUT"
+          echo "dest=${dest}" >> "$GITHUB_OUTPUT"
 
       - name: (3b) 📂 Send zip file
         uses: bayssmekanique/action-simple-file-upload@v1
