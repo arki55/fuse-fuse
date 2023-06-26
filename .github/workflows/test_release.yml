@@ -76,10 +76,16 @@ jobs:
       - name: (2) Created release with zip files
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "*/*.zip"
-          tag: "testing"
-          prerelease: true
-          draft: true
-          commit: ${{ github.ref_name }}
           name: "Testing ${{ github.ref_name }}"
+          # Attach all generated build zips
+          artifacts: "*/*.zip"
+          # determines structure of files in Source Forge
+          tag: "testing/${{ github.ref_name }}"
+          # Is not an official release
+          prerelease: true
+          # Needs to be published manually
+          draft: true
+          # linked to a branch/pull request
+          commit: ${{ github.ref_name }}
+          # Special permissions needed
           token: "${{ secrets.RELEASE_TOKEN }}"
