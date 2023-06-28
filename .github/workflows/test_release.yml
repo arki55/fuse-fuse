@@ -2,7 +2,7 @@ name: Test version of Fuse App
 run-name: Build & Deploy Test version of Fuse App / ${{ github.actor }} /
 
 # Executed upon manual request
-on: [workflow_dispatch, push]
+on: [workflow_dispatch, pull_request]
 
 jobs:
 
