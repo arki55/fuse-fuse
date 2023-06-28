@@ -71,16 +71,26 @@ jobs:
       - build-sdl-ui-sdl-sound
     runs-on: ubuntu-latest
     steps:
-      - name: (1) Download all generated files
+      # Prepare friendly tag name ( slashes => _ )
+      - name: (1) Prepare variables
+        id: prep
+        run: |
+          ref_name="${{ github.ref_name }}"
+          use_tag="test_${ref_name//\//_}"
+          echo "Tag name: ${use_tag}"
+          echo "use_tag=${use_tag}" >> "$GITHUB_OUTPUT"
+
+      - name: (2) Download all generated files
         uses: actions/download-artifact@v3
-      - name: (2) Created release with zip files
+
+      - name: (3) Created release with zip files
         uses: ncipollo/release-action@v1
         with:
-          name: "Testing ${{ github.ref_name }}"
+          name: "Test build for ${{ github.ref_name }}"
           # Attach all generated build zips
           artifacts: "*/*.zip"
           # determines structure of files in Source Forge
-          tag: "testing/${{ github.ref_name }}"
+          tag: "${{ steps.prep.outputs.use_tag }}"
           # Is not an official release
           prerelease: true
           # Needs to be published manually
