@@ -17,6 +17,10 @@ on:
         type: string
         required: false
         default: ""
+      fuse_version:
+        type: string
+        required: false
+        default: ""
       verify_ui:
         type: string
         required: true
@@ -114,7 +118,18 @@ jobs:
           echo "Done"
         shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
 
-      - name: (5) Autogen.sh
+      - name: (5a) Adjust fuse_version
+        if: ${{ inputs.fuse_version }}
+        run: |
+          cd ${GITHUB_WORKSPACE}
+          file="configure.ac"
+          replace="${{ inputs.fuse_version }}"
+          content=`cat $file`
+          content2=${content//m4_define(\[fuse_version\], \[[0-9].[0-9].[0-9]\])/m4_define(\[fuse_version\], \[$replace\])}
+          echo "$content2" > $file
+        shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
+
+      - name: (5b) Autogen.sh
         run: |
           cd ${GITHUB_WORKSPACE}
           echo "Running autogen.sh .."
