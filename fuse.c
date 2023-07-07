@@ -411,6 +411,14 @@ static int fuse_init(int argc, char **argv)
   fuse_emulation_paused = 0;
   movie_init();
 
+#ifdef FUSE_TEST_BUILD
+  /* Show warning in case of test build */
+  ui_error( UI_ERROR_WARNING,
+    FUSE_TEST_LINE "\n"
+    FUSE_TEST_BUILD
+  );
+#endif
+
   return 0;
 }
 
