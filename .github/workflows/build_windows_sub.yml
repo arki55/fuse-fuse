@@ -200,7 +200,8 @@ jobs:
           cd ${GITHUB_WORKSPACE}
           echo "Create distrib folder if missing .."
           
-          FUSE_VERSION=`./configure --version | grep -Eo "([0-9]+\.[0-9]+\.[0-9]+)"`
+          FUSE_VERSION=`./configure --version | grep -Eo "fuse configure (.+)"`
+          FUSE_VERSION=${FUSE_VERSION//fuse configure /}
           echo "Fuse version: $FUSE_VERSION"
           
           DEST_DIR="fuse-${FUSE_VERSION}-${{ inputs.verify_ui }}"
