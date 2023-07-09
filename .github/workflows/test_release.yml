@@ -2,7 +2,24 @@ name: Test version of Fuse App
 run-name: Build & Deploy Test version of Fuse App / ${{ github.actor }} /
 
 # Executed upon manual request
-on: [workflow_dispatch, push]
+on:
+  workflow_dispatch:
+    inputs:
+      reason:
+        type: string
+        required: true
+        default: "Test some feature"
+        description: "Describe reason or content of new test release"
+      draft:
+        type: boolean
+        required: true
+        default: true
+        description: "If checked, will be marked as draft, needs to be manually released in UI."
+      libspectrum_branch:
+        type: string
+        required: true
+        default: "master"
+        description: "Libspectrum's branch to use"
 
 jobs:
 
@@ -13,9 +30,9 @@ jobs:
   libspectrum-windows:
     # Reuse libspectrum's build wokflow and artefact (all libs enabled, fake glib)
     name: "Libspectrum lib"
-    uses: arki55/fuse-libspectrum/.github/workflows/build_windows_sub.yml@arki55/github-workflows
+    uses: arki55/fuse-libspectrum/.github/workflows/build_windows_sub.yml@master
     with:
-      branch: arki55/github-workflows
+      branch: ${{ inputs.libspectrum_branch }}
       key: fuse-app
       # repo name is taken from var.LIBSPECTRUM_REPO
 
@@ -29,7 +46,7 @@ jobs:
     needs: [libspectrum-windows]
     uses: ./.github/workflows/test_release_windows_sub.yml
     with:
-      reason: "aaaa"
+      reason: ${{ inputs.reason }}
       key: "win32-ui-default"
       dependencies: ""
       configure_params: "--with-win32"
@@ -47,7 +64,7 @@ jobs:
     needs: [libspectrum-windows]
     uses: ./.github/workflows/test_release_windows_sub.yml
     with:
-      reason: "bbbb"
+      reason: ${{ inputs.reason }}
       key: "sdl1-ui-sdl1-sound"
       dependencies: "mingw64-i686-SDL"
       configure_params: "--without-win32 --with-sdl --disable-sdl2 --with-audio-driver=sdl"
@@ -93,8 +110,8 @@ jobs:
           tag: "${{ steps.prep.outputs.use_tag }}"
           # Is not an official release
           prerelease: true
-          # Needs to be published manually
-          draft: true
+          # Needs to be published manually?
+          draft: ${{ inputs.draft }}
           # linked to a branch/pull request
           commit: ${{ github.ref_name }}
           # Special permissions needed
