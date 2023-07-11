@@ -162,6 +162,7 @@ static void creator_register_startup( void );
 
 static void fuse_show_copyright(void);
 static void fuse_show_version( void );
+static void fuse_show_test_build_info( void );
 static void fuse_show_help( void );
 
 static int setup_start_files( start_files_t *start_files );
@@ -410,6 +411,14 @@ static int fuse_init(int argc, char **argv)
   fuse_emulation_paused = 0;
   movie_init();
 
+#ifdef FUSE_TEST_BUILD
+  /* Show warning in case of test build */
+  ui_error( UI_ERROR_WARNING,
+    FUSE_TEST_LINE "\n"
+    FUSE_TEST_BUILD
+  );
+#endif
+
   return 0;
 }
 
@@ -501,6 +510,20 @@ static void fuse_show_copyright(void)
 static void fuse_show_version( void )
 {
   printf( "The Free Unix Spectrum Emulator (Fuse) version " VERSION ".\n" );
+
+  fuse_show_test_build_info();
+}
+
+static void fuse_show_test_build_info( void )
+{
+#ifdef FUSE_TEST_BUILD
+  printf(
+    "\n"
+    FUSE_TEST_LINE "\n"
+    FUSE_TEST_BUILD "\n"
+    "\n"
+    );
+#endif
 }
 
 static void fuse_show_help( void )
