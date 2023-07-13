@@ -48,9 +48,23 @@ static const periph_port_t spec128_memory_ports[] = {
   { 0, 0, NULL, NULL }
 };
 
+static const periph_port_t spec128_memory_ports_patched[] = {
+  /* Alternative memory port for 128K (avoiding conflict with D80)
+     MASK 0x8002=>0x8022, value 0x0000=>0020 as per Didaktik M 128k's HW patch (A5 = 1) */
+  { 0x8022, 0x0020, NULL, spec128_memoryport_write },
+  { 0, 0, NULL, NULL }
+};
+
 static const periph_t spec128_memory = {
   NULL,
   spec128_memory_ports,
+  0,
+  NULL
+};
+
+static const periph_t spec128_memory_patched = {
+  NULL,
+  spec128_memory_ports_patched,
   0,
   NULL
 };
@@ -155,6 +169,7 @@ static int
 machines_periph_init( void *context )
 {
   periph_register( PERIPH_TYPE_128_MEMORY, &spec128_memory );
+  periph_register( PERIPH_TYPE_128_MEMORY_PATCHED, &spec128_memory_patched );
   periph_register( PERIPH_TYPE_PLUS3_MEMORY, &plus3_memory );
   periph_register( PERIPH_TYPE_UPD765, &upd765 );
   periph_register( PERIPH_TYPE_SE_MEMORY, &se_memory );
@@ -228,6 +243,7 @@ machines_periph_128( void )
   base_peripherals_48_128();
   periph_set_present( PERIPH_TYPE_AY, PERIPH_PRESENT_ALWAYS );
   periph_set_present( PERIPH_TYPE_128_MEMORY, PERIPH_PRESENT_ALWAYS );
+  periph_set_present( PERIPH_TYPE_128_MEMORY_PATCHED, PERIPH_PRESENT_NEVER );
 }
 
 /* The set of peripherals available on the +3 and similar machines */

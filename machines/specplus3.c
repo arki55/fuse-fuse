@@ -122,6 +122,7 @@ int specplus3_init( fuse_machine_info *machine )
   machine->ram.valid_pages	     = 8;
 
   machine->unattached_port = spectrum_unattached_port_none;
+  machine->writeback = NULL;
 
   specplus3_765_init();
   specplus3_menu_items();

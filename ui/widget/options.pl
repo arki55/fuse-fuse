@@ -374,7 +374,7 @@ widget_options_finish( widget_finish_state finished )
     /* Apply new options */
     settings_copy( &settings_current, &widget_options_settings );
 
-    needs_hard_reset = periph_postcheck();
+    needs_hard_reset = periph_postcheck( &original_settings, &settings_current );
 
     if( needs_hard_reset ) {
       error = widget_do_query( "Some options need to reset the machine. Reset?" );
@@ -386,6 +386,47 @@ widget_options_finish( widget_finish_state finished )
     else {
       /* Bring the peripherals list into sync with the new options */
       periph_posthook();
+    }
+
+    settings_free( &original_settings );
+
+    /* make the needed UI changes */
+    uidisplay_hotswap_gfx_mode();
+  }
+  settings_free( &widget_options_settings );
+  memset( &widget_options_settings, 0, sizeof( settings_info ) );
+
+  return 0;
+}
+
+int
+widget_general_finish( widget_finish_state finished )
+{
+  int error;
+  int needs_hard_reset;
+
+  /* If we exited normally, actually set the options */
+  if( finished == WIDGET_FINISHED_OK ) {
+    /* Get a copy of current settings */
+    settings_info original_settings;
+    memset( &original_settings, 0, sizeof( settings_info ) );
+    settings_copy( &original_settings, &settings_current );
+
+    /* Apply new options */
+    settings_copy( &settings_current, &widget_options_settings );
+
+    needs_hard_reset = options_general_postcheck( &original_settings, &settings_current );
+
+    if( needs_hard_reset ) {
+      error = widget_do_query( "Some options need to reset the machine. Reset?" );
+      if( !error && !widget_query.confirm ) {
+        /* Rollback settings */
+        settings_copy( &settings_current, &original_settings );
+      } else {
+        options_general_posthook();
+      }
+    } else {
+      options_general_posthook();
     }
 
     settings_free( &original_settings );
