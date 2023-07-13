@@ -119,6 +119,7 @@ Checkbox, (F)uller Box, fuller, INPUT_KEY_f
 Checkbox, M(e)lodik, melodik, INPUT_KEY_e
 Checkbox, Spec(D)rum interface, specdrum, INPUT_KEY_d
 Checkbox, C(o)vox interface, covox, INPUT_KEY_o
+Checkbox, D/A Converter interface, dac3ch, INPUT_KEY_3
 Postcheck, periph_postcheck
 Posthook, periph_posthook
 
@@ -159,10 +160,13 @@ Checkbox, (L)oading sound, sound_load, INPUT_KEY_l
 Combo, (A)Y stereo separation, stereo_ay, INPUT_KEY_a, *None|ACB|ABC
 Checkbox, (F)orce 8-bit, sound_force_8bit, INPUT_KEY_f
 Combo, Speaker (t)ype, speaker_type, INPUT_KEY_t, *TV speaker|Beeper|Unfiltered
+Combo, D/A con(v)erter mode, dac3ch_mode, INPUT_KEY_v, *8 bit|4 bit
+Checkbox, D/A force (O)UT mode, dac3ch_force_out, INPUT_KEY_o
 Entry, A(Y) volume, volume_ay, INPUT_KEY_y, 3, %
 Entry, B(e)eper volume, volume_beeper, INPUT_KEY_e, 3, %
 Entry, Spec(D)rum volume, volume_specdrum, INPUT_KEY_d, 3, %
 Entry, (C)ovox volume, volume_covox, INPUT_KEY_c, 3, %
+Entry, D/A converter volume, volume_dac3ch, INPUT_KEY_3, 3, %
 
 diskoptions
 Drives Setup

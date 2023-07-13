@@ -36,6 +36,7 @@ fuse_SOURCES += \
                 peripherals/ttx2000s.c \
                 peripherals/sound/ay.c \
                 peripherals/sound/covox.c \
+                peripherals/sound/dac3ch.c \
                 peripherals/sound/fuller.c \
                 peripherals/sound/melodik.c \
                 peripherals/sound/specdrum.c \
@@ -86,6 +87,7 @@ noinst_HEADERS += \
                   peripherals/ttx2000s.h \
                   peripherals/sound/ay.h \
                   peripherals/sound/covox.h \
+                  peripherals/sound/dac3ch.h \
                   peripherals/sound/fuller.h \
                   peripherals/sound/melodik.h \
                   peripherals/sound/specdrum.h \

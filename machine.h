@@ -32,6 +32,7 @@
 #include "peripherals/sound/ay.h"
 #include "peripherals/sound/covox.h"
 #include "peripherals/sound/specdrum.h"
+#include "peripherals/sound/dac3ch.h"
 #include "spectrum.h"
 
 typedef libspectrum_byte (*spectrum_unattached_port_fn)( void );
@@ -83,6 +84,8 @@ typedef struct fuse_machine_info {
   specdrum_info specdrum; /* SpecDrum settings */
 
   covox_info covox; /* Covox settings */
+
+  dac3ch_info dac3ch; /* DAC 3ch settings */
 
   int (*shutdown)( void );
 
