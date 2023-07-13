@@ -86,8 +86,6 @@ AC_SUBST(YFLAGS)
 dnl Check for big endianness
 AC_C_BIGENDIAN
 
-dnl Checks for header files.
-AC_HEADER_STDC
 AC_CHECK_HEADERS(
   libgen.h \
   siginfo.h \

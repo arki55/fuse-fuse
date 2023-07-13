@@ -83,7 +83,7 @@ endif
 ## Wii routines
 if COMPAT_WII
 fuse_SOURCES += \
-                compat/wii/dir.c \
+                compat/unix/dir.c \
                 compat/unix/file.c \
                 compat/wii/osname.c \
                 compat/wii/paths.c \

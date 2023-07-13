@@ -47,4 +47,4 @@ jobs:
       dependencies: ""
       configure_params: "--with-wii"
       verify_ui: "wii"
-      verify_audio: "oss"
+      verify_audio: "wii"

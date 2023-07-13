@@ -91,8 +91,6 @@ General Peripheral Options
 Checkbox, (K)empston joystick, joy_kempston, INPUT_KEY_k
 Checkbox, Kempston (m)ouse, kempston_mouse, INPUT_KEY_m
 Checkbox, (S)wap mouse buttons, mouse_swap_buttons, INPUT_KEY_s
-Checkbox, (F)uller Box, fuller, INPUT_KEY_f
-Checkbox, M(e)lodik, melodik, INPUT_KEY_e
 Checkbox, (I)nterface 1, interface1, INPUT_KEY_i
 Checkbox, In(t)erface 2, interface2, INPUT_KEY_t
 Checkbox, Mu(l)tiface One, multiface1, INPUT_KEY_l
@@ -104,7 +102,6 @@ Checkbox, (Z)X Printer, zxprinter, INPUT_KEY_z
 #ifdef BUILD_SPECCYBOOT
 Checkbox, Speccy(B)oot interface, speccyboot, INPUT_KEY_b
 #endif
-Checkbox, Spec(D)rum interface, specdrum, INPUT_KEY_d
 #ifdef BUILD_SPECTRANET
 Checkbox, Spectra(n)et, spectranet, INPUT_KEY_n
 Checkbox, Spe(c)tranet disable, spectranet_disable, INPUT_KEY_c
@@ -113,6 +110,14 @@ Checkbox, Spe(c)tranet disable, spectranet_disable, INPUT_KEY_c
 Checkbox, TT(X)2000S, ttx2000s, INPUT_KEY_x
 #endif
 Checkbox, uSo(u)rce, usource, INPUT_KEY_u
+Postcheck, periph_postcheck
+Posthook, periph_posthook
+
+peripherals_sound
+Sound Peripheral Options
+Checkbox, (F)uller Box, fuller, INPUT_KEY_f
+Checkbox, M(e)lodik, melodik, INPUT_KEY_e
+Checkbox, Spec(D)rum interface, specdrum, INPUT_KEY_d
 Checkbox, C(o)vox interface, covox, INPUT_KEY_o
 Postcheck, periph_postcheck
 Posthook, periph_posthook
