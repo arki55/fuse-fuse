@@ -69,6 +69,7 @@ int spectranet_available = 0;
 int spectranet_paged;
 int spectranet_paged_via_io;
 int spectranet_w5100_paged_a = 0, spectranet_w5100_paged_b = 0;
+int spectranet_flash_paged_a = 0, spectranet_flash_paged_b = 0;
 
 /* Whether the programmable trap is active */
 int spectranet_programmable_trap_active;
@@ -140,6 +141,7 @@ spectranet_map_page( int dest, int source )
 {
   int i;
   int w5100_page = source >= 0x40 && source < 0x48;
+  int flash_page = source >= 0x00 && source < 0x20;
 
   for( i = 0; i < MEMORY_PAGES_IN_4K; i++ )
     spectranet_current_map[dest * MEMORY_PAGES_IN_4K + i] =
@@ -147,8 +149,14 @@ spectranet_map_page( int dest, int source )
 
   switch( dest )
   {
-    case 1: spectranet_w5100_paged_a = w5100_page; break;
-    case 2: spectranet_w5100_paged_b = w5100_page; break;
+    case 1: 
+      spectranet_w5100_paged_a = w5100_page;
+      spectranet_flash_paged_a = flash_page;
+      break;
+    case 2: 
+      spectranet_w5100_paged_b = w5100_page;
+      spectranet_flash_paged_b = flash_page;
+      break;
   }
 }
 
@@ -496,6 +504,15 @@ spectranet_w5100_write( memory_page *page, libspectrum_word address, libspectrum
   nic_w5100_write( w5100, get_w5100_register( page, address ), b );
 }
 
+libspectrum_byte
+spectranet_flash_rom_read( memory_page *page, libspectrum_word address )
+{
+  int flash_page = page->page_num / 4;
+  libspectrum_word flash_address =
+    (page->page_num % 4) * SPECTRANET_PAGE_LENGTH + (address & 0xfff);
+  return flash_am29f010_read( flash_rom, flash_page, flash_address );
+}
+
 void
 spectranet_flash_rom_write( libspectrum_word address, libspectrum_byte b )
 {
@@ -557,6 +574,13 @@ spectranet_w5100_write( memory_page *page GCC_UNUSED,
                         libspectrum_word address GCC_UNUSED,
                         libspectrum_byte b GCC_UNUSED )
 {
+}
+
+libspectrum_byte
+spectranet_flash_rom_read( memory_page *page GCC_UNUSED,
+                           libspectrum_word address GCC_UNUSED )
+{
+  return 0xff;
 }
 
 void

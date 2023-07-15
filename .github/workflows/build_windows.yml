@@ -1,0 +1,80 @@
+name: Fuse App For Windows
+run-name: Build Fuse App for Windows / ${{ github.actor }} /
+
+# Executed upon each commit pushed, merge commit in PR
+on: [push, pull_request]
+
+jobs:
+  libspectrum:
+    # Reuse libspectrum's build wokflow and artefact (all libs enabled, fake glib)
+    name: "Libspectrum lib (Windows)"
+    uses: arki55/fuse-libspectrum/.github/workflows/build_windows_sub.yml@arki55/github-workflows
+    with:
+      branch: arki55/github-workflows
+      key: fuse-app
+      # repo name is taken from var.LIBSPECTRUM_REPO
+
+########################################
+### SUPPORTED Windows configurations ###
+########################################
+
+  # Win32 / 1
+  win32-ui-default:
+    name: "Fuse Win32 UI + libxml2 (Windows)"
+    needs: [libspectrum]
+    uses: ./.github/workflows/build_windows_sub.yml
+    with:
+      dependencies: "mingw64-i686-libxml2"
+      configure_params: "--with-win32"
+      verify_ui: "win32"
+      verify_libxml2: "yes"
+      verify_audio: "directsound"
+
+  # Win32 / 2
+  win32-ui-no-libxml2:
+    name: "Fuse Win32 UI w/o libxml2 (Windows)"
+    needs: [libspectrum]
+    uses: ./.github/workflows/build_windows_sub.yml
+    with:
+      dependencies: ""
+      configure_params: "--with-win32 --without-libxml2"
+      verify_ui: "win32"
+      verify_libxml2: "no"
+      verify_audio: "directsound"
+
+  # Win32 / 3
+  win32-ui-win32-sound:
+    name: "Fuse Win32 UI + win32sound (Windows)"
+    needs: [libspectrum]
+    uses: ./.github/workflows/build_windows_sub.yml
+    with:
+      dependencies: ""
+      configure_params: "--with-win32 --with-audio-driver=win32sound"
+      verify_ui: "win32"
+      verify_libxml2: "no"
+      verify_audio: "win32sound"
+
+  # Win32 / 4
+  win32-ui-null-sound:
+    name: "Fuse Win32 UI + null sound (Windows)"
+    needs: [libspectrum]
+    uses: ./.github/workflows/build_windows_sub.yml
+    with:
+      dependencies: ""
+      configure_params: "--with-win32 --with-audio-driver=null"
+      verify_ui: "win32"
+      verify_libxml2: "no"
+      verify_audio: "null"
+
+  # SDL 1 UI + Sound
+  sdl-ui-sdl-sound:
+    name: "Fuse SDL 1 UI + sound (Windows)"
+    needs: [libspectrum]
+    uses: ./.github/workflows/build_windows_sub.yml
+    with:
+      dependencies: "mingw64-i686-SDL"
+      configure_params: "--without-win32 --with-sdl --disable-sdl2 --with-audio-driver=sdl"
+      verify_ui: "sdl"
+      verify_libxml2: "no"
+      verify_audio: "sdl"
+      verify_other: "Using SDL 2: no"

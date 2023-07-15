@@ -130,12 +130,7 @@ int compat_is_absolute_path( const char *path );
 int compat_get_next_path( path_context *ctx );
 
 typedef FILE* compat_fd;
-
-#ifndef GEKKO
 typedef DIR* compat_dir;
-#else                           /* #ifndef GEKKO */
-typedef DIR_ITER* compat_dir;
-#endif                          /* #ifndef GEKKO */
 
 extern const compat_fd COMPAT_FILE_OPEN_FAILED;
 
@@ -177,13 +172,18 @@ int compat_get_tap( const char *interface_name );
 
 #ifdef WIN32
 #include <winsock2.h>
+#include <ws2tcpip.h>
 #define COMPAT_ENOTCONN WSAENOTCONN
 #define COMPAT_EWOULDBLOCK WSAEWOULDBLOCK
 #define COMPAT_EINPROGRESS WSAEINPROGRESS
 #define COMPAT_ECONNREFUSED WSAECONNREFUSED
 typedef SOCKET compat_socket_t;
 typedef SOCKADDR compat_sockaddr;
-#else  /* #ifndef WIN32 */
+#elif GEKKO
+/* no sockets under WII, just define the minimum
+   to feed the below compat_ declarations  */
+typedef int compat_socket_t;
+#else  /* #ifndef WIN32 && GEKKO */
 #include <sys/socket.h>
 #include <netdb.h>
 #include <errno.h>
