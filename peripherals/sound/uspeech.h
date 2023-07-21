@@ -1,8 +1,6 @@
 /* uspeech.h: Routines for handling the Currah uSpeech interface
    Copyright (c) 2007 Stuart Brady
 
-   $Id$
-
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation; either version 2 of the License, or
@@ -42,5 +40,7 @@ void uspeech_toggle( void );
 libspectrum_byte uspeech_busy( void );
 
 void uspeech_write( libspectrum_word address, libspectrum_byte b );
+
+int uspeech_unittest( void );
 
 #endif				/* #ifndef FUSE_USPEECH_H */

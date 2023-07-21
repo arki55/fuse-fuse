@@ -1,8 +1,6 @@
 /* uspeech.c: Routines for handling the Currah uSpeech interface
    Copyright (c) 2007-2011 Stuart Brady
 
-   $Id$
-
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation; either version 2 of the License, or
@@ -47,6 +45,9 @@
 /* A 2 KiB memory chunk accessible by the Z80 when /ROMCS is low
  * (mirrored when active) */
 static memory_page uspeech_memory_map_romcs[ MEMORY_PAGES_IN_2K ];
+static memory_page uspeech_empty_mapping[ MEMORY_PAGES_IN_12K ];
+static int empty_mapping_allocated = 0;
+
 static int uspeech_memory_source;
 
 static uint8_t *sp0256rom = NULL;
@@ -91,17 +92,41 @@ static const periph_t uspeech_periph = {
   /* .activate = */ NULL
 };
 
+static void
+ensure_empty_mapping( void )
+{
+  int i;
+  libspectrum_byte *empty_chunk;
+
+  if( empty_mapping_allocated ) return;
+
+  empty_chunk = memory_pool_allocate_persistent( 0x3000, 1 );
+  memset( empty_chunk, 0xff, 0x3000 );
+
+  for( i = 0; i < MEMORY_PAGES_IN_12K; i++ ) {
+    memory_page *page = &uspeech_empty_mapping[i];
+    page->page = empty_chunk + i * MEMORY_PAGE_SIZE;
+    page->offset = i * MEMORY_PAGE_SIZE;
+    page->writable = 0;
+    page->contended = 0;
+    page->source = memory_source_none;
+  }
+
+  empty_mapping_allocated = 1;
+}
+
 static int
 uspeech_init( void *context )
 {
-  int uspeech_source;
   int i;
 
   module_register( &uspeech_module_info );
 
-  uspeech_source = memory_source_register( "uSpeech" );
+  uspeech_memory_source = memory_source_register( "uSpeech" );
   for( i = 0; i < MEMORY_PAGES_IN_2K; i++ )
-    uspeech_memory_map_romcs[ i ].source = uspeech_source;
+    uspeech_memory_map_romcs[ i ].source = uspeech_memory_source;
+
+  ensure_empty_mapping();
 
   periph_register( PERIPH_TYPE_USPEECH, &uspeech_periph );
 
@@ -229,18 +254,12 @@ uspeech_memory_map( void )
   if( !uspeech_active ) return;
 
   /* https://maziac.github.io/currah_uspeech_tests/
-     says only the lower 4k should be mapped
-     "mem holes test" yields strange results, though */
+     says only the lower 4k should be mapped. 0x1000-0x3fff do not contain
+     ZX Spectrum ROM when read */
   memory_map_romcs_2k( 0x0000, uspeech_memory_map_romcs );
   memory_map_romcs_2k( 0x0800, uspeech_memory_map_romcs );
-  /*
-  memory_map_romcs_2k( 0x1000, uspeech_memory_map_romcs );
-  memory_map_romcs_2k( 0x1800, uspeech_memory_map_romcs );
-  memory_map_romcs_2k( 0x2000, uspeech_memory_map_romcs );
-  memory_map_romcs_2k( 0x2800, uspeech_memory_map_romcs );
-  memory_map_romcs_2k( 0x3000, uspeech_memory_map_romcs );
-  memory_map_romcs_2k( 0x3800, uspeech_memory_map_romcs );
-  */
+  memory_map_romcs_4k( 0x1000, uspeech_empty_mapping );
+  memory_map_romcs_8k( 0x2000, uspeech_empty_mapping + MEMORY_PAGES_IN_4K );
 }
 
 static libspectrum_byte
@@ -294,12 +313,8 @@ uspeech_unittest( void )
 
   r += unittests_assert_2k_page( 0x0000, uspeech_memory_source, 0 );
   r += unittests_assert_2k_page( 0x0800, uspeech_memory_source, 0 );
-  r += unittests_assert_2k_page( 0x1000, uspeech_memory_source, 0 );
-  r += unittests_assert_2k_page( 0x1800, uspeech_memory_source, 0 );
-  r += unittests_assert_2k_page( 0x2000, uspeech_memory_source, 0 );
-  r += unittests_assert_2k_page( 0x2800, uspeech_memory_source, 0 );
-  r += unittests_assert_2k_page( 0x3000, uspeech_memory_source, 0 );
-  r += unittests_assert_2k_page( 0x3800, uspeech_memory_source, 0 );
+  r += unittests_assert_4k_page( 0x1000, memory_source_none, 0 );
+  r += unittests_assert_8k_page( 0x2000, memory_source_none, 0 );
   r += unittests_assert_16k_ram_page( 0x4000, 5 );
   r += unittests_assert_16k_ram_page( 0x8000, 2 );
   r += unittests_assert_16k_ram_page( 0xc000, 0 );
