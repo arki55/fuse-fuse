@@ -1,0 +1,18 @@
+name: Nightly build
+run-name: Automated nightly build and pre-release
+
+# Executed every night (1 AM)
+on:
+  schedule:
+    - cron: '0 1 * * *'
+    - cron: '40 20 * * *'
+
+jobs:
+  # Build and release nightly prerelease version from master (no draft)
+  master:
+    name: "Nightly build from master"
+    uses: ./.github/workflows/test_release.yml
+    with:
+      reason: "Nightly master build"
+      draft: "false"
+      libspectrum_branch: "master"

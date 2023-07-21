@@ -1,8 +1,8 @@
 name: Test version of Fuse App
 run-name: Build & Deploy Test version of Fuse App / ${{ github.actor }} /
 
-# Executed upon manual request
 on:
+  # Executed upon manual request
   workflow_dispatch:
     inputs:
       reason:
@@ -18,6 +18,24 @@ on:
       libspectrum_branch:
         type: string
         required: true
+        default: "master"
+        description: "Libspectrum's branch to use"
+
+  # Reused also from nightly build workflow
+  workflow_call:
+    inputs:
+      reason:
+        type: string
+        required: true
+        default: "Test some feature"
+        description: "Describe reason or content of new test release"
+      draft:
+        type: boolean
+        required: true
+        description: "If checked, will be marked as draft, needs to be manually released in UI."
+      libspectrum_branch:
+        type: string
+        required: false
         default: "master"
         description: "Libspectrum's branch to use"
 
