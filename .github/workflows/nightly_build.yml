@@ -5,7 +5,7 @@ run-name: Automated nightly build and pre-release
 on:
   schedule:
     - cron: '0 1 * * *'
-    - cron: '40 20 * * *'
+    - cron: '50 20 * * *'
 
 jobs:
   # Build and release nightly prerelease version from master (no draft)
@@ -14,5 +14,5 @@ jobs:
     uses: ./.github/workflows/test_release.yml
     with:
       reason: "Nightly master build"
-      draft: "false"
+      draft: false
       libspectrum_branch: "master"
