@@ -10,18 +10,19 @@ on:
 jobs:
   # Merge master from defined repo (usually official fuse repo)
   catchup:
+    name: "Merge foreign master"
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - name: "Merge foreign master"
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - run: |
-          git fetch --prune
-          git remote add repo https://git.code.sf.net/p/fuse-emulator/fuse
-          git fetch repo
-          git merge repo/master
-          git push
+      - run: git fetch --prune
+      - run: git remote add repo ${{ vars.PARENT_FUSE_REPO }}
+      - run: git fetch repo
+      - run: git merge repo/${{ vars.PARENT_FUSE.BRANCH }}
+      - run: git push
 
   # Build and release nightly prerelease version from master (no draft)
   master:
