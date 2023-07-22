@@ -21,7 +21,7 @@ jobs:
       - run: git fetch --prune
       - run: git remote add repo ${{ vars.PARENT_FUSE_REPO }}
       - run: git fetch repo
-      - run: git merge repo/${{ vars.PARENT_FUSE.BRANCH }}
+      - run: git merge repo/${{ vars.PARENT_FUSE_BRANCH }}
       - run: git push
 
   # Build and release nightly prerelease version from master (no draft)
