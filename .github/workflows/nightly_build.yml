@@ -17,7 +17,7 @@ jobs:
         with:
           fetch-depth: 0
       - run: |
-          git fetch --prune --unshallow
+          git fetch --prune
           git remote add repo https://git.code.sf.net/p/fuse-emulator/fuse
           git fetch repo
           git merge repo/master
