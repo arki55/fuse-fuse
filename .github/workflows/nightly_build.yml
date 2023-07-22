@@ -1,11 +1,11 @@
 name: Nightly build
 run-name: Automated nightly build and pre-release
 
-# Executed every night (1 AM)
+# Executed every night (1 AM) + button
 on:
   schedule:
     - cron: '0 1 * * *'
-    - cron: '30 21 * * *'
+  workflow_dispatch:
 
 jobs:
   # Build and release nightly prerelease version from master (no draft)
