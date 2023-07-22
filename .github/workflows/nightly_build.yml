@@ -8,8 +8,24 @@ on:
   workflow_dispatch:
 
 jobs:
+  # Merge master from defined repo (usually official fuse repo)
+  catchup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Merge foreign master"
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - run: |
+          git fetch --prune --unshallow
+          git remote add repo https://git.code.sf.net/p/fuse-emulator/fuse
+          git fetch repo
+          git merge repo/master
+          git push
+
   # Build and release nightly prerelease version from master (no draft)
   master:
+    needs: [catchup]
     name: "Nightly build from master"
     uses: ./.github/workflows/test_release.yml
     with:
