@@ -15,6 +15,11 @@ on:
         required: true
         default: true
         description: "If checked, will be marked as draft, needs to be manually released in UI."
+      generateReleaseNotes:
+        type: boolean
+        required: false
+        default: false
+        description: "Indicates if release notes should be automatically generated"
       libspectrum_branch:
         type: string
         required: true
@@ -33,6 +38,11 @@ on:
         type: boolean
         required: true
         description: "If checked, will be marked as draft, needs to be manually released in UI."
+      generateReleaseNotes:
+        type: boolean
+        required: false
+        default: false
+        description: "Indicates if release notes should be automatically generated"
       libspectrum_branch:
         type: string
         required: false
@@ -129,3 +139,7 @@ jobs:
           token: "${{ secrets.RELEASE_TOKEN }}"
           # Allow updating releases
           allowUpdates: true
+          # Generate release note?
+          generateReleaseNotes: ${{ inputs.generateReleaseNotes }}
+          # Any error should fail the build
+          artifactErrorsFailBuild: true
