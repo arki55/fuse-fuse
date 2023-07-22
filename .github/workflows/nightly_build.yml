@@ -12,17 +12,21 @@ jobs:
   catchup:
     name: "Merge foreign master"
     runs-on: ubuntu-latest
+    if: ${{ vars.PARENT_FUSE_BRANCH }} && ${{ vars.PARENT_FUSE_REPO }}
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v2
+      - name: "Checkout code"
+        uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - run: git fetch --prune
-      - run: git remote add repo ${{ vars.PARENT_FUSE_REPO }}
-      - run: git fetch repo
-      - run: git merge repo/${{ vars.PARENT_FUSE_BRANCH }}
-      - run: git push
+      - name: "Merge fresh ${{ vars.PARENT_FUSE_BRANCH }} from ${{ vars.PARENT_FUSE_REPO }}"
+        run: |
+          git fetch --prune
+          git remote add repo ${{ vars.PARENT_FUSE_REPO }}
+          git fetch repo
+          git merge repo/${{ vars.PARENT_FUSE_BRANCH }}
+          git push
 
   # Build and release nightly prerelease version from master (no draft)
   master:
