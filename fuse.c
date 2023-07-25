@@ -66,12 +66,13 @@
 #include "module.h"
 #include "movie.h"
 #include "mempool.h"
-#include "peripherals/ay.h"
 #include "peripherals/dck.h"
+#include "peripherals/sound/ay.h"
+#include "peripherals/sound/fuller.h"
+#include "peripherals/sound/melodik.h"
 #include "peripherals/disk/beta.h"
 #include "peripherals/disk/didaktik.h"
 #include "peripherals/disk/fdd.h"
-#include "peripherals/fuller.h"
 #include "peripherals/ide/divide.h"
 #include "peripherals/ide/divmmc.h"
 #include "peripherals/ide/simpleide.h"
@@ -82,7 +83,6 @@
 #include "peripherals/if1.h"
 #include "peripherals/if2.h"
 #include "peripherals/kempmouse.h"
-#include "peripherals/melodik.h"
 #include "peripherals/multiface.h"
 #include "peripherals/printer.h"
 #include "peripherals/scld.h"
@@ -162,6 +162,7 @@ static void creator_register_startup( void );
 
 static void fuse_show_copyright(void);
 static void fuse_show_version( void );
+static void fuse_show_test_build_info( void );
 static void fuse_show_help( void );
 
 static int setup_start_files( start_files_t *start_files );
@@ -410,6 +411,14 @@ static int fuse_init(int argc, char **argv)
   fuse_emulation_paused = 0;
   movie_init();
 
+#ifdef FUSE_TEST_BUILD
+  /* Show warning in case of test build */
+  ui_error( UI_ERROR_WARNING,
+    FUSE_TEST_LINE "\n"
+    FUSE_TEST_BUILD
+  );
+#endif
+
   return 0;
 }
 
@@ -501,6 +510,20 @@ static void fuse_show_copyright(void)
 static void fuse_show_version( void )
 {
   printf( "The Free Unix Spectrum Emulator (Fuse) version " VERSION ".\n" );
+
+  fuse_show_test_build_info();
+}
+
+static void fuse_show_test_build_info( void )
+{
+#ifdef FUSE_TEST_BUILD
+  printf(
+    "\n"
+    FUSE_TEST_LINE "\n"
+    FUSE_TEST_BUILD "\n"
+    "\n"
+    );
+#endif
 }
 
 static void fuse_show_help( void )

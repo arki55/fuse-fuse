@@ -1,0 +1,145 @@
+name: Test version of Fuse App
+run-name: Build & Deploy Test version of Fuse App / ${{ github.actor }} /
+
+on:
+  # Executed upon manual request
+  workflow_dispatch:
+    inputs:
+      reason:
+        type: string
+        required: true
+        default: "Test some feature"
+        description: "Describe reason or content of new test release"
+      draft:
+        type: boolean
+        required: true
+        default: true
+        description: "If checked, will be marked as draft, needs to be manually released in UI."
+      generateReleaseNotes:
+        type: boolean
+        required: false
+        default: false
+        description: "Indicates if release notes should be automatically generated"
+      libspectrum_branch:
+        type: string
+        required: true
+        default: "master"
+        description: "Libspectrum's branch to use"
+    
+  # Reused also from nightly build workflow
+  workflow_call:
+    inputs:
+      reason:
+        type: string
+        required: true
+        default: "Test some feature"
+        description: "Describe reason or content of new test release"
+      draft:
+        type: boolean
+        required: true
+        description: "If checked, will be marked as draft, needs to be manually released in UI."
+      generateReleaseNotes:
+        type: boolean
+        required: false
+        default: false
+        description: "Indicates if release notes should be automatically generated"
+      libspectrum_branch:
+        type: string
+        required: false
+        default: "master"
+        description: "Libspectrum's branch to use"
+    secrets:
+      RELEASE_TOKEN:
+          required: true
+
+jobs:
+
+  ########################################
+  ###  Make dependecies (Libspectrum)  ###
+  ########################################
+
+  libspectrum-windows:
+    # Reuse libspectrum's build wokflow and artefact (all libs enabled, fake glib)
+    name: "Libspectrum lib"
+    uses: arki55/fuse-libspectrum/.github/workflows/build_windows_sub.yml@master
+    with:
+      branch: ${{ inputs.libspectrum_branch }}
+      key: fuse-app
+      # repo name is taken from var.LIBSPECTRUM_REPO
+
+  ########################################
+  ### Make Testing builds for Windows  ###
+  ########################################
+
+  # Win32 UI
+  build-win32-ui-default:
+    name: "Fuse Win32 UI"
+    needs: [libspectrum-windows]
+    uses: ./.github/workflows/test_release_windows_sub.yml
+    with:
+      reason: ${{ inputs.reason }}
+      key: "win32-ui-default"
+      dependencies: ""
+      configure_params: "--with-win32"
+      verify_ui: "win32"
+      verify_audio: "directsound"
+
+  # SDL1 UI+sound
+  build-sdl-ui-sdl-sound:
+    name: "Fuse SDL1 (UI + sound)"
+    needs: [libspectrum-windows]
+    uses: ./.github/workflows/test_release_windows_sub.yml
+    with:
+      reason: ${{ inputs.reason }}
+      key: "sdl1-ui-sdl1-sound"
+      dependencies: "mingw64-i686-SDL"
+      configure_params: "--without-win32 --with-sdl --disable-sdl2 --with-audio-driver=sdl"
+      verify_ui: "sdl"
+      verify_audio: "sdl"
+      verify_other: "Using SDL 2: no"
+
+  ########################################
+  ### Create release, attach ZIP files ###
+  ########################################
+
+  release:
+    name: "Create Testing release"
+    needs:
+      - build-win32-ui-default
+      - build-sdl-ui-sdl-sound
+    runs-on: ubuntu-latest
+    steps:
+      # Prepare friendly tag name ( slashes => _ )
+      - name: (1) Prepare variables
+        id: prep
+        run: |
+          ref_name="${{ github.ref_name }}"
+          use_tag="test_${ref_name//\//_}"
+          echo "Tag name: ${use_tag}"
+          echo "use_tag=${use_tag}" >> "$GITHUB_OUTPUT"
+
+      - name: (2) Download all generated files
+        uses: actions/download-artifact@v3
+
+      - name: (3) Created release with zip files
+        uses: ncipollo/release-action@v1
+        with:
+          name: "Test build for ${{ github.ref_name }}"
+          # Attach all generated build zips
+          artifacts: "*/*.zip"
+          # determines structure of files in Source Forge
+          tag: "${{ steps.prep.outputs.use_tag }}"
+          # Is not an official release
+          prerelease: true
+          # Needs to be published manually?
+          draft: ${{ inputs.draft }}
+          # linked to a branch/pull request
+          commit: ${{ github.ref_name }}
+          # Special permissions needed
+          token: "${{ secrets.RELEASE_TOKEN }}"
+          # Allow updating releases
+          allowUpdates: true
+          # Generate release note?
+          generateReleaseNotes: ${{ inputs.generateReleaseNotes }}
+          # Any error should fail the build
+          artifactErrorsFailBuild: true
