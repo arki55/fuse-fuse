@@ -1,8 +1,8 @@
 name: Test version of Fuse App
 run-name: Build & Deploy Test version of Fuse App / ${{ github.actor }} /
 
-# Executed upon manual request
 on:
+  # Executed upon manual request
   workflow_dispatch:
     inputs:
       reason:
@@ -15,11 +15,42 @@ on:
         required: true
         default: true
         description: "If checked, will be marked as draft, needs to be manually released in UI."
+      generateReleaseNotes:
+        type: boolean
+        required: false
+        default: false
+        description: "Indicates if release notes should be automatically generated"
       libspectrum_branch:
         type: string
         required: true
         default: "master"
         description: "Libspectrum's branch to use"
+    
+  # Reused also from nightly build workflow
+  workflow_call:
+    inputs:
+      reason:
+        type: string
+        required: true
+        default: "Test some feature"
+        description: "Describe reason or content of new test release"
+      draft:
+        type: boolean
+        required: true
+        description: "If checked, will be marked as draft, needs to be manually released in UI."
+      generateReleaseNotes:
+        type: boolean
+        required: false
+        default: false
+        description: "Indicates if release notes should be automatically generated"
+      libspectrum_branch:
+        type: string
+        required: false
+        default: "master"
+        description: "Libspectrum's branch to use"
+    secrets:
+      RELEASE_TOKEN:
+          required: true
 
 jobs:
 
@@ -52,11 +83,6 @@ jobs:
       configure_params: "--with-win32"
       verify_ui: "win32"
       verify_audio: "directsound"
-    secrets:
-      DEPLOY_ZIP_PATH: "${{ secrets.DEPLOY_ZIP_PATH }}"
-      DEPLOY_ZIP_HOST: "${{ secrets.DEPLOY_ZIP_HOST }}"
-      DEPLOY_ZIP_USER: "${{ secrets.DEPLOY_ZIP_USER }}"
-      DEPLOY_ZIP_PASS: "${{ secrets.DEPLOY_ZIP_PASS }}"
 
   # SDL1 UI+sound
   build-sdl-ui-sdl-sound:
@@ -71,11 +97,6 @@ jobs:
       verify_ui: "sdl"
       verify_audio: "sdl"
       verify_other: "Using SDL 2: no"
-    secrets:
-      DEPLOY_ZIP_PATH: "${{ secrets.DEPLOY_ZIP_PATH }}"
-      DEPLOY_ZIP_HOST: "${{ secrets.DEPLOY_ZIP_HOST }}"
-      DEPLOY_ZIP_USER: "${{ secrets.DEPLOY_ZIP_USER }}"
-      DEPLOY_ZIP_PASS: "${{ secrets.DEPLOY_ZIP_PASS }}"
 
   ########################################
   ### Create release, attach ZIP files ###
@@ -116,3 +137,9 @@ jobs:
           commit: ${{ github.ref_name }}
           # Special permissions needed
           token: "${{ secrets.RELEASE_TOKEN }}"
+          # Allow updating releases
+          allowUpdates: true
+          # Generate release note?
+          generateReleaseNotes: ${{ inputs.generateReleaseNotes }}
+          # Any error should fail the build
+          artifactErrorsFailBuild: true
