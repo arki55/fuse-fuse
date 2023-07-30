@@ -129,7 +129,7 @@ jobs:
           # Generate readme file.
           # Make sure to be always unique, otherwise sync to SourceForge will not work.
           # Adding current date and time should suffice.
-          echo -e "${{ inputs.reason }}\n\nRepo: ${{ github.repositoryUrl }}\nBranch: ${{ github.ref_name }}\nActor: ${{ github.actor }}\nCreated: `date -u`\n\
+          echo -e "### ${{ inputs.reason }}\n\nRepo: ${{ github.repositoryUrl }}\n\nBranch: ${{ github.ref_name }}\n\nActor: ${{ github.actor }}\n\nCreated: `date -u`\n\n\
           " >> "$readme_file"
           echo "Content: "
           cat "$readme_file"
