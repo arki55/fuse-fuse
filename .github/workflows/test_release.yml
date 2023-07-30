@@ -118,15 +118,31 @@ jobs:
           echo "Tag name: ${use_tag}"
           echo "use_tag=${use_tag}" >> "$GITHUB_OUTPUT"
 
-      - name: (2) Download all generated files
+      # Prepare readme file for created release
+      - name: (2) Prepare description file
+        id: readme
+        run: |
+          readme_file="README.md"
+          echo "README file: ${readme_file}"
+          echo "readme_file=${readme_file}" >> "$GITHUB_OUTPUT"
+          
+          # Generate readme file.
+          # Make sure to be always unique, otherwise sync to SourceForge will not work.
+          # Adding current date and time should suffice.
+          echo -e "${{ inputs.reason }}\n\nRepo: ${{ github.repositoryUrl }}\nBranch: ${{ github.ref_name }}\nActor: ${{ github.actor }}\nCreated: `date -u`\n\
+          " >> "$readme_file"
+          echo "Content: "
+          cat "$readme_file"
+
+      - name: (3) Download all generated files
         uses: actions/download-artifact@v3
 
-      - name: (3) Created release with zip files
+      - name: (4) Created release with zip files
         uses: ncipollo/release-action@v1
         with:
           name: "Test build for ${{ github.ref_name }}"
           # Attach all generated build zips
-          artifacts: "*/*.zip"
+          artifacts: "*/*.zip,${{ steps.readme.outputs.readme_file }}"
           # determines structure of files in Source Forge
           tag: "${{ steps.prep.outputs.use_tag }}"
           # Is not an official release
@@ -143,3 +159,5 @@ jobs:
           generateReleaseNotes: ${{ inputs.generateReleaseNotes }}
           # Any error should fail the build
           artifactErrorsFailBuild: true
+          # Use readme.md file for the body part
+          bodyFile: ${{ steps.readme.outputs.readme_file }}
