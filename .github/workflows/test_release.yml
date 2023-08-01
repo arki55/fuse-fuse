@@ -155,6 +155,9 @@ jobs:
           token: "${{ secrets.RELEASE_TOKEN }}"
           # Allow updating releases
           allowUpdates: true
+          # Force updating of artifacts
+          replacesArtifacts: true
+          removeArtifacts: true
           # Generate release note?
           generateReleaseNotes: ${{ inputs.generateReleaseNotes }}
           # Any error should fail the build
