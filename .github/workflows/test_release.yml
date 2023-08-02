@@ -137,9 +137,6 @@ jobs:
       - name: (3) Download all generated files
         uses: actions/download-artifact@v3
 
-      # Allow GitHub take breath, sync stuff
-      - run: sleep 10
-
       - name: (4) Create release with zip files
         uses: ncipollo/release-action@v1
         with:
@@ -168,10 +165,13 @@ jobs:
           artifactErrorsFailBuild: true
           # Do not set body now - only in the next step
 
+      # Allow GitHub take breath, sync stuff
+      - run: sleep 10
+
       - name: (5) Update body of release (forcing files sync to SourceForge)
         uses: ncipollo/release-action@v1
         with:
-          # Repeat some values as they are in the previous step
+          # Repeat some values as they were in the previous step
           name: "Test build for ${{ github.ref_name }}"
           tag: "${{ steps.prep.outputs.use_tag }}"
           prerelease: true
