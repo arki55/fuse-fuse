@@ -137,6 +137,9 @@ jobs:
       - name: (3) Download all generated files
         uses: actions/download-artifact@v3
 
+      # Allow GitHub take breath, sync stuff
+      - run: sleep 10
+
       - name: (4) Create release with zip files
         uses: ncipollo/release-action@v1
         with:
