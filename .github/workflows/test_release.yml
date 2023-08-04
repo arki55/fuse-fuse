@@ -166,7 +166,7 @@ jobs:
           # Do not set body now - only in the next step
 
       # Allow GitHub take breath, sync stuff
-      - run: sleep 10
+      - run: sleep 5
 
       - name: (5) Update body of release (forcing files sync to SourceForge)
         uses: ncipollo/release-action@v1
