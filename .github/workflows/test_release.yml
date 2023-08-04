@@ -224,5 +224,5 @@ jobs:
           keep_latest: ${{ inputs.keep_latest }}
           delete_tags: true
           delete_tag_pattern: "${{ steps.prep.outputs.use_tag_base }}"
-    env:
-      token: "${{ secrets.RELEASE_TOKEN }}"
+        env:
+          token: "${{ secrets.RELEASE_TOKEN }}"
