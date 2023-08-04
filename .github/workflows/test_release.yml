@@ -25,7 +25,17 @@ on:
         required: true
         default: "master"
         description: "Libspectrum's branch to use"
-    
+      add_date_time:
+        type: boolean
+        required: false
+        default: false
+        description: "If enabled, current date and time is added to the name and tag of release, making it unique." 
+      keep_latest:
+        type: number
+        required: false
+        default: 0
+        description: "Number of latest releases to keep (only if date and time is appended)"
+
   # Reused also from nightly build workflow
   workflow_call:
     inputs:
@@ -48,6 +58,16 @@ on:
         required: false
         default: "master"
         description: "Libspectrum's branch to use"
+      add_date_time:
+        type: boolean
+        required: false
+        default: false
+        description: "If enabled, current date and time is added to the name and tag of release, making it unique." 
+      keep_latest:
+        type: number
+        required: false
+        default: 0
+        description: "Number of latest releases to keep (only if date and time is appended)"
     secrets:
       RELEASE_TOKEN:
           required: true
@@ -115,8 +135,17 @@ jobs:
         run: |
           ref_name="${{ github.ref_name }}"
           use_tag="test_${ref_name//\//_}"
+          use_tag_base="${use_tag}"
+
+          if [[ ${{ inputs.add_date_time == 'true' }} ]]; then
+            dt=`date "+%Y-%m-%d--%H-%M-%S"`
+            use_tag="${use_tag}_${dt}"
+          fi
+
           echo "Tag name: ${use_tag}"
+          echo "Tag base: ${use_tag_base}"
           echo "use_tag=${use_tag}" >> "$GITHUB_OUTPUT"
+          echo "use_tag_base=${use_tag_base}" >> "$GITHUB_OUTPUT"
 
       # Prepare readme file for created release
       - name: (2) Prepare description file
@@ -186,3 +215,14 @@ jobs:
 
           # Use readme.md file for the body part NOW
           bodyFile: ${{ steps.readme.outputs.readme_file }}
+
+      # Delete older releases (optional)
+      - name: (6) Delete Older Releases
+        if: ${{ inputs.add_date_time }} && ${{ inputs.keep_latest }}
+        uses: dev-drprasad/delete-older-releases@v0.2.1
+        with:
+          keep_latest: ${{ inputs.keep_latest }}
+          delete_tags: true
+          delete_tag_pattern: "${{ steps.prep.outputs.use_tag_base }}"
+    env:
+      token: "${{ secrets.RELEASE_TOKEN }}"
