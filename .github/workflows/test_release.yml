@@ -128,6 +128,9 @@ jobs:
       - build-win32-ui-default
       - build-sdl-ui-sdl-sound
     runs-on: ubuntu-latest
+    outputs:
+      use_tag: ${{ steps.prep.outputs.use_tag }}
+      use_tag_base: ${{ steps.prep.outputs.use_tag_base }}
     steps:
       # Prepare friendly tag name ( slashes => _ )
       - name: (1) Prepare variables
@@ -168,6 +171,7 @@ jobs:
 
       - name: (4) Create release with zip files
         uses: ncipollo/release-action@v1
+        id: create-release
         with:
           name: "Test build for ${{ github.ref_name }}"
 
@@ -216,13 +220,30 @@ jobs:
           # Use readme.md file for the body part NOW
           bodyFile: ${{ steps.readme.outputs.readme_file }}
 
-      # Delete older releases (optional)
-      - name: (6) Delete Older Releases
-        if: ${{ inputs.add_date_time }} && ${{ inputs.keep_latest }}
+      - name: (6) Adding summary
+        run: |
+          echo '### New test release has been created :open_file_folder:' >> $GITHUB_STEP_SUMMARY
+          echo 'Id: ${{ steps.create-release.outputs.id }}' >> $GITHUB_STEP_SUMMARY
+          echo 'Url: ${{ steps.create-release.outputs.html_url }}' >> $GITHUB_STEP_SUMMARY
+          echo 'Upload Url: ${{ steps.create-release.outputs.upload_url }}' >> $GITHUB_STEP_SUMMARY
+          echo 'Tag base: ${{ steps.prep.outputs.use_tag_base }}' >> $GITHUB_STEP_SUMMARY
+          echo 'Tag name: ${{ steps.prep.outputs.use_tag }}' >> $GITHUB_STEP_SUMMARY
+
+  ###############################################
+  ### Cleanup, delete olf releases (optional) ###
+  ###############################################
+  cleanup:
+    if: inputs.add_date_time && inputs.keep_latest>0
+    name: "Delete Older Releases"
+    needs:
+     - release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete Older Releases
         uses: dev-drprasad/delete-older-releases@v0.2.1
         with:
           keep_latest: ${{ inputs.keep_latest }}
           delete_tags: true
-          delete_tag_pattern: "${{ steps.prep.outputs.use_tag_base }}"
+          delete_tag_pattern: "${{ needs.release.outputs.use_tag_base }}"
         env:
           GITHUB_TOKEN: "${{ secrets.RELEASE_TOKEN }}"
