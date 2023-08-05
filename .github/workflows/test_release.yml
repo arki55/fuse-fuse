@@ -225,4 +225,4 @@ jobs:
           delete_tags: true
           delete_tag_pattern: "${{ steps.prep.outputs.use_tag_base }}"
         env:
-          token: "${{ secrets.RELEASE_TOKEN }}"
+          GITHUB_TOKEN: "${{ secrets.RELEASE_TOKEN }}"
