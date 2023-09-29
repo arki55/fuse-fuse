@@ -12,7 +12,7 @@ jobs:
   catchup:
     name: "Merge foreign master"
     runs-on: ubuntu-latest
-    if: ${{ vars.PARENT_FUSE_BRANCH }} && ${{ vars.PARENT_FUSE_REPO }}
+    if: ${{ vars.PARENT_FUSE_BRANCH }} && ${{ vars.PARENT_FUSE_REPO }} && ${{ vars.GIT_EMAIL }} && ${{ vars.GIT_NAME }}
     permissions:
       contents: write
     steps:
@@ -22,6 +22,8 @@ jobs:
           fetch-depth: 0
       - name: "Merge fresh ${{ vars.PARENT_FUSE_BRANCH }} from ${{ vars.PARENT_FUSE_REPO }}"
         run: |
+          git config --global user.email "${{ vars.GIT_EMAIL }}"
+          git config --global user.name "${{ vars.GIT_NAME }}"
           git fetch --prune
           git remote add repo ${{ vars.PARENT_FUSE_REPO }}
           git fetch repo
