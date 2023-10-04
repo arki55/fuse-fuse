@@ -35,6 +35,10 @@ on:
         required: false
         default: 0
         description: "Number of latest releases to keep (only if date and time is appended)"
+      build_type:
+       type: string
+       required: true
+       description: "Possible values 'NANO' or 'TEST'"
 
   # Reused also from nightly build workflow
   workflow_call:
@@ -68,6 +72,10 @@ on:
         required: false
         default: 0
         description: "Number of latest releases to keep (only if date and time is appended)"
+      build_type:
+        type: string
+        required: true
+        description: "Possible values 'NANO' or 'TEST'"
     secrets:
       RELEASE_TOKEN:
           required: true
@@ -103,6 +111,7 @@ jobs:
       configure_params: "--with-win32"
       verify_ui: "win32"
       verify_audio: "directsound"
+      build_type: ${{ inputs.build_type }}
 
   # SDL1 UI+sound
   build-sdl-ui-sdl-sound:
@@ -117,6 +126,7 @@ jobs:
       verify_ui: "sdl"
       verify_audio: "sdl"
       verify_other: "Using SDL 2: no"
+      build_type: ${{ inputs.build_type }}
 
   ########################################
   ### Create release, attach ZIP files ###

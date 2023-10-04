@@ -29,7 +29,7 @@ jobs:
           git push
 
   # Build and release nightly prerelease version from master (no draft)
-  # Add current date and time to the tag, keep latest 5
+  # Use NANO build type, modifying only nano part of version, keep latest 5
   master:
     needs: [catchup]
     name: "Nightly build from master"
@@ -41,5 +41,6 @@ jobs:
       libspectrum_branch: "master"
       add_date_time: true
       keep_latest: 5
+      build_type: "NANO"
     secrets:
       RELEASE_TOKEN: "${{ secrets.RELEASE_TOKEN }}"
