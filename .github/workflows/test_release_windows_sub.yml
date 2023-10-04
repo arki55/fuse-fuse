@@ -19,6 +19,10 @@ on:
       configure_params:
         type: string
         required: true
+      build_type:
+          type: string
+          required: true
+          description: "Possible values 'NANO' or 'TEST'"
       verify_ui:
         type: string
         required: true
@@ -31,15 +35,30 @@ on:
 
 jobs:
 
-  # Build Fuse App
-  build:
-    name: "Build Fuse"
+  # Build type: TEST
+  build-test:
+    name: "Build Fuse (TEST)"
     uses: ./.github/workflows/build_windows_sub.yml
+    if: ${{ inputs.build_type == 'TEST' }}
     with:
       key: "${{ inputs.key }}"
       dependencies: "${{ inputs.dependencies }}"
       configure_params: "${{ inputs.configure_params }} --with-test-build='Reason: ${{ inputs.reason }}\\nTriggered by: ${{ github.actor }}\\nBranch: ${{ github.ref_name }}\\nDate: #NOW#'"
       fuse_version: "TEST-BUILD"
+      verify_ui: "${{ inputs.verify_ui }}"
+      verify_audio: "${{ inputs.verify_audio }}"
+      upload_artifacts: true
+
+  # Build type: NANO
+  build-nano:
+    name: "Build Fuse (NANO)"
+    uses: ./.github/workflows/build_windows_sub.yml
+    if: ${{ inputs.build_type == 'NANO' }}
+    with:
+      key: "${{ inputs.key }}"
+      dependencies: "${{ inputs.dependencies }}"
+      configure_params: "${{ inputs.configure_params }}"
+      fuse_version_nano: "123456"
       verify_ui: "${{ inputs.verify_ui }}"
       verify_audio: "${{ inputs.verify_audio }}"
       upload_artifacts: true
