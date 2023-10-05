@@ -140,8 +140,8 @@ jobs:
           file="configure.ac"
 
           echo "Checking versions.."
-          current_fuse_version=`cat "$file" | grep -E "\[fuse_version\]" | grep -Poi ', \[\K([0-9\.]+)'`
-          current_fuse_nano_version=`cat "$file" | grep -E "\[fuse_nano_version\]" | grep -Poi ', \[\K\d+'`
+          current_fuse_version=`cat "$file" | grep -E "\[fuse_version\]" | grep -Eo ', \[.+\]' | grep -Eo '([0-9\.]+)'`
+          current_fuse_nano_version=`cat "$file" | grep -E "\[fuse_nano_version\]" | grep -Eo ',[ ]*\[.+\]' | grep -Eo '([0-9\.]+)'`
 
           replace_fuse_version="${current_fuse_version}.${{ inputs.fuse_version_nano }}"
           replace_fuse_nano_version="${{ inputs.fuse_version_nano }}"
