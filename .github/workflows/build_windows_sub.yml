@@ -154,11 +154,11 @@ jobs:
 
           content=`cat $file`
           content2=${content//m4_define(\[fuse_version\], \[$current_fuse_version\])/m4_define(\[fuse_version\], \[$replace_fuse_version\])}
-          content3=${content2//m4_define(\[fuse_nano_version\], \[$current_fuse_nano_version\])/m4_define(\[fuse_nano_version\], \[$replace_fuse_nano_version\])}
+          content3=${content2//m4_define(\[fuse_nano_version\],  \[$current_fuse_nano_version\])/m4_define(\[fuse_nano_version\],  \[$replace_fuse_nano_version\])}
           echo "$content3" > $file
 
           echo "Result :"
-          cat "$file" | grep -E "\[fuse_.+version"
+          cat "$file" | grep -E "\[fuse_.*version"
 
         shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
 
