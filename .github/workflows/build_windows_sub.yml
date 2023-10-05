@@ -139,8 +139,9 @@ jobs:
           cd ${GITHUB_WORKSPACE}
           file="configure.ac"
 
-          current_fuse_version=$(cat "$file" | grep -E "\[fuse_version\]" | grep -Poi ', \[\K([0-9\.]+)')
-          current_fuse_nano_version=$(cat "$file" | grep -E "\[fuse_nano_version\]" | grep -Poi ', \[\K\d+')
+          echo "Checking versions.."
+          current_fuse_version=`cat "$file" | grep -E "\[fuse_version\]" | grep -Poi ', \[\K([0-9\.]+)'`
+          current_fuse_nano_version=`cat "$file" | grep -E "\[fuse_nano_version\]" | grep -Poi ', \[\K\d+'`
 
           replace_fuse_version="${current_fuse_version}.${{ inputs.fuse_version_nano }}"
           replace_fuse_nano_version="${{ inputs.fuse_version_nano }}"
