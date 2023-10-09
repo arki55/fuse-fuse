@@ -43,6 +43,7 @@
 #include "peripherals/if1.h"
 #include "peripherals/if2.h"
 #include "peripherals/multiface.h"
+#include "peripherals/sound/uspeech.h"
 #include "peripherals/speccyboot.h"
 #include "peripherals/ttx2000s.h"
 #include "peripherals/ula.h"
@@ -761,6 +762,7 @@ paging_test( void )
     r += speccyboot_unittest();
     r += ttx2000s_unittest();
     r += usource_unittest();
+    r += uspeech_unittest();
 
     r += beta_unittest();
     r += didaktik80_unittest();
