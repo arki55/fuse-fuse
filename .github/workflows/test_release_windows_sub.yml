@@ -58,7 +58,7 @@ jobs:
       key: "${{ inputs.key }}"
       dependencies: "${{ inputs.dependencies }}"
       configure_params: "${{ inputs.configure_params }}"
-      fuse_version_nano: "12345"
+      fuse_version_nano: ""
       verify_ui: "${{ inputs.verify_ui }}"
       verify_audio: "${{ inputs.verify_audio }}"
       upload_artifacts: true

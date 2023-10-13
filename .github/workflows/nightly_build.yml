@@ -28,6 +28,34 @@ jobs:
           git remote add repo ${{ vars.PARENT_FUSE_REPO }}
           git fetch repo
           git merge repo/${{ vars.PARENT_FUSE_BRANCH }}
+      - name: "Bump up NANO version"
+        run: |
+          file="configure.ac"
+
+          echo "Checking versions.."
+          current_fuse_version=`cat "$file" | grep -E "\[fuse_version\]" | grep -Eo ', \[.+\]' | grep -Eo '([0-9\.]+)'`
+          current_fuse_nano_version=`cat "$file" | grep -E "\[fuse_nano_version\]" | grep -Eo ',[ ]*\[.+\]' | grep -Eo '([0-9\.]+)'`
+
+          replace_fuse_nano_version=${current_fuse_nano_version} + 1;
+          replace_fuse_version="${current_fuse_version}.${replace_fuse_nano_version}"
+
+          echo "Current fuse version : ${current_fuse_version}"
+          echo " ==> replacing with : ${replace_fuse_version}"
+
+          echo "Current fuse nano version : ${current_fuse_nano_version}"
+          echo " ==> replacing with : ${replace_fuse_nano_version}"
+
+          content=`cat $file`
+          content2=${content//m4_define(\[fuse_version\], \[$current_fuse_version\])/m4_define(\[fuse_version\], \[$replace_fuse_version\])}
+          content3=${content2//m4_define(\[fuse_nano_version\],  \[$current_fuse_nano_version\])/m4_define(\[fuse_nano_version\],  \[$replace_fuse_nano_version\])}
+          echo "$content3" > $file
+
+          echo "Result :"
+          cat "$file" | grep -E "\[fuse_.*version"
+      - name: "Commit change & push all changes"
+        run: |
+          git add configure.ac
+          git commit -m "build: Bump up nano version"
           git push
 
   # Build and release nightly prerelease version from master (no draft)
