@@ -36,7 +36,7 @@ jobs:
           current_fuse_version=`cat "$file" | grep -E "\[fuse_version\]" | grep -Eo ', \[.+\]' | grep -Eo '([0-9\.]+)'`
           current_fuse_nano_version=`cat "$file" | grep -E "\[fuse_nano_version\]" | grep -Eo ',[ ]*\[.+\]' | grep -Eo '([0-9\.]+)'`
 
-          replace_fuse_nano_version=${current_fuse_nano_version} + 1;
+          replace_fuse_nano_version+=1;
           replace_fuse_version="${current_fuse_version}.${replace_fuse_nano_version}"
 
           echo "Current fuse version : ${current_fuse_version}"
@@ -52,6 +52,7 @@ jobs:
 
           echo "Result :"
           cat "$file" | grep -E "\[fuse_.*version"
+        shell: "bash"
       - name: "Commit change & push all changes"
         run: |
           git add configure.ac
