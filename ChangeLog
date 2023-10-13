@@ -2,6 +2,10 @@
 
         * Fuse 1.?.? released.
 
+        * New features:
+          * Add Currah µSpeech emulation (Stuart Brady, Vic Chwe and Sergio
+            Baldoví).
+
         * Emulation core improvements:
           * Speed up reading emulated memory locations (Jindřich Makovička).
 

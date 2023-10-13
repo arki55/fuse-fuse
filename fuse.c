@@ -86,6 +86,7 @@
 #include "peripherals/multiface.h"
 #include "peripherals/printer.h"
 #include "peripherals/scld.h"
+#include "peripherals/sound/uspeech.h"
 #include "peripherals/speccyboot.h"
 #include "peripherals/spectranet.h"
 #include "peripherals/ttx2000s.h"
@@ -345,6 +346,7 @@ run_startup_manager( int *argc, char ***argv )
   timer_register_startup();
   ula_register_startup();
   usource_register_startup();
+  uspeech_register_startup();
   z80_register_startup();
   zxatasp_register_startup();
   zxcf_register_startup();
