@@ -31,6 +31,6 @@ jobs:
       keep_latest: 5
       build_type: "STD"
       merge_master: true
-      merge_master_cancel: ! ${{ inputs.force_build }}
+      merge_master_cancel: ${{ inputs.force_build == false }}
     secrets:
       RELEASE_TOKEN: "${{ secrets.RELEASE_TOKEN }}"
