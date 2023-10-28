@@ -20,11 +20,11 @@ on:
       fuse_version:
         type: string
         required: false
-        default: ""
-      fuse_version_nano:
+        default: "Overwrite FUSE_VERSION constant."
+      fuse_version_append:
         type: string
         required: false
-        default: ""
+        default: "Append additional text to FUSE_VERSION constant."
       verify_ui:
         type: string
         required: true
@@ -122,44 +122,40 @@ jobs:
           echo "Done"
         shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
 
-      - name: (5a) Adjust fuse_version
+      - name: (5a) Overwrite fuse_version
         if: ${{ inputs.fuse_version }}
         run: |
           cd ${GITHUB_WORKSPACE}
           file="configure.ac"
-          replace="${{ inputs.fuse_version }}"
+          
+          echo "Checking versions.."
+          current_fuse_version=`cat "$file" | grep -E "\[fuse_version\]" | grep -Eo ', \[.+\]' | grep -Eo '([0-9\.]+)'`
+          replace_fuse_version="${{ inputs.fuse_version }}"
+          
+          echo "Current fuse version : ${current_fuse_version}"
+          echo " ==> replacing with : ${replace_fuse_version}"
+          
           content=`cat $file`
-          content2=${content//m4_define(\[fuse_version\], \[[0-9].[0-9].[0-9]\])/m4_define(\[fuse_version\], \[$replace\])}
+          content2=${content//m4_define(\[fuse_version\], \[$current_fuse_version\])/m4_define(\[fuse_version\], \[$replace_fuse_version\])}
           echo "$content2" > $file
         shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
 
-      - name: (5b) Adjust fuse_nano_version + fuse_version (add nano part)
-        if: ${{ inputs.fuse_version_nano }}
+      - name: (5b) Append fuse_version
+        if: ${{ inputs.fuse_version_append }}
         run: |
           cd ${GITHUB_WORKSPACE}
           file="configure.ac"
-
+          
           echo "Checking versions.."
           current_fuse_version=`cat "$file" | grep -E "\[fuse_version\]" | grep -Eo ', \[.+\]' | grep -Eo '([0-9\.]+)'`
-          current_fuse_nano_version=`cat "$file" | grep -E "\[fuse_nano_version\]" | grep -Eo ',[ ]*\[.+\]' | grep -Eo '([0-9\.]+)'`
-
-          replace_fuse_version="${current_fuse_version}.${{ inputs.fuse_version_nano }}"
-          replace_fuse_nano_version="${{ inputs.fuse_version_nano }}"
-
+          replace_fuse_version="${current_fuse_version}${{ inputs.fuse_version_append }}"
+          
           echo "Current fuse version : ${current_fuse_version}"
           echo " ==> replacing with : ${replace_fuse_version}"
-
-          echo "Current fuse nano version : ${current_fuse_nano_version}"
-          echo " ==> replacing with : ${replace_fuse_nano_version}"
-
+          
           content=`cat $file`
           content2=${content//m4_define(\[fuse_version\], \[$current_fuse_version\])/m4_define(\[fuse_version\], \[$replace_fuse_version\])}
-          content3=${content2//m4_define(\[fuse_nano_version\],  \[$current_fuse_nano_version\])/m4_define(\[fuse_nano_version\],  \[$replace_fuse_nano_version\])}
-          echo "$content3" > $file
-
-          echo "Result :"
-          cat "$file" | grep -E "\[fuse_.*version"
-
+          echo "$content2" > $file
         shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
 
       - name: (5c) Autogen.sh

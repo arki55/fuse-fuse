@@ -6,63 +6,19 @@ on:
   schedule:
     - cron: '0 1 * * *'
   workflow_dispatch:
+    inputs:
+      force_build:
+        type: boolean
+        required: false
+        default: false
+        description: "Force build even if the branch was not updated with master branch from parent repo. Defaults to false."
 
 jobs:
-  # Merge master from defined repo (usually official fuse repo)
-  catchup:
-    name: "Merge foreign master"
-    runs-on: ubuntu-latest
-    if: ${{ vars.PARENT_FUSE_BRANCH }} && ${{ vars.PARENT_FUSE_REPO }} && ${{ vars.GIT_EMAIL }} && ${{ vars.GIT_NAME }}
-    permissions:
-      contents: write
-    steps:
-      - name: "Checkout code"
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: "Merge fresh ${{ vars.PARENT_FUSE_BRANCH }} from ${{ vars.PARENT_FUSE_REPO }}"
-        run: |
-          git config --global user.email "${{ vars.GIT_EMAIL }}"
-          git config --global user.name "${{ vars.GIT_NAME }}"
-          git fetch --prune
-          git remote add repo ${{ vars.PARENT_FUSE_REPO }}
-          git fetch repo
-          git merge repo/${{ vars.PARENT_FUSE_BRANCH }}
-      - name: "Bump up NANO version"
-        run: |
-          file="configure.ac"
 
-          echo "Checking versions.."
-          current_fuse_version=`cat "$file" | grep -E "\[fuse_version\]" | grep -Eo ', \[.+\]' | grep -Eo '([0-9\.]+)'`
-          current_fuse_nano_version=`cat "$file" | grep -E "\[fuse_nano_version\]" | grep -Eo ',[ ]*\[.+\]' | grep -Eo '([0-9\.]+)'`
-
-          replace_fuse_nano_version=$(($current_fuse_nano_version+1));
-          replace_fuse_version="${current_fuse_version}"
-
-          echo "Current fuse version : ${current_fuse_version}"
-          echo " ==> replacing with : ${replace_fuse_version}"
-
-          echo "Current fuse nano version : ${current_fuse_nano_version}"
-          echo " ==> replacing with : ${replace_fuse_nano_version}"
-
-          content=`cat $file`
-          content2=${content//m4_define(\[fuse_version\], \[$current_fuse_version\])/m4_define(\[fuse_version\], \[$replace_fuse_version\])}
-          content3=${content2//m4_define(\[fuse_nano_version\],  \[$current_fuse_nano_version\])/m4_define(\[fuse_nano_version\],  \[$replace_fuse_nano_version\])}
-          echo "$content3" > $file
-
-          echo "Result :"
-          cat "$file" | grep -E "\[fuse_.*version"
-        shell: "bash"
-      - name: "Commit change & push all changes"
-        run: |
-          git add configure.ac
-          git commit -m "build: Bump up nano version"
-          git push
-
-  # Build and release nightly prerelease version from master (no draft)
-  # Use NANO build type, modifying only nano part of version, keep latest 5
+  # Build and release nightly prerelease version from master (no draft).
+  # Use APPEND build type, appending date and branch from last git entry, 
+  #   keep latest 5 releases, cancel release build if nothing to be merged.
   master:
-    needs: [catchup]
     name: "Nightly build from master"
     uses: ./.github/workflows/test_release.yml
     with:
@@ -70,8 +26,11 @@ jobs:
       draft: false
       generateReleaseNotes: true
       libspectrum_branch: "master"
-      add_date_time: true
+      fuse_version_pattern: "<ver>-<ref>-<log_date>"
+      tag_pattern: "nightly-<ver>-<ref>-<log_date>"
       keep_latest: 5
-      build_type: "NANO"
+      build_type: "STD"
+      merge_master: true
+      merge_master_cancel: ! ${{ inputs.force_build }}
     secrets:
       RELEASE_TOKEN: "${{ secrets.RELEASE_TOKEN }}"

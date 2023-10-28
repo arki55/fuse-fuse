@@ -9,6 +9,11 @@ on:
       reason:
         type: string
         required: true
+      # Build type - standard or special
+      build_type:
+        type: string
+        required: true
+        description: "Possible values 'STD' or 'TEST'"
       # Build parameters (forwarded)
       key:
         type: string
@@ -19,10 +24,10 @@ on:
       configure_params:
         type: string
         required: true
-      build_type:
-          type: string
-          required: true
-          description: "Possible values 'NANO' or 'TEST'"
+      fuse_version:
+        type: string
+        required: false
+        default: ""
       verify_ui:
         type: string
         required: true
@@ -35,9 +40,23 @@ on:
 
 jobs:
 
+  # Build type: STD
+  build-nano:
+    name: "Build Fuse in standard way"
+    uses: ./.github/workflows/build_windows_sub.yml
+    if: ${{ inputs.build_type == 'STD' }}
+    with:
+      key: "${{ inputs.key }}"
+      dependencies: "${{ inputs.dependencies }}"
+      configure_params: "${{ inputs.configure_params }}"
+      fuse_version: "${{ inputs.fuse_version }}"
+      verify_ui: "${{ inputs.verify_ui }}"
+      verify_audio: "${{ inputs.verify_audio }}"
+      upload_artifacts: true
+  
   # Build type: TEST
   build-test:
-    name: "Build Fuse (TEST)"
+    name: "Build Fuse with TEST build flag"
     uses: ./.github/workflows/build_windows_sub.yml
     if: ${{ inputs.build_type == 'TEST' }}
     with:
@@ -49,16 +68,3 @@ jobs:
       verify_audio: "${{ inputs.verify_audio }}"
       upload_artifacts: true
 
-  # Build type: NANO
-  build-nano:
-    name: "Build Fuse (NANO)"
-    uses: ./.github/workflows/build_windows_sub.yml
-    if: ${{ inputs.build_type == 'NANO' }}
-    with:
-      key: "${{ inputs.key }}"
-      dependencies: "${{ inputs.dependencies }}"
-      configure_params: "${{ inputs.configure_params }}"
-      fuse_version_nano: ""
-      verify_ui: "${{ inputs.verify_ui }}"
-      verify_audio: "${{ inputs.verify_audio }}"
-      upload_artifacts: true
