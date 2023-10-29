@@ -174,7 +174,7 @@ jobs:
           echo "Merge: ${merged}"
           if [[ "${{ inputs.merge_master_cancel }}" == "true" ]]; then
             if [[ "${merged}" == "Already up to date." ]]; then
-              echo "Already up to date, so cancelling release build."
+              echo "::notice::Already up to date, so cancelling release build."
               exit 1
             fi
           fi
