@@ -33,6 +33,8 @@
 #include "fdd.h"
 #include "fuse.h"
 
+/* #define DEBUG_UPD 1 */
+
 typedef enum upd_type_t {
   UPD765A = 0,
   UPD765B,
@@ -143,7 +145,7 @@ typedef struct upd_fdc {
   int seek_age[4];		/* order of overlapped seeks for 4 drive */
   int rlen;			/* expected record length */
   upd_scan_t scan;		/* SCAN type: eq/lo/hi */
-  
+
   upd_cmd_t *cmd;			/* current command */
 
   libspectrum_byte command_register;    /* command register */
@@ -160,6 +162,9 @@ typedef struct upd_fdc {
   void ( *set_datarq ) ( struct upd_fdc *f );
   void ( *reset_datarq ) ( struct upd_fdc *f );
 
+#ifdef DEBUG_UPD
+  int dbg_data_wr;
+#endif
 } upd_fdc;
 
 void upd_fdc_init_events( void );
