@@ -21,10 +21,6 @@ on:
         type: string
         required: false
         default: "Overwrite FUSE_VERSION constant."
-      fuse_version_append:
-        type: string
-        required: false
-        default: "Append additional text to FUSE_VERSION constant."
       verify_ui:
         type: string
         required: true
@@ -140,25 +136,7 @@ jobs:
           echo "$content2" > $file
         shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
 
-      - name: (5b) Append fuse_version
-        if: ${{ inputs.fuse_version_append }}
-        run: |
-          cd ${GITHUB_WORKSPACE}
-          file="configure.ac"
-          
-          echo "Checking versions.."
-          current_fuse_version=`cat "$file" | grep -E "\[fuse_version\]" | grep -Eo ', \[.+\]' | grep -Eo '([0-9\.]+)'`
-          replace_fuse_version="${current_fuse_version}${{ inputs.fuse_version_append }}"
-          
-          echo "Current fuse version : ${current_fuse_version}"
-          echo " ==> replacing with : ${replace_fuse_version}"
-          
-          content=`cat $file`
-          content2=${content//m4_define(\[fuse_version\], \[$current_fuse_version\])/m4_define(\[fuse_version\], \[$replace_fuse_version\])}
-          echo "$content2" > $file
-        shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
-
-      - name: (5c) Autogen.sh
+      - name: (5b) Autogen.sh
         run: |
           cd ${GITHUB_WORKSPACE}
           echo "Running autogen.sh .."

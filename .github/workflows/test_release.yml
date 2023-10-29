@@ -213,7 +213,11 @@ jobs:
           echo "GIT ref name: ${git_ref_name}"
           echo "git_ref_name=${git_ref_name}" >> "$GITHUB_OUTPUT"
 
-          git_log_date=$(git log --date=iso -1 | grep -Po "[-0-9]{10}")
+          git_log_date_iso=$(git log --date=iso -1 | grep -Po "[-0-9]{10}")
+          echo "GIT log date ISO: ${git_log_date_iso}"
+          echo "git_log_date_iso=${git_log_date_iso}" >> "$GITHUB_OUTPUT"
+
+          git_log_date=${git_log_date_iso//-/}
           echo "GIT log date: ${git_log_date}"
           echo "git_log_date=${git_log_date}" >> "$GITHUB_OUTPUT"
 
@@ -234,12 +238,14 @@ jobs:
           use_tag="${use_tag//<ref>/${{ steps.prep-vars.outputs.git_ref_name }}}"
           use_tag="${use_tag//<dt>/${{ steps.prep-vars.outputs.current_date_time }}}"
           use_tag="${use_tag//<log_date>/${{ steps.prep-vars.outputs.git_log_date }}}"
+          use_tag="${use_tag//<log_date_iso>/${{ steps.prep-vars.outputs.git_log_date_iso }}}"
           use_tag="${use_tag//<ver>/${{ steps.prep-vars.outputs.fuse_version }}}"
 
           # Placeholders - patterm for deleting old releases
           delete_tag_pattern="${delete_tag_pattern//<ref>/${{ steps.prep-vars.outputs.git_ref_name }}}"
           delete_tag_pattern="${delete_tag_pattern//<dt>/}"
           delete_tag_pattern="${delete_tag_pattern//<log_date>/}"
+          delete_tag_pattern="${delete_tag_pattern//<log_date_iso>/}"
           delete_tag_pattern="${delete_tag_pattern//<ver>/${{ steps.prep-vars.outputs.fuse_version }}}"
 
           # Slashes to _
@@ -263,6 +269,7 @@ jobs:
           fuse_version="${fuse_version//<ref>/${{ steps.prep-vars.outputs.git_ref_name }}}"
           fuse_version="${fuse_version//<dt>/${{ steps.prep-vars.outputs.current_date_time }}}"
           fuse_version="${fuse_version//<log_date>/${{ steps.prep-vars.outputs.git_log_date }}}"
+          fuse_version="${fuse_version//<log_date_iso>/${{ steps.prep-vars.outputs.git_log_date_iso }}}"
           fuse_version="${fuse_version//<ver>/${{ steps.prep-vars.outputs.fuse_version }}}"
 
           # Slashes to _
