@@ -121,7 +121,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ vars.LIBSPECTRUM_REPO }} && ${{ vars.PARENT_LIBSPECTRUM_BRANCH }} && ${{ vars.PARENT_LIBSPECTRUM_REPO }} && ${{ vars.GIT_EMAIL }} && ${{ vars.GIT_NAME }}
     permissions:
-      contents: read
+      contents: write
     steps:
       - name: "Checkout Libspectrum code"
         uses: actions/checkout@v3
@@ -143,7 +143,7 @@ jobs:
           git merge repo/${{ vars.PARENT_LIBSPECTRUM_BRANCH }}
       - name: "Push all changes"
         run: |
-          ## FIXME:  need write perm .. git push
+          git push
 
   fuse-update-branch:
     name: "Update branch (Fuse)"

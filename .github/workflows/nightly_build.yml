@@ -34,3 +34,5 @@ jobs:
       merge_master_cancel: ${{ inputs.force_build == false }}
     secrets:
       RELEASE_TOKEN: "${{ secrets.RELEASE_TOKEN }}"
+    permissions:
+      contents: write
