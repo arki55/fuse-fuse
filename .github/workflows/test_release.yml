@@ -108,7 +108,9 @@ on:
         description: "Possible values 'STD' or 'TEST'"
     secrets:
       RELEASE_TOKEN:
-          required: true
+        required: true
+      LIBSPECTRUM_TOKEN:
+        required: false
 
 jobs:
 
@@ -129,6 +131,7 @@ jobs:
           fetch-depth: 0
           repository: ${{ vars.LIBSPECTRUM_REPO }}
           ref: ${{ inputs.libspectrum_branch }}
+          token: ${{ secrets.LIBSPECTRUM_TOKEN }}
       - name: "Prepare git"
         run: |
           git config --global user.email "${{ vars.GIT_EMAIL }}"
