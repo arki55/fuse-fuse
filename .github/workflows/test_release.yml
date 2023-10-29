@@ -209,7 +209,7 @@ jobs:
           echo "Current date time: ${current_date_time}"
           echo "current_date_time=${current_date_time}" >> "$GITHUB_OUTPUT"
 
-          git_ref_name="${{ github.ref_name }}}"
+          git_ref_name="${{ github.ref_name }}"
           echo "GIT ref name: ${git_ref_name}"
           echo "git_ref_name=${git_ref_name}" >> "$GITHUB_OUTPUT"
 
