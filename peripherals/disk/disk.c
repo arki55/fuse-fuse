@@ -1585,7 +1585,7 @@ cpc_set_weak_range( disk_t *d, int idx, buffer_t *buffer, int n, int len )
 static int
 open_cpc( buffer_t *buffer, disk_t *d, int preindex )
 {
-  int i, j, seclen, idlen, gap, sector_pad, idx;
+  int i, j, seclen, idlen, gap, idx;
   int bpt, max_bpt = 0, trlen;
   int fix[84], plus3_fix;
   unsigned char *hdrb;
@@ -1624,7 +1624,6 @@ open_cpc( buffer_t *buffer, disk_t *d, int preindex )
     bpt = postindex_len( d, gap ) +
 	    ( preindex ? preindex_len( d, gap ) : 0 ) +
 		( gap == GAP_MINIMAL_MFM ? 6 : 3 );	/* gap4 */
-    sector_pad = 0;
     for( j = 0; j < buff[0x15]; j++ ) {			/* each sector */
       seclen = d->type == DISK_ECPC ? buff[ 0x1e + 8 * j ] +
 				      256 * buff[ 0x1f + 8 * j ]
@@ -1662,15 +1661,15 @@ open_cpc( buffer_t *buffer, disk_t *d, int preindex )
 	  plus3_fix = CPC_ISSUE_NONE;
       }
       trlen += seclen;
-      if( seclen % 0x100 )		/* every? 128/384/...byte length sector padded */
-	sector_pad++;
     }
     if( i < 84 ) {
       fix[i] = plus3_fix;
       if( fix[i] == CPC_ISSUE_4 )         bpt = 6500;/* Type 1 variant DD+ (e.g. Coin Op Hits) */
       else if( fix[i] != CPC_ISSUE_NONE ) bpt = 6250;/* we assume a standard DD track */
     }
-    buffer->index += trlen + sector_pad * 128 + 256;
+    if( trlen % 0x100 )
+      trlen += 0x100 - trlen % 0x100;
+    buffer->index += trlen + 256;
     if( bpt > max_bpt )
       max_bpt = bpt;
   }
@@ -1696,7 +1695,7 @@ open_cpc( buffer_t *buffer, disk_t *d, int preindex )
       preindex_add( d, gap );
     postindex_add( d, gap );
 
-    sector_pad = 0;
+    trlen = 0;
     for( j = 0; j < hdrb[0x15]; j++ ) {			/* each sector */
       seclen = d->type == DISK_ECPC ? hdrb[ 0x1e + 8 * j ] +	/* data length in sector */
 				      256 * hdrb[ 0x1f + 8 * j ]
@@ -1760,11 +1759,11 @@ open_cpc( buffer_t *buffer, disk_t *d, int preindex )
 					/* ( ( N * len ) / len - 1 ) * len */
         }
       }
-      if( seclen % 0x100 )		/* every? 128/384/...byte length sector padded */
-	sector_pad++;
+      trlen += seclen;
     }
     gap4_add( d, gap );
-    buffer->index += sector_pad * 0x80;
+    if( trlen % 0x100 )
+      buffer->index += 0x100 - trlen % 0x100;
   }
   return d->status = DISK_OK;
 }
