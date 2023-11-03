@@ -25,7 +25,7 @@ dnl Product full version
 m4_define([fuse_major_version], [1])
 m4_define([fuse_minor_version], [6])
 m4_define([fuse_micro_version], [0])
-m4_define([fuse_nano_version],  [2])
+m4_define([fuse_nano_version],  [0])
 m4_define([fuse_full_version], [fuse_major_version.fuse_minor_version.fuse_micro_version.fuse_nano_version])
 m4_define([fuse_rc_version], [fuse_major_version,fuse_minor_version,fuse_micro_version,fuse_nano_version])
 
@@ -56,6 +56,16 @@ dnl Definitions for config.h
 AC_DEFINE([FUSE_RC_VERSION], [fuse_rc_version],
           [Define version information for win32 executables])
 AC_DEFINE([FUSE_COPYRIGHT], [fuse_copyright], [Define copyright of Fuse])
+
+dnl Allow splitting version by words in about dialog
+fuse_version_text="Fuse fuse_version"
+fuse_version_spaced=${fuse_version_text//-/ }
+AC_DEFINE_UNQUOTED([FUSE_ABOUT_VERSION], ["$fuse_version_spaced"], [Fuse version info in about dialog])
+
+AC_MSG_CHECKING(fuse version)
+echo "fuse_version"
+AC_MSG_CHECKING(fuse about version)
+echo "$fuse_version_spaced"
 
 dnl Configure option to specify testing build info
 AC_MSG_CHECKING(testing build information)

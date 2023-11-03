@@ -41,7 +41,7 @@ on:
 jobs:
 
   # Build type: STD
-  build-nano:
+  build-std:
     name: "Build Fuse in standard way"
     uses: ./.github/workflows/build_windows_sub.yml
     if: ${{ inputs.build_type == 'STD' }}
