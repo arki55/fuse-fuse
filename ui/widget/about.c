@@ -33,23 +33,36 @@ widget_about_draw( void *data GCC_UNUSED )
 {
   char buffer[80];
   int dialog_cols, string_width, margin, x, line;
+  char **version_lines; size_t version_line_count;
+  size_t i;
 
   dialog_cols = 30;
   margin = 17;
   line = 0;
 
-  widget_dialog_with_border( 1, 2, dialog_cols, 7+2 );
+  /* First Split version string into more lines, so that it fits the dialog and we know count of lines */
+  if( split_message( FUSE_ABOUT_VERSION, &version_lines, &version_line_count, 20 ) ) return 1;
+
+  /* Start constructing the dialog box */
+  widget_dialog_with_border( 1, 2, dialog_cols, 9 + version_line_count );
   widget_printstring( 10, 16, WIDGET_COLOUR_TITLE, "About Fuse" );
 
-  string_width = widget_stringwidth( "the Free Unix Spectrum Emulator (Fuse)" );
+  /* Print version info - multi line - split further above */
+  for( i=0; i<version_line_count; i++ ) {
+    snprintf( buffer, 80, "%s", version_lines[i] );
+    string_width = widget_stringwidth( buffer );
+    x = margin - 8 + ( dialog_cols * 8 - string_width ) / 2;
+    widget_printstring( x, ++line * 8 + 24, WIDGET_COLOUR_FOREGROUND, buffer );
+    free( version_lines[i] );
+  }
+  free( version_lines );
+
+  ++line;
+
+  string_width = widget_stringwidth( FUSE_LONG );
   x = margin - 8 + ( dialog_cols * 8 - string_width ) / 2;
   widget_printstring( x, ++line * 8 + 24, WIDGET_COLOUR_FOREGROUND,
-                      "the Free Unix Spectrum Emulator (Fuse)" );
-
-  snprintf( buffer, 80, "Version %s", VERSION );
-  string_width = widget_stringwidth( buffer );
-  x = margin - 8 + ( dialog_cols * 8 - string_width ) / 2;
-  widget_printstring( x, ++line * 8 + 24, WIDGET_COLOUR_FOREGROUND, buffer );
+                      FUSE_LONG );
 
   ++line;
 
