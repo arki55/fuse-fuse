@@ -542,12 +542,12 @@ start_read_id( upd_fdc *f )
     f->read_id = 1;
   }
   if( f->rev ) {
-    i = f->current_drive->disk.i >= f->current_drive->disk.bpt ?
+    i = f->current_drive->disk.i >= f->current_drive->disk.c_bpt ?
     	0 : f->current_drive->disk.i;			/* start position */
     if( read_id( f ) != 2 )
       f->rev = 0;
-    i = f->current_drive->disk.bpt ? 
-      ( f->current_drive->disk.i - i ) * 200 / f->current_drive->disk.bpt : 200;
+    i = f->current_drive->disk.c_bpt ? 
+      ( f->current_drive->disk.i - i ) * 200 / f->current_drive->disk.c_bpt : 200;
     if( i > 0 ) {
       event_add_with_data( tstates + i *		/* i * 1/20 revolution */
 			 machine_current->timings.processor_speed / 1000,
@@ -580,12 +580,12 @@ start_read_diag( upd_fdc *f )
     f->read_id = 1;
   }
   if( f->rev ) {
-    i = f->current_drive->disk.i >= f->current_drive->disk.bpt ?
+    i = f->current_drive->disk.i >= f->current_drive->disk.c_bpt ?
     	0 : f->current_drive->disk.i;			/* start position */
     if( read_id( f ) != 2 )
       f->rev = 0;
-    i = f->current_drive->disk.bpt ? 
-      ( f->current_drive->disk.i - i ) * 200 / f->current_drive->disk.bpt : 200;
+    i = f->current_drive->disk.c_bpt ? 
+      ( f->current_drive->disk.i - i ) * 200 / f->current_drive->disk.c_bpt : 200;
     if( i > 0 ) {
       event_add_with_data( tstates + i *		/* i * 1/20 revolution */
 			 machine_current->timings.processor_speed / 1000,
@@ -648,14 +648,14 @@ multi_track_next:
       f->read_id = 1;
     }
     while( f->rev ) {
-      i = f->current_drive->disk.i >= f->current_drive->disk.bpt ?
+      i = f->current_drive->disk.i >= f->current_drive->disk.c_bpt ?
     	  0 : f->current_drive->disk.i;			/* start position */
       if( seek_id( f ) == 0 )
         f->rev = 0;
       else
         f->id_mark = UPD_FDC_AM_NONE;
-      i = f->current_drive->disk.bpt ? 
-          ( f->current_drive->disk.i - i ) * 200 / f->current_drive->disk.bpt : 200;
+      i = f->current_drive->disk.c_bpt ? 
+          ( f->current_drive->disk.i - i ) * 200 / f->current_drive->disk.c_bpt : 200;
       if( i > 0 ) {
         event_add_with_data( tstates + i *		/* i * 1/20 revolution */
 			     machine_current->timings.processor_speed / 1000,
@@ -743,14 +743,14 @@ multi_track_next:
       f->read_id = 1;
     }
     while( f->rev ) {
-      i = f->current_drive->disk.i >= f->current_drive->disk.bpt ?
+      i = f->current_drive->disk.i >= f->current_drive->disk.c_bpt ?
     	  0 : f->current_drive->disk.i;			/* start position */
       if( seek_id( f ) == 0 )
         f->rev = 0;
       else
         f->id_mark = UPD_FDC_AM_NONE;
-      i = f->current_drive->disk.bpt ? 
-          ( f->current_drive->disk.i - i ) * 200 / f->current_drive->disk.bpt : 200;
+      i = f->current_drive->disk.c_bpt ? 
+          ( f->current_drive->disk.i - i ) * 200 / f->current_drive->disk.c_bpt : 200;
       if( i > 0 ) {
         event_add_with_data( tstates + i *		/* i * 1/20 revolution */
 			     machine_current->timings.processor_speed / 1000,
