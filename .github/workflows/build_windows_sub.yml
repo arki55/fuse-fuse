@@ -288,7 +288,7 @@ jobs:
         run: |
           cd ${GITHUB_WORKSPACE}
 
-          base_name="fuse-windows-${{ inputs.key }}"
+          base_name="${{ steps.copy-dlls.outputs.FUSE_DISTR_DIR }}-${{ inputs.key }}"
 
           zip_from=${{ steps.copy-dlls.outputs.FUSE_DISTR_DIR }}.zip
           zip_to="${base_name}.zip"
