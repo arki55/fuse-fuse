@@ -20,7 +20,8 @@ on:
       fuse_version:
         type: string
         required: false
-        default: "Overwrite FUSE_VERSION constant."
+        default: ""
+        description: "Overwrite FUSE_VERSION constant."
       verify_ui:
         type: string
         required: true
