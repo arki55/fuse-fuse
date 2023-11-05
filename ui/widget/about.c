@@ -34,7 +34,6 @@ widget_about_draw( void *data GCC_UNUSED )
   char buffer[80];
   int dialog_cols, string_width, margin, x, line, lines_total;
   char **version_lines; size_t version_line_count;
-  char **test_lines; size_t test_line_count;
   size_t i;
 
   dialog_cols = 30;
@@ -48,6 +47,7 @@ widget_about_draw( void *data GCC_UNUSED )
 
 #ifdef FUSE_TEST_BUILD
   /* If TEST build is active, split test build info, count lines */
+  char **test_lines; size_t test_line_count;
   if( split_message( FUSE_TEST_BUILD, &test_lines, &test_line_count, 25 ) ) return 1;
   lines_total += test_line_count + 3;
 #endif
