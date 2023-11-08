@@ -61,6 +61,16 @@ AC_DEFINE([FUSE_RC_VERSION], [fuse_rc_version],
 AC_DEFINE([FUSE_COPYRIGHT], [fuse_copyright], [Define copyright of Fuse])
 AC_DEFINE([FUSE_LONG], [fuse_long], [Define long name of Fuse])
 
+dnl Allow splitting version by words in about dialog
+fuse_version_text="Fuse fuse_version"
+fuse_version_spaced=${fuse_version_text//-/ }
+AC_DEFINE_UNQUOTED([FUSE_ABOUT_VERSION], ["$fuse_version_spaced"], [Fuse version info in about dialog])
+
+AC_MSG_CHECKING(fuse version)
+echo "fuse_version"
+AC_MSG_CHECKING(fuse about version)
+echo "$fuse_version_spaced"
+
 dnl Configure option to specify testing build info
 AC_MSG_CHECKING(testing build information)
 AC_ARG_WITH(test-build,
