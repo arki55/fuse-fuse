@@ -139,6 +139,38 @@ CODE
 	}
     }
 
+# Generate onclick event handler for every option widget (checkbox)
+    foreach my $widget ( @{ $_->{widgets} } ) {
+      if( $widget->{onclick} ) {
+        my $idcname = uc( "$widget->{value}" );
+
+print << "CODE";
+static void
+menu_options_$_->{name}_$widget->{value}_onclick( menu_options_$_->{name}_t *dialog )
+{
+CODE
+  # Suboption uses whole parent definition for && || support in editability (2/2)
+  # Parent definition: s.<option> takes value from current settings,
+  #        w.<option> takes value from widget in current dialog box (default).
+  if( $widget->{subvalues} ) {
+    foreach my $suboption_arr ( @{ $widget->{subvalues} } ) {
+      my $suboption = $suboption_arr->{sub};
+      my $edit_def = $suboption_arr->{parent_def};
+      $edit_def =~ s/(s\.[_a-zA-Z0-9]+)/ (settings_current\.$1 \=\= TRUE) /g;
+      $edit_def =~ s/(w\.[_a-zA-Z0-9]+)/ gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON(dialog->$1) ) /g;
+      $edit_def =~ s/([sw]\.)//g; # Cleanup
+      print << "CODE";
+  gtk_widget_set_sensitive( GTK_WIDGET(dialog->$suboption), ($edit_def) ? TRUE : FALSE );
+CODE
+    }
+  }
+      print << "CODE";
+}
+
+CODE
+  # Next $widget
+    }}
+
     print << "CODE";
 static void menu_options_$_->{name}_done( GtkWidget *widget,
 					  gpointer user_data );
@@ -156,6 +188,13 @@ menu_options_$_->{name}( GtkWidget *widget GCC_UNUSED,
   /* Create the necessary widgets */
   dialog.dialog = gtkstock_dialog_new( "Fuse - $_->{title}", NULL );
   content_area = gtk_dialog_get_content_area( GTK_DIALOG( dialog.dialog ) );
+
+CODE
+  if( $_->{prehook }) {
+    print "  /* Prehook checks, logic */\n";
+    print "  $_->{prehook}();\n" ;
+  }
+  print << "CODE";
 
   /* Create the various widgets */
 CODE
@@ -240,8 +279,49 @@ CODE
 	    } else {
 		die "Unknown type `$type'";
 	    }
-	}
-    }
+
+  # Update editablity of this widget (2 ways)
+
+  # (1) If parent setting value is not set [located in any dialog box], disable this widget
+  #     Supports separators (1/2):
+  #     && - If any parent is disabled, then this is disabled too (cascade hierarchy).
+  #     || - If all parents are disabled, then this is disabled too (option used by multiple hw).
+  if( $widget->{parent_value} ) {
+    my $edit_def = $widget->{parent_value};
+    $edit_def =~ s/([sw]\.)//g; # Initializing window, ignoring w./s.
+    $edit_def =~ s/([_a-zA-Z0-9]+)/ (settings_current\.$1 \=\= TRUE) /g;
+      print << "CODE";
+  /* Set initial editability (not eitable => gray out) */
+  gtk_widget_set_sensitive( GTK_WIDGET(dialog.$widget->{value}), ($edit_def) ? TRUE : FALSE );
+
+CODE
+  }
+
+  # (2) Activate check if option should be disabled (callback fnc.)
+  if( $_->{lockedcheck} ) {
+      print << "CODE";
+  if( $_->{lockedcheck}( &settings_current.$widget->{value} ) == 1 ) {
+    /* Locked option ? -> gray out button (all types) */
+    gtk_widget_set_sensitive( GTK_WIDGET(dialog.$widget->{value}), FALSE );
+  }
+
+CODE
+  }
+  # Next widget
+    }}
+
+  # Called onclick function can use other widgets, doing this in separate foreach.
+  foreach my $widget ( @{ $_->{widgets} } ) {
+    foreach my $type ( $widget->{type} ) {
+      if( $widget->{onclick} ) {
+  print << "CODE";
+  /* Update editability of widget's suboptions (+ bind onclick function) */
+  g_signal_connect_swapped (GTK_WIDGET(dialog.$widget->{value}), "clicked",
+                          (GCallback) menu_options_$_->{name}_$widget->{value}_onclick, &dialog);
+  menu_options_$_->{name}_$widget->{value}_onclick( & dialog );
+
+CODE
+	}}}
 
     print << "CODE";
   /* Create the OK and Cancel buttons */
