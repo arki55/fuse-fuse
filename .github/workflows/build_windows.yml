@@ -2,7 +2,7 @@ name: Fuse App For Windows
 run-name: Build Fuse App for Windows / ${{ github.actor }} /
 
 # Executed upon each commit pushed, merge commit in PR
-on: [push, pull_request]
+on: [pull_request]
 
 jobs:
   libspectrum:
@@ -24,6 +24,7 @@ jobs:
     needs: [libspectrum]
     uses: ./.github/workflows/build_windows_sub.yml
     with:
+      key: "win32-ui-default"
       dependencies: "mingw64-i686-libxml2"
       configure_params: "--with-win32"
       verify_ui: "win32"
@@ -36,6 +37,7 @@ jobs:
     needs: [libspectrum]
     uses: ./.github/workflows/build_windows_sub.yml
     with:
+      key: "win32-ui-no-libxml2"
       dependencies: ""
       configure_params: "--with-win32 --without-libxml2"
       verify_ui: "win32"
@@ -48,6 +50,7 @@ jobs:
     needs: [libspectrum]
     uses: ./.github/workflows/build_windows_sub.yml
     with:
+      key: "win32-ui-win32-sound"
       dependencies: ""
       configure_params: "--with-win32 --with-audio-driver=win32sound"
       verify_ui: "win32"
@@ -60,6 +63,7 @@ jobs:
     needs: [libspectrum]
     uses: ./.github/workflows/build_windows_sub.yml
     with:
+      key: "win32-ui-null-sound"
       dependencies: ""
       configure_params: "--with-win32 --with-audio-driver=null"
       verify_ui: "win32"
@@ -72,6 +76,7 @@ jobs:
     needs: [libspectrum]
     uses: ./.github/workflows/build_windows_sub.yml
     with:
+      key: "sdl1-ui-sdl1-sound"
       dependencies: "mingw64-i686-SDL"
       configure_params: "--without-win32 --with-sdl --disable-sdl2 --with-audio-driver=sdl"
       verify_ui: "sdl"

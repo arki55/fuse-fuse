@@ -101,7 +101,6 @@ typedef struct fdd_t {
   int do_read_weak;
   int c_head;		/* current head (side) */
   int c_cylinder;	/* current cylinder number (0 -> TR00) */
-  int c_bpt;		/* current track length in bytes */
   int motoron;		/* motor on */
   int loadhead;		/* head loaded */
   int index_pulse;	/* 'second' index hole, for index status */

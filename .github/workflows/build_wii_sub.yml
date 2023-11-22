@@ -58,7 +58,6 @@ jobs:
           echo "$DEVKITPPC/bin" >> $GITHUB_PATH
 
       - name: (2) Install dependencies
-        if: 
         run: |
           echo "Installing dependencies .."
           echo "Using devkitpro/devkitppc image"
