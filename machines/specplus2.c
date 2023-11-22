@@ -54,6 +54,7 @@ int specplus2_init( fuse_machine_info *machine )
   machine->ram.valid_pages	     = 8;
 
   machine->unattached_port = spectrum_unattached_port;
+  machine->writeback = spec128_get_writeback( 0 );
 
   machine->shutdown = NULL;
 
