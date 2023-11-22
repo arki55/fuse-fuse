@@ -116,6 +116,7 @@ Checkbox, (F)uller Box, fuller, INPUT_KEY_f
 Checkbox, M(e)lodik, melodik, INPUT_KEY_e
 Checkbox, Spec(D)rum interface, specdrum, INPUT_KEY_d
 Checkbox, C(o)vox interface, covox, INPUT_KEY_o
+Checkbox, (u)Speech, uspeech, INPUT_KEY_u
 Checkbox, D/A Converter interface, dac3ch, INPUT_KEY_3
 Postcheck, periph_postcheck
 Posthook, periph_posthook
@@ -163,6 +164,7 @@ Entry, A(Y) volume, volume_ay, INPUT_KEY_y, 3, %
 Entry, B(e)eper volume, volume_beeper, INPUT_KEY_e, 3, %
 Entry, Spec(D)rum volume, volume_specdrum, INPUT_KEY_d, 3, %
 Entry, (C)ovox volume, volume_covox, INPUT_KEY_c, 3, %
+Entry, (u)Speech volume, volume_uspeech, INPUT_KEY_u, 3, %
 Entry, D/A converter volume, volume_dac3ch, INPUT_KEY_3, 3, %
 
 diskoptions

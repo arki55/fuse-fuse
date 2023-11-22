@@ -86,6 +86,7 @@
 #include "peripherals/multiface.h"
 #include "peripherals/printer.h"
 #include "peripherals/scld.h"
+#include "peripherals/sound/uspeech.h"
 #include "peripherals/speccyboot.h"
 #include "peripherals/spectranet.h"
 #include "peripherals/ttx2000s.h"
@@ -162,6 +163,7 @@ static void creator_register_startup( void );
 
 static void fuse_show_copyright(void);
 static void fuse_show_version( void );
+static void fuse_show_test_build_info( void );
 static void fuse_show_help( void );
 
 static int setup_start_files( start_files_t *start_files );
@@ -345,6 +347,7 @@ run_startup_manager( int *argc, char ***argv )
   timer_register_startup();
   ula_register_startup();
   usource_register_startup();
+  uspeech_register_startup();
   z80_register_startup();
   zxatasp_register_startup();
   zxcf_register_startup();
@@ -410,6 +413,14 @@ static int fuse_init(int argc, char **argv)
 
   fuse_emulation_paused = 0;
   movie_init();
+
+#ifdef FUSE_TEST_BUILD
+  /* Show warning in case of test build */
+  ui_error( UI_ERROR_WARNING,
+    FUSE_TEST_LINE "\n"
+    FUSE_TEST_BUILD
+  );
+#endif
 
   return 0;
 }
@@ -502,6 +513,20 @@ static void fuse_show_copyright(void)
 static void fuse_show_version( void )
 {
   printf( "The Free Unix Spectrum Emulator (Fuse) version " VERSION ".\n" );
+
+  fuse_show_test_build_info();
+}
+
+static void fuse_show_test_build_info( void )
+{
+#ifdef FUSE_TEST_BUILD
+  printf(
+    "\n"
+    FUSE_TEST_LINE "\n"
+    FUSE_TEST_BUILD "\n"
+    "\n"
+    );
+#endif
 }
 
 static void fuse_show_help( void )

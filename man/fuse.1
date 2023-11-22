@@ -1276,6 +1276,9 @@ are not.
 .B \-\-rom\-opus
 .I file
 .br
+.B \-\-rom\-sp0256
+.I file
+.br
 .B \-\-rom\-speccyboot
 .I file
 .br
@@ -1283,6 +1286,9 @@ are not.
 .I file
 .br
 .B \-\-rom\-usource
+.I file
+.br
+.B \-\-rom\-uspeech
 .I file
 .RS
 Specify the file to be used for ROM(s) used for each peripheral. The
@@ -1307,10 +1313,14 @@ the Opus Discovery ROM
 .RI ( opus.rom ),
 the SpeccyBoot ROM
 .RI ( speccyboot\-1.4.rom ),
+the SP0256 ROM
+.RI ( sp0256-al2.rom ),
 the TTX2000S ROM
 .RI ( ttx2000s.rom ),
 and the \(mcSource ROM
-.RI ( usource.rom ).
+.RI ( usource.rom ),
+the \(mcSpeech ROM
+.RI ( uspeech.rom ).
 .PP
 The names in brackets denote the defaults. Note that not all these ROMs
 are supplied with Fuse \(em you must supply your own copies of those which
@@ -1927,6 +1937,13 @@ Emulate a \(mcSource interface. Same as the General Peripherals Options dialog's
 option.
 .RE
 .PP
+.B \-\-uspeech
+.RS
+Emulate a \(mcSpeech interface. Same as the Sound Peripherals Options dialog's
+.I "\(mcSpeech"
+option.
+.RE
+.PP
 .B \-V
 .br
 .B \-\-version
@@ -1967,6 +1984,15 @@ option.
 Sets the relative volume of the SpecDrum from a range of 0\(en100%.
 Same as the Sound Options dialog's
 .I "SpecDrum volume"
+option.
+.RE
+.PP
+.B \-\-volume\-uspeech
+.I volume
+.RS
+Sets the relative volume of the \(mcSpeech from a range of 0\(en100%.
+Same as the Sound Options dialog's
+.I "uSpeech volume"
 option.
 .RE
 .PP
@@ -2677,6 +2703,11 @@ Sets the relative volume of the Covox from a range of 0\(en100%.
 .RS
 Sets the relative volume of the SpecDrum from a range of 0\(en100%.
 .RE
+.PP
+.I "uSpeech volume"
+.RS
+Sets the relative volume of the \(mcSpeech from a range of 0\(en100%.
+.RE
 .RE
 .PP
 .I "Options, Peripherals, General..."
@@ -2873,6 +2904,14 @@ interface.  See the World of Spectrum Infoseek web page at
 .I http://www.worldofspectrum.org/infoseekid.cgi?id=1000062
 for manuals, software and more. This emulation is only available for
 the 48k, 128k and TC2048 machines.
+.RE
+.PP
+.I "\(mcSpeech"
+.RS
+If this option is selected, Fuse will emulate a Currah \(mcSpeech interface.
+See the World of Spectrum Infoseek web page at
+.I http://www.worldofspectrum.org/infoseekid.cgi?id=1000081
+for the manual, software and more.
 .RE
 .RE
 .PP
@@ -4899,6 +4938,13 @@ tape:stop
 The emulated tape starts or stops playing.
 .RE
 .br
+uspeech:page
+.br
+uspeech:unpage
+.RS
+The \(mcSpeech interface is paged into or out of memory.
+.RE
+.br
 zxatasp:page
 .br
 zxatasp:unpage
@@ -5124,6 +5170,7 @@ Other available sources are:
 .RI ` "Timex Dock" "',"
 .RI ` "Timex EXROM" "',"
 .RI ` uSource "',"
+.RI ` uSpeech "',"
 .RI ` ZXATASP '
 and
 .RI ` ZXCF "'."
@@ -5355,6 +5402,19 @@ option additionally controls whether the machine boots directly into the TR-DOS
 system. See the
 .B "DISK FILE FORMATS"
 section for more details on supported disk file formats.
+.\"
+.\"------------------------------------------------------------------
+.\"
+.SH CURRAH \(mcSPEECH
+.PP
+Currah \(mcSpeech interface is an allophone speech synthesiser.
+This interface use a SP0256-AL2 chip that has an internal ROM with
+commands to make english allophones. Fuse needs this ROM named as
+sp0256-al2.rom in your ROMs directory and its CRC-32 is b504ac15.
+.PP
+An alternative authorised ROM is distributed by Joe Zbiciak with
+CRC-32 df8de0b0. In this case, bit ordering in data bytes is reversed
+and need to be adjusted.
 .\"
 .\"------------------------------------------------------------------
 .\"

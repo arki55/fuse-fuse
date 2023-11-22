@@ -37,6 +37,8 @@ void sound_ay_write( int reg, int val, libspectrum_dword now );
 void sound_ay_reset( void );
 void sound_specdrum_write( libspectrum_word port, libspectrum_byte val );
 void sound_covox_write( libspectrum_word port, libspectrum_byte val );
+void sound_sp0256_write( libspectrum_dword at_tstates,
+                         libspectrum_signed_word val );
 void sound_dac3ch_write_left( libspectrum_byte val );
 void sound_dac3ch_write_right( libspectrum_byte val );
 void sound_dac3ch_write_middle( libspectrum_byte val );

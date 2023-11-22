@@ -39,7 +39,9 @@ fuse_SOURCES += \
                 peripherals/sound/dac3ch.c \
                 peripherals/sound/fuller.c \
                 peripherals/sound/melodik.c \
+                peripherals/sound/sp0256.c \
                 peripherals/sound/specdrum.c \
+                peripherals/sound/uspeech.c \
                 peripherals/disk/beta.c \
                 peripherals/disk/crc.c \
                 peripherals/disk/didaktik.c \
@@ -90,7 +92,9 @@ noinst_HEADERS += \
                   peripherals/sound/dac3ch.h \
                   peripherals/sound/fuller.h \
                   peripherals/sound/melodik.h \
+                  peripherals/sound/sp0256.h \
                   peripherals/sound/specdrum.h \
+                  peripherals/sound/uspeech.h \
                   peripherals/disk/beta.h \
                   peripherals/disk/crc.h \
                   peripherals/disk/didaktik.h \

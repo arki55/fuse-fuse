@@ -5,11 +5,19 @@ run-name: Build Fuse App for windows / ${{ github.actor }} /
 on:
   workflow_call:
     inputs:
+      # Name this setup (no spaces please)
+      key:
+        type: string
+        required: true
       dependencies:
         type: string
         required: false
         default: ""
       configure_params:
+        type: string
+        required: false
+        default: ""
+      fuse_version:
         type: string
         required: false
         default: ""
@@ -28,6 +36,10 @@ on:
         type: string
         required: false
         default: ""
+      upload_artifacts:
+        type: boolean
+        required: false
+        default: true
 
 jobs:
   build:
@@ -41,6 +53,10 @@ jobs:
       CPPFLAGS: "-I/usr/local/i686-w64-mingw32/include"
       LDFLAGS: "-L/usr/local/i686-w64-mingw32/lib"
       PKG_CONFIG_LIBDIR: "/usr/local/i686-w64-mingw32/lib/pkgconfig:/usr/i686-w64-mingw32/sys-root/mingw/lib/pkgconfig"    
+      
+      # Small help when copying dlls
+      CYGWIN_LIBDIR: "/usr/i686-w64-mingw32/sys-root/mingw/bin/"
+      
       # In case of SDL
       SDL_CONFIG: "/usr/i686-w64-mingw32/sys-root/mingw/bin/sdl-config"
     steps:
@@ -73,6 +89,7 @@ jobs:
             gettext-devel \
             libtool \
             make \
+            zip \
             mingw64-i686-bzip2 \
             mingw64-i686-gcc-core \
             mingw64-i686-gcc-g++ \
@@ -80,7 +97,7 @@ jobs:
             mingw64-i686-libgpg-error \
             mingw64-i686-libpng \
             mingw64-i686-win-iconv \
-            mingw64-i686-winpthread \
+            mingw64-i686-winpthreads \
             mingw64-i686-zlib \
             mingw64-i686-audiofile \
             pkg-config \
@@ -92,7 +109,7 @@ jobs:
           name: libspectrum-installed-windows-fuse-app
           path: libspectrum
 
-      - name: (5) Install libspectrum from artefact
+      - name: (4b) Install libspectrum from artefact
         run: |
           cd ${GITHUB_WORKSPACE}
           # Extract (-x) files into /usr/local (cannot work with root /)
@@ -101,14 +118,26 @@ jobs:
           echo "Done"
         shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
 
-      - name: (6) Autogen.sh
+      - name: (5a) Adjust fuse_version
+        if: ${{ inputs.fuse_version }}
+        run: |
+          cd ${GITHUB_WORKSPACE}
+          file="configure.ac"
+          replace="${{ inputs.fuse_version }}"
+          content=`cat $file`
+          content2=${content//m4_define(\[fuse_version\], \[[0-9].[0-9].[0-9]\])/m4_define(\[fuse_version\], \[$replace\])}
+          echo "$content2" > $file
+        shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
+
+      - name: (5b) Autogen.sh
         run: |
           cd ${GITHUB_WORKSPACE}
           echo "Running autogen.sh .."
           ./autogen.sh
         shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
 
-      - name: (7) Configure for Windows
+      - name: (6) Configure for Windows
+        id: run-configure
         run: |
           cd ${GITHUB_WORKSPACE}
           echo "Running configure .."
@@ -121,7 +150,16 @@ jobs:
           |& tee ./configure.out
         shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
 
-      - name: (8) Verify output from configure
+      - name: (6b) Check config.log (on failure)
+        if: failure() && steps.run-configure.outcome != 'success'
+        run: |
+          cd ${GITHUB_WORKSPACE}
+
+          echo "Reading config.log file .."
+          cat config.log
+        shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
+
+      - name: (6c) Verify output from configure
         # Most of the tested strings are common for all Windows builds
         # Only the strings related to UI selection differ
         run: |          
@@ -139,14 +177,16 @@ jobs:
           .github/scripts/in_config.sh "libxml2 support: ${{ inputs.verify_libxml2 }}"
           .github/scripts/in_config.sh "Selected audio driver: ${{ inputs.verify_audio }}"
         shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
-      - if: ${{ inputs.verify_other }}
+
+      - name: (6d) Verify optional parameter
+        if: ${{ inputs.verify_other }}
         run: |
           cd ${GITHUB_WORKSPACE}
           
           .github/scripts/in_config.sh "${{ inputs.verify_other }}"
         shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
 
-      - name: (9) Make
+      - name: (7) Make
         run: |
           cd ${GITHUB_WORKSPACE}
           
@@ -154,14 +194,123 @@ jobs:
           make
         shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
 
-      - name: (10) Install
+      - name: (8) Copy dependency dlls
+        id: copy-dlls
+        run: |
+          cd ${GITHUB_WORKSPACE}
+          echo "Create distrib folder if missing .."
+          
+          FUSE_VERSION=`./configure --version | grep -Eo "fuse configure (.+)"`
+          FUSE_VERSION=${FUSE_VERSION//fuse configure /}
+          echo "Fuse version: $FUSE_VERSION"
+          
+          DEST_DIR="fuse-${FUSE_VERSION}-${{ inputs.verify_ui }}"
+          echo "Dest dir: $DEST_DIR"
+          if [[ ! -d "$DEST_DIR" ]]; then 
+            mkdir $DEST_DIR
+          fi
+          
+          echo "Copying mandatory dependency dlls .."
+          cp ${CYGWIN_LIBDIR}libgcc_s_sjlj-1.dll $DEST_DIR
+          cp ${CYGWIN_LIBDIR}libwinpthread-1.dll $DEST_DIR
+          cp ${CYGWIN_LIBDIR}libgpg-error-0.dll $DEST_DIR
+          cp ${CYGWIN_LIBDIR}libstdc++-6.dll $DEST_DIR
+          cp ${CYGWIN_LIBDIR}libpng16-16.dll $DEST_DIR
+          
+          echo "Copying optional dependency dlls .."
+          # Don't have logic to check what was enabled, so copying all
+          
+          # SDL dlls
+          cp ${CYGWIN_LIBDIR}SDL.dll $DEST_DIR || true
+
+          # Zlib dlls
+          cp ${CYGWIN_LIBDIR}zlib1.dll $DEST_DIR || true
+          
+          # Bzip2 dlls
+          cp ${CYGWIN_LIBDIR}libbz2-1.dll $DEST_DIR || true
+          
+          # libgcrypt dlls
+          cp ${CYGWIN_LIBDIR}libgcrypt-20.dll $DEST_DIR || true
+          
+          # Audiofile dlls
+          cp ${CYGWIN_LIBDIR}libaudiofile-1.dll $DEST_DIR || true
+          cp ${CYGWIN_LIBDIR}libFLAC-8.dll $DEST_DIR || true
+          cp ${CYGWIN_LIBDIR}libOGG-0.dll $DEST_DIR || true
+          
+          # LibXML2 dlls
+          cp ${CYGWIN_LIBDIR}libxml2-2.dll $DEST_DIR || true
+          cp ${CYGWIN_LIBDIR}iconv.dll $DEST_DIR || true
+          cp ${CYGWIN_LIBDIR}liblzma-5.dll $DEST_DIR || true
+          
+          echo "Copying libspectrum dll .."
+          cp /usr/local/i686-w64-mingw32/bin/libspectrum-9.dll $DEST_DIR
+          
+          # Copy them to z80 folder as well
+          cp -r $DEST_DIR/*.dll z80/
+          
+          echo "Remember distribution path .."
+          echo "FUSE_DISTR_DIR=${DEST_DIR}" >> "$GITHUB_OUTPUT"
+          
+          echo "Done."
+          
+        shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
+          
+      - name: (9) Run tests
+        id: run-tests
         run: |
           cd ${GITHUB_WORKSPACE}
           
-          echo "Running make dist-win32-dir .."
-          make install dist-win32-dir
+          echo "Bulding and running tests .."
+          #cd z80
+          #./coretest.exe
+          echo "(skipped)"
+          
         shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
 
-      - name: (11) Finish
+      - name: (10) Create distribution file(s)
+        run: |
+          cd ${GITHUB_WORKSPACE}
+          
+          echo "Running make dist-win32-zip .."
+          make dist-win32-zip
+        shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
+
+      - name: (10b) Rename distribution files, patch SHA1 file
+        id: rename-files
+        run: |
+          cd ${GITHUB_WORKSPACE}
+
+          base_name="fuse-windows-${{ inputs.key }}"
+
+          zip_from=${{ steps.copy-dlls.outputs.FUSE_DISTR_DIR }}.zip
+          zip_to="${base_name}.zip"
+
+          echo "Renaming ZIP file from $zip_from to $zip_to"
+          mv $zip_from $zip_to
+
+          sha1_from=${{ steps.copy-dlls.outputs.FUSE_DISTR_DIR }}.zip.sha1
+          sha1_to="${base_name}.zip.sha1"
+
+          echo "Renaming SHA1 file from $sha1_from to $sha1_to"
+          mv $sha1_from $sha1_to
+
+          echo "Remember new file names"
+          echo "FUSE_DISTR_BASE=${base_name}" >> "$GITHUB_OUTPUT"
+          echo "FUSE_DISTR_ZIP=${zip_to}" >> "$GITHUB_OUTPUT"
+          echo "FUSE_DISTR_SHA1=${sha1_to}" >> "$GITHUB_OUTPUT"
+
+        shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
+
+      - name: (11) Upload generated artifact(s)
+        if: ${{ inputs.upload_artifacts }}
+        uses: actions/upload-artifact@v3
+        with: 
+          name: ${{ steps.rename-files.outputs.FUSE_DISTR_BASE }}
+          if-no-files-found: error
+          path: |
+            ${{ steps.rename-files.outputs.FUSE_DISTR_ZIP }}
+            ${{ steps.rename-files.outputs.FUSE_DISTR_SHA1 }}
+
+      - name: (12) Finish
         run: |
           echo "🍏 Finishing with status ${{ job.status }}."

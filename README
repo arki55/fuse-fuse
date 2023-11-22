@@ -26,8 +26,8 @@ What Fuse does have:
   rollback and 'competition mode'.
 * Emulation of the Currah µSource, Interface 1, Kempston mouse,
   Multiface One/128/3 and TTX2000S interfaces.
-* Emulation of the Covox, Fuller audio box, Melodik, SpecDrum 
-  and 3 channel D/A converter audio interfaces.
+* Emulation of the Covox, Currah µSpeech, Fuller audio box, Melodik,
+  SpecDrum and 3 channel D/A converter audio interfaces.
 * Emulation of the DivIDE, DivMMC, Spectrum +3e, ZXATASP, ZXCF and ZXMMC
   storage interfaces.
 * Emulation of the Beta 128, +D, Didaktik 80/40, DISCiPLE and Opus Discovery

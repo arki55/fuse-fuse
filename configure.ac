@@ -30,7 +30,7 @@ m4_define([fuse_full_version], [fuse_major_version.fuse_minor_version.fuse_micro
 m4_define([fuse_rc_version], [fuse_major_version,fuse_minor_version,fuse_micro_version,fuse_nano_version])
 
 dnl Package info
-m4_define([fuse_copyright], ["(c) 1999-2021 Philip Kendall and others"])
+m4_define([fuse_copyright], ["(c) 1999-2023 Philip Kendall and others"])
 m4_define([fuse_url], [http://fuse-emulator.sourceforge.net/])
 m4_define([fuse_bugreport], [http://sourceforge.net/p/fuse-emulator/bugs/])
 
@@ -56,6 +56,23 @@ dnl Definitions for config.h
 AC_DEFINE([FUSE_RC_VERSION], [fuse_rc_version],
           [Define version information for win32 executables])
 AC_DEFINE([FUSE_COPYRIGHT], [fuse_copyright], [Define copyright of Fuse])
+
+dnl Configure option to specify testing build info
+AC_MSG_CHECKING(testing build information)
+AC_ARG_WITH(test-build,
+[  --with-test-build=INFO  specify testing build information],
+  ,
+  unset withval
+)
+if test "$withval" = ""; then
+  echo 'not a testing build'
+else
+  withval=${withval//#NOW#/`date -u`}
+  echo "$withval"
+  AC_DEFINE_UNQUOTED([FUSE_TEST_LINE], ["This is a special build for testing purposes:"], [Testing warning line])
+  AC_DEFINE_UNQUOTED([FUSE_TEST_BUILD], ["$withval"], [Testing build information])
+  test_build="$withval"
+fi
 
 dnl Checks for programs.
 AC_PROG_CC
@@ -1074,6 +1091,17 @@ echo "Spectranet support: ${build_spectranet}"
 echo "SpeccyBoot support: ${linux_tap:-no}"
 echo "TTX2000 S support: ${build_ttx2000s}"
 echo "Desktop integration: ${desktopintegration}"
+
+if test "${test_build}" != ""; then
+  echo ""
+  echo "*********************"
+  echo "*** Testing build ***"
+  echo "*********************"
+  echo "This build will display the following information"
+  echo "  to distinguish it from official version:"
+  echo -e $test_build
+fi
+
 echo ""
 echo "Type 'make' to compile Fuse"
 echo ""
