@@ -25,16 +25,35 @@ on:
         required: true
         default: "master"
         description: "Libspectrum's branch to use"
-      add_date_time:
-        type: boolean
+      fuse_version_pattern:
+        type: string
         required: false
-        default: false
-        description: "If enabled, current date and time is added to the name and tag of release, making it unique." 
+        default: "<ver>"
+        description: "Defines pattern for fuse version string. Defaults to current detected version."
+      tag_pattern:
+        type: string
+        required: false
+        default: "test_<ref>_<dt>"
+        description: "Defines pattern for release tag name. Defaults to test_<ref>_<dt>"
       keep_latest:
         type: number
         required: false
         default: 0
         description: "Number of latest releases to keep (only if date and time is appended)"
+      merge_master:
+        type: boolean
+        required: false
+        default: false
+        description: "Before building starts, merge branch PARENT_FUSE_BRANCH from PARENT_FUSE_REPO."
+      merge_master_cancel:
+        type: boolean
+        required: false
+        default: false
+        description: "Cancel whole release build if there's nothing to be merged from parent repo."
+      build_type:
+       type: string
+       required: true
+       description: "Possible values 'STD' or 'TEST'"
 
   # Reused also from nightly build workflow
   workflow_call:
@@ -58,21 +77,209 @@ on:
         required: false
         default: "master"
         description: "Libspectrum's branch to use"
-      add_date_time:
-        type: boolean
+      fuse_version_pattern:
+        type: string
         required: false
-        default: false
-        description: "If enabled, current date and time is added to the name and tag of release, making it unique." 
+        default: "<ver>"
+        description: "Defines pattern for fuse version string. Defaults to current detected version."
+      tag_pattern:
+        type: string
+        required: false
+        default: "test_<ref>_<dt>"
+        description: "Defines pattern for release tag name. Defaults to test_<ref>_<dt>"
       keep_latest:
         type: number
         required: false
         default: 0
         description: "Number of latest releases to keep (only if date and time is appended)"
+      merge_master:
+        type: boolean
+        required: false
+        default: false
+        description: "Before building starts, merge branch PARENT_FUSE_BRANCH from PARENT_FUSE_REPO."
+      merge_master_cancel:
+        type: boolean
+        required: false
+        default: false
+        description: "Cancel whole release build if there's nothing to be merged from parent repo."
+      build_type:
+        type: string
+        required: true
+        description: "Possible values 'STD' or 'TEST'"
     secrets:
       RELEASE_TOKEN:
-          required: true
+        required: true
+      LIBSPECTRUM_TOKEN:
+        required: false
 
 jobs:
+
+  ########################################
+  ###  Merge master, bump up version.. ###
+  ########################################
+
+  libspectrum-update-branch:
+    name: "Update branch (Libspectrum)"
+    runs-on: ubuntu-latest
+    if: ${{ vars.LIBSPECTRUM_REPO }} && ${{ vars.PARENT_LIBSPECTRUM_BRANCH }} && ${{ vars.PARENT_LIBSPECTRUM_REPO }} && ${{ vars.GIT_EMAIL }} && ${{ vars.GIT_NAME }}
+    permissions:
+      contents: write
+    steps:
+      - name: "Checkout Libspectrum code"
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          repository: ${{ vars.LIBSPECTRUM_REPO }}
+          ref: ${{ inputs.libspectrum_branch }}
+          token: ${{ secrets.LIBSPECTRUM_TOKEN }}
+      - name: "Prepare git"
+        run: |
+          git config --global user.email "${{ vars.GIT_EMAIL }}"
+          git config --global user.name "${{ vars.GIT_NAME }}"
+          echo "Configured git as ${{ vars.GIT_EMAIL }} / ${{ vars.GIT_NAME }}"
+      - name: "Merge fresh ${{ vars.PARENT_LIBSPECTRUM_BRANCH }} from ${{ vars.PARENT_LIBSPECTRUM_REPO }}"
+        if: ${{ inputs.merge_master }}
+        run: |
+          git fetch --prune
+          git remote add repo ${{ vars.PARENT_LIBSPECTRUM_REPO }}
+          git fetch repo
+          git merge repo/${{ vars.PARENT_LIBSPECTRUM_BRANCH }}
+      - name: "Push all changes"
+        run: |
+          git push
+
+  fuse-update-branch:
+    name: "Update branch (Fuse)"
+    runs-on: ubuntu-latest
+    if: ${{ vars.PARENT_FUSE_BRANCH }} && ${{ vars.PARENT_FUSE_REPO }} && ${{ vars.GIT_EMAIL }} && ${{ vars.GIT_NAME }}
+    permissions:
+      contents: write
+    steps:
+      - name: "Checkout code"
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: "Prepare git"
+        run: |
+          git config --global user.email "${{ vars.GIT_EMAIL }}"
+          git config --global user.name "${{ vars.GIT_NAME }}"
+          echo "Configured git as ${{ vars.GIT_EMAIL }} / ${{ vars.GIT_NAME }}"
+      - name: "Merge fresh ${{ vars.PARENT_FUSE_BRANCH }} from ${{ vars.PARENT_FUSE_REPO }}"
+        if: ${{ inputs.merge_master }}
+        run: |
+          git fetch --prune
+          git remote add repo ${{ vars.PARENT_FUSE_REPO }}
+          git fetch repo
+          merged=`git merge repo/${{ vars.PARENT_FUSE_BRANCH }}`
+          echo "Merge: ${merged}"
+          if [[ "${{ inputs.merge_master_cancel }}" == "true" ]]; then
+            if [[ "${merged}" == "Already up to date." ]]; then
+              echo "::notice::Already up to date, so cancelling release build."
+              exit 1
+            fi
+          fi
+      - name: "Push all changes"
+        run: |
+          git push
+  
+  ########################################
+  ###  Prepare version related vars..  ###
+  ########################################
+
+  prep-vars:
+    name: "Prepare variables"
+    runs-on: ubuntu-latest
+    needs: [fuse-update-branch]
+    outputs:
+      use_tag: ${{ steps.prep-tag.outputs.use_tag }}
+      delete_tag_pattern: ${{ steps.prep-tag.outputs.delete_tag_pattern }}
+      fuse_version_old: ${{ steps.prep-vars.outputs.fuse_version }}
+      fuse_version_new: ${{ steps.prep-version.outputs.fuse_version }}
+    steps:
+      - name: "Checkout code"
+        uses: actions/checkout@v3
+
+      # Prepare variables
+      - name: "Prepare variables"
+        id: prep-vars
+        run: |
+          cd ${GITHUB_WORKSPACE}
+          
+          current_date_time=`date "+%Y-%m-%d--%H-%M-%S"`
+          echo "Current date time: ${current_date_time}"
+          echo "current_date_time=${current_date_time}" >> "$GITHUB_OUTPUT"
+
+          git_ref_name="${{ github.ref_name }}"
+          echo "GIT ref name: ${git_ref_name}"
+          echo "git_ref_name=${git_ref_name}" >> "$GITHUB_OUTPUT"
+
+          git_log_date_iso=$(git log --date=iso -1 | grep -Po "[-0-9]{10}")
+          echo "GIT log date ISO: ${git_log_date_iso}"
+          echo "git_log_date_iso=${git_log_date_iso}" >> "$GITHUB_OUTPUT"
+
+          git_log_date=${git_log_date_iso//-/}
+          echo "GIT log date: ${git_log_date}"
+          echo "git_log_date=${git_log_date}" >> "$GITHUB_OUTPUT"
+
+          file="configure.ac"
+          fuse_version=`cat "$file" | grep -E "\[fuse_version\]" | grep -Eo ', \[.+\]' | grep -Eo '([0-9\.]+)'`
+          echo "Fuse version: ${fuse_version}"
+          echo "fuse_version=${fuse_version}" >> "$GITHUB_OUTPUT"
+
+      # Prepare friendly tag name
+      # Suported placeholders: <ref> <dt> <log_date> <ver>
+      - name: "Prepare tag name"
+        id: prep-tag
+        run: |
+          use_tag="${{ inputs.tag_pattern }}"
+          delete_tag_pattern="${use_tag}"
+
+          # Placeholders - tag name
+          use_tag="${use_tag//<ref>/${{ steps.prep-vars.outputs.git_ref_name }}}"
+          use_tag="${use_tag//<dt>/${{ steps.prep-vars.outputs.current_date_time }}}"
+          use_tag="${use_tag//<log_date>/${{ steps.prep-vars.outputs.git_log_date }}}"
+          use_tag="${use_tag//<log_date_iso>/${{ steps.prep-vars.outputs.git_log_date_iso }}}"
+          use_tag="${use_tag//<ver>/${{ steps.prep-vars.outputs.fuse_version }}}"
+
+          # Placeholders - patterm for deleting old releases
+          delete_tag_pattern="${delete_tag_pattern//<ref>/${{ steps.prep-vars.outputs.git_ref_name }}}"
+          delete_tag_pattern="${delete_tag_pattern//<dt>/}"
+          delete_tag_pattern="${delete_tag_pattern//<log_date>/}"
+          delete_tag_pattern="${delete_tag_pattern//<log_date_iso>/}"
+          delete_tag_pattern="${delete_tag_pattern//<ver>/${{ steps.prep-vars.outputs.fuse_version }}}"
+
+          # Slashes to _
+          use_tag="${use_tag//\//_}"
+          delete_tag_pattern="${delete_tag_pattern//\//_}"
+
+          echo "Tag name: ${use_tag}"
+          echo "Tag delete pattern: ${delete_tag_pattern}"
+          echo "use_tag=${use_tag}" >> "$GITHUB_OUTPUT"
+          echo "delete_tag_pattern=${delete_tag_pattern}" >> "$GITHUB_OUTPUT"
+        shell: bash
+
+      # Prepare new version name from a pattern
+      # Suported placeholders: <ref> <dt> <log_date> <ver>
+      - name: "Prepare new fuse version"
+        id: prep-version
+        run: |
+          fuse_version="${{ inputs.fuse_version_pattern }}"
+
+          # Placeholders
+          fuse_version="${fuse_version//<ref>/${{ steps.prep-vars.outputs.git_ref_name }}}"
+          fuse_version="${fuse_version//<dt>/${{ steps.prep-vars.outputs.current_date_time }}}"
+          fuse_version="${fuse_version//<log_date>/${{ steps.prep-vars.outputs.git_log_date }}}"
+          fuse_version="${fuse_version//<log_date_iso>/${{ steps.prep-vars.outputs.git_log_date_iso }}}"
+          fuse_version="${fuse_version//<ver>/${{ steps.prep-vars.outputs.fuse_version }}}"
+
+          # Slashes to _
+          fuse_version="${fuse_version//\//_}"
+
+          echo "Fuse version old: ${{ steps.prep-vars.outputs.fuse_version }}"
+          echo "Fuse version new: ${fuse_version}"
+
+          echo "fuse_version=${fuse_version}" >> "$GITHUB_OUTPUT"
+        shell: bash
 
   ########################################
   ###  Make dependecies (Libspectrum)  ###
@@ -81,6 +288,7 @@ jobs:
   libspectrum-windows:
     # Reuse libspectrum's build wokflow and artefact (all libs enabled, fake glib)
     name: "Libspectrum lib"
+    needs: [libspectrum-update-branch]
     uses: arki55/fuse-libspectrum/.github/workflows/build_windows_sub.yml@master
     with:
       branch: ${{ inputs.libspectrum_branch }}
@@ -94,7 +302,7 @@ jobs:
   # Win32 UI
   build-win32-ui-default:
     name: "Fuse Win32 UI"
-    needs: [libspectrum-windows]
+    needs: [libspectrum-windows, fuse-update-branch, prep-vars]
     uses: ./.github/workflows/test_release_windows_sub.yml
     with:
       reason: ${{ inputs.reason }}
@@ -103,11 +311,13 @@ jobs:
       configure_params: "--with-win32"
       verify_ui: "win32"
       verify_audio: "directsound"
+      build_type: ${{ inputs.build_type }}
+      fuse_version: ${{ needs.prep-vars.outputs.fuse_version_new }}
 
   # SDL1 UI+sound
   build-sdl-ui-sdl-sound:
     name: "Fuse SDL1 (UI + sound)"
-    needs: [libspectrum-windows]
+    needs: [libspectrum-windows, fuse-update-branch, prep-vars]
     uses: ./.github/workflows/test_release_windows_sub.yml
     with:
       reason: ${{ inputs.reason }}
@@ -117,6 +327,8 @@ jobs:
       verify_ui: "sdl"
       verify_audio: "sdl"
       verify_other: "Using SDL 2: no"
+      build_type: ${{ inputs.build_type }}
+      fuse_version: ${{ needs.prep-vars.outputs.fuse_version_new }}
 
   ########################################
   ### Create release, attach ZIP files ###
@@ -125,31 +337,14 @@ jobs:
   release:
     name: "Create Testing release"
     needs:
+      - prep-vars
       - build-win32-ui-default
       - build-sdl-ui-sdl-sound
     runs-on: ubuntu-latest
-    outputs:
-      use_tag: ${{ steps.prep.outputs.use_tag }}
-      use_tag_base: ${{ steps.prep.outputs.use_tag_base }}
+    env:
+      use_tag: ${{ needs.prep-vars.outputs.use_tag }}
+      delete_tag_pattern: ${{ needs.prep-vars.outputs.delete_tag_pattern }}
     steps:
-      # Prepare friendly tag name ( slashes => _ )
-      - name: (1) Prepare variables
-        id: prep
-        run: |
-          ref_name="${{ github.ref_name }}"
-          use_tag="test_${ref_name//\//_}"
-          use_tag_base="${use_tag}"
-
-          if [[ ${{ inputs.add_date_time == 'true' }} ]]; then
-            dt=`date "+%Y-%m-%d--%H-%M-%S"`
-            use_tag="${use_tag}_${dt}"
-          fi
-
-          echo "Tag name: ${use_tag}"
-          echo "Tag base: ${use_tag_base}"
-          echo "use_tag=${use_tag}" >> "$GITHUB_OUTPUT"
-          echo "use_tag_base=${use_tag_base}" >> "$GITHUB_OUTPUT"
-
       # Prepare readme file for created release
       - name: (2) Prepare description file
         id: readme
@@ -178,7 +373,7 @@ jobs:
           # Attach all generated build zips
           artifacts: "*/*.zip"
           # determines structure of files in Source Forge
-          tag: "${{ steps.prep.outputs.use_tag }}"
+          tag: "${{ env.use_tag }}"
           # Is not an official release
           prerelease: true
           # Needs to be published manually?
@@ -206,7 +401,7 @@ jobs:
         with:
           # Repeat some values as they were in the previous step
           name: "Test build for ${{ github.ref_name }}"
-          tag: "${{ steps.prep.outputs.use_tag }}"
+          tag: "${{ env.use_tag }}"
           prerelease: true
           draft: ${{ inputs.draft }}
           commit: ${{ github.ref_name }}
@@ -226,17 +421,18 @@ jobs:
           echo 'Id: ${{ steps.create-release.outputs.id }}' >> $GITHUB_STEP_SUMMARY
           echo 'Url: ${{ steps.create-release.outputs.html_url }}' >> $GITHUB_STEP_SUMMARY
           echo 'Upload Url: ${{ steps.create-release.outputs.upload_url }}' >> $GITHUB_STEP_SUMMARY
-          echo 'Tag base: ${{ steps.prep.outputs.use_tag_base }}' >> $GITHUB_STEP_SUMMARY
-          echo 'Tag name: ${{ steps.prep.outputs.use_tag }}' >> $GITHUB_STEP_SUMMARY
+          echo 'Tag delete pattern: ${{ env.delete_tag_pattern }}' >> $GITHUB_STEP_SUMMARY
+          echo 'Tag name: ${{ env.use_tag }}' >> $GITHUB_STEP_SUMMARY
 
   ###############################################
   ### Cleanup, delete olf releases (optional) ###
   ###############################################
   cleanup:
-    if: inputs.add_date_time && inputs.keep_latest>0
+    if: inputs.keep_latest>0
     name: "Delete Older Releases"
     needs:
-     - release
+      - prep-vars
+      - release
     runs-on: ubuntu-latest
     steps:
       - name: Delete Older Releases
@@ -244,6 +440,6 @@ jobs:
         with:
           keep_latest: ${{ inputs.keep_latest }}
           delete_tags: true
-          delete_tag_pattern: "${{ needs.release.outputs.use_tag_base }}"
+          delete_tag_pattern: "${{ needs.prep-vars.outputs.delete_tag_pattern }}"
         env:
           GITHUB_TOKEN: "${{ secrets.RELEASE_TOKEN }}"
