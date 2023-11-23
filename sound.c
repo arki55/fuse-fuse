@@ -793,7 +793,6 @@ sound_sp0256_write( libspectrum_dword at_tstates, libspectrum_signed_word val )
   }
 }
 
-void
 /*
  * sound_dac3ch_write_a/b/c
  * Implementation of sound for 3ch 8-bit or 4-bit D/A converter.
@@ -849,7 +848,6 @@ sound_dac3ch_write_middle( libspectrum_byte val )
   blip_synth_update( middle_dac3ch_synth_r, tstates, val * DAC3CH_VOLUME_MULTIPLIER );
 }
 /* end of dac3ch sound support */
-
 
 void
 sound_frame( void )
