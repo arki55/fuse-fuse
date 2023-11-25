@@ -56,6 +56,7 @@ int spec16_init( fuse_machine_info *machine )
   machine->ram.valid_pages    = 1;
 
   machine->unattached_port = spectrum_unattached_port;
+  machine->writeback = NULL;
 
   machine->shutdown = NULL;
 
