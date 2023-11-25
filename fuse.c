@@ -301,6 +301,7 @@ run_startup_manager( int *argc, char ***argv )
   beta_register_startup();
   creator_register_startup();
   covox_register_startup();
+  dac3ch_register_startup();
   debugger_register_startup();
   didaktik80_register_startup();
   disciple_register_startup();

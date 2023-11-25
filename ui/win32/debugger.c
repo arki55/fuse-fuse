@@ -680,6 +680,18 @@ ui_debugger_update( void )
 	        machine_current->ay.current_register );
   }
 
+  if( periph_is_active( PERIPH_TYPE_DAC3CH ) ) {
+    _stprintf( format_string, "\r\nD/A M:%s A:%s B:%s C:%s", 
+    format_8_bit(), format_8_bit(), format_8_bit(), format_8_bit() );
+    length = _tcslen( buffer );
+    _sntprintf( &buffer[length], 1024-length, format_string,
+	        machine_current->dac3ch.dac3ch_control,
+          machine_current->dac3ch.dac3ch_channel_a,
+          machine_current->dac3ch.dac3ch_channel_b,
+          machine_current->dac3ch.dac3ch_channel_c
+    );
+  }
+
   if( capabilities & LIBSPECTRUM_MACHINE_CAPABILITY_128_MEMORY ) {
     _stprintf( format_string, "\r\n128Mem %s", format_8_bit() );
     length = _tcslen( buffer );
