@@ -29,3 +29,5 @@ jobs:
     secrets:
       RELEASE_TOKEN: "${{ secrets.RELEASE_TOKEN }}"
       LIBSPECTRUM_TOKEN: "${{ secrets.LIBSPECTRUM_TOKEN }}"
+    permissions:
+        contents: write
