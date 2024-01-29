@@ -198,12 +198,15 @@ jobs:
     steps:
       - name: "Checkout code"
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       # Prepare variables
       - name: "Prepare variables"
         id: prep-vars
         run: |
           cd ${GITHUB_WORKSPACE}
+          git fetch --prune
           
           current_date_time=`date "+%Y-%m-%d--%H-%M-%S"`
           echo "Current date time: ${current_date_time}"
