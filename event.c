@@ -84,8 +84,13 @@ static gint
 event_add_cmp( gconstpointer a1, gconstpointer b1 )
 {
   const event_t *a = a1, *b = b1;
-
-  return a->tstates != b->tstates ? a->tstates - b->tstates
+  /* (a->tstates - b->tstates) although usually sufficient as a GCompareFunc,
+     can overflow for high values of b->tstates. High values can occur in e.g.
+     timer events when fuse is run with --speed <very high number>. This
+     overflow can cause a crash if it pushes a spectrum frame event beyond a
+     distant timer event. Therefore use overflow safe variation
+     (a->tstates > b->tstates) - (a->tstates < b->tstates) instead. */
+  return a->tstates != b->tstates ? (a->tstates > b->tstates) - (a->tstates < b->tstates)
 		                  : a->type - b->type;
 }
 

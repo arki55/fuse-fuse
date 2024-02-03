@@ -19,6 +19,8 @@
 
         * Miscellaneous improvements:
           * Add ZIP files to the bash completion script (Alberto Garcia).
+          * Prevent potential segmentation fault due to overflow when emulation
+            speed is set very high (Pete Moore)
 
 2021-02-27  Philip Kendall  <philip-fuse@shadowmagic.org.uk>
 

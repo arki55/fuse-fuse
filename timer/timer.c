@@ -246,7 +246,13 @@ timer_frame( libspectrum_dword last_tstates, int event GCC_UNUSED,
     tstates = ( ( difference + TEN_MS / 1000.0 ) *
 		machine_current->timings.processor_speed
 		) * speed + 0.5;
-  
+
+    /* If speed is very large, tstates can also get very large; cap it to
+       avoid any potential overflows */
+    if( tstates > 1 << 30 ) {
+      tstates = 1 << 30;
+    }
+
     event_add( last_tstates + tstates, timer_event );
 
     start_time = current_time + TEN_MS / 1000.0;
