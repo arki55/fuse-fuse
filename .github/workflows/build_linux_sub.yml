@@ -45,6 +45,8 @@ jobs:
 
       - name: (2) Check out repository code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: (3) Download libspectrum artefact
         uses: actions/download-artifact@v3
