@@ -73,6 +73,7 @@ ui_win32_files = \
 
 ui_win32_rc_files = \
                  ui/win32/about.rc \
+                 ui/win32/about_ext.rc \
                  ui/win32/binary.rc \
                  ui/win32/browse.rc \
                  ui/win32/debugger.rc \
