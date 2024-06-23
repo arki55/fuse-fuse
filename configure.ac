@@ -33,6 +33,7 @@ dnl Package info
 m4_define([fuse_copyright], ["(c) 1999-2023 Philip Kendall and others"])
 m4_define([fuse_url], [http://fuse-emulator.sourceforge.net/])
 m4_define([fuse_bugreport], [http://sourceforge.net/p/fuse-emulator/bugs/])
+m4_define([fuse_long], ["The Free Unix Spectrum Emulator"])
 
 AC_INIT([fuse],[fuse_version],[fuse_bugreport],[fuse],[fuse_url])
 AC_CONFIG_SRCDIR(fuse.c)
@@ -47,15 +48,28 @@ AM_SILENT_RULES([yes])
 dnl Substitutions for .in files
 FUSE_FULL_VERSION=fuse_full_version
 FUSE_COPYRIGHT=fuse_copyright
+FUSE_LONG=fuse_long
 FUSE_URL=fuse_url
 AC_SUBST(FUSE_FULL_VERSION)
 AC_SUBST(FUSE_COPYRIGHT)
+AC_SUBST(FUSE_LONG)
 AC_SUBST(FUSE_URL)
 
 dnl Definitions for config.h
 AC_DEFINE([FUSE_RC_VERSION], [fuse_rc_version],
           [Define version information for win32 executables])
 AC_DEFINE([FUSE_COPYRIGHT], [fuse_copyright], [Define copyright of Fuse])
+AC_DEFINE([FUSE_LONG], [fuse_long], [Define long name of Fuse])
+
+dnl Allow splitting version by words in about dialog
+fuse_version_text="Fuse fuse_version"
+fuse_version_spaced=${fuse_version_text//-/ }
+AC_DEFINE_UNQUOTED([FUSE_ABOUT_VERSION], ["$fuse_version_spaced"], [Fuse version info in about dialog])
+
+AC_MSG_CHECKING(fuse version)
+echo "fuse_version"
+AC_MSG_CHECKING(fuse about version)
+echo "$fuse_version_spaced"
 
 dnl Configure option to specify testing build info
 AC_MSG_CHECKING(testing build information)
