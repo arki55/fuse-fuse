@@ -1,5 +1,5 @@
 /* gtkkeyboard.c: GTK routines for dealing with the keyboard
-   Copyright (c) 2000-2008 Philip Kendall, Russell Marks
+   Copyright (c) 2000-2024 Philip Kendall, Russell Marks
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -42,9 +42,10 @@ unshift_keysym( guint keycode, gint group )
   GdkKeymapKey *maps;
   guint *keyvals, i, r = GDK_KEY_VoidSymbol, r2 = GDK_KEY_VoidSymbol;
   gint count;
+  GdkDisplay *display = gdk_display_get_default();
 
-  gdk_keymap_get_entries_for_keycode( gdk_keymap_get_default(), keycode,
-                                      &maps, &keyvals, &count );
+  gdk_keymap_get_entries_for_keycode( gdk_keymap_get_for_display( display ),
+                                      keycode, &maps, &keyvals, &count );
 
   for( i = 0; i < count; i++ ) {
     if( maps[i].group == group && maps[i].level == 0 ) {
