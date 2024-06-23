@@ -37,4 +37,6 @@ void spec128_select_page( int page );
 
 int spec128_memory_map( void );
 
+writeback_port * spec128_get_writeback( int patched );
+
 #endif			/* #ifndef FUSE_SPEC128_H */

@@ -277,12 +277,14 @@ readport( libspectrum_word port )
   b = readport_internal( port );
 
   /* Very ugly to put this here, but unless anything else needs this
-     "writeback" mechanism, no point producing a general framework */
-  if( ( port & 0x8002 ) == 0 &&
-      ( machine_current->machine == LIBSPECTRUM_MACHINE_128   ||
-	machine_current->machine == LIBSPECTRUM_MACHINE_PLUS2    ) )
-    writeport_internal( 0x7ffd, b );
-
+     "writeback" mechanism, no point producing a general framework 
+     Update: Improved it a bit with "writeback" machine info */
+  if (machine_current->writeback != NULL) {
+    if( ( port & machine_current->writeback->mask ) == machine_current->writeback->value ) {
+      writeport_internal( machine_current->writeback->write_port, b );
+    }
+  }
+  
   tstates++;
 
   return b;
@@ -502,7 +504,7 @@ periph_posthook( void )
 }
 
 int
-periph_postcheck( void )
+periph_postcheck( settings_info *original_settings, settings_info *current_settings )
 {
   int needs_hard_reset = 0;
 
@@ -519,4 +521,35 @@ periph_register_paging_events( const char *type_string, int *page_event,
 {
   *page_event = debugger_event_register( type_string, page_event_string );
   *unpage_event = debugger_event_register( type_string, unpage_event_string );
+}
+
+/* @TODO: Where to put these? */
+
+static int options_general_need_reset = 0;
+
+/* When saving general options:
+   In case some specific options are saved, do the reset */
+void
+options_general_posthook( void )
+{
+    if( options_general_need_reset == 1 ) {
+      options_general_need_reset = 0;
+      machine_reset( 1 );
+    }
+}
+
+/* When saving general options:
+   In case some specific options are saved, ask if to reset */
+int
+options_general_postcheck( settings_info *original_settings, settings_info *current_settings )
+{
+  int needs_hard_reset = 0;
+  if( original_settings->didaktik_128k_patch != current_settings->didaktik_128k_patch ) {
+    needs_hard_reset = 1;
+  }
+
+  /* Save the value ino a static var, will be used
+     by options_general_posthook() right after. */
+  options_general_need_reset = needs_hard_reset;
+  return needs_hard_reset;
 }

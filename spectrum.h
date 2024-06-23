@@ -82,4 +82,11 @@ extern int spectrum_frame_event;
 void spectrum_register_startup( void );
 int spectrum_frame( void );
 
+/* Info about writeback port */
+typedef struct writeback_port {
+  libspectrum_word mask;   /* mas as in port info */
+  libspectrum_byte value;  /* value as in port info */
+  libspectrum_word write_port; /* which port should be written to */
+} writeback_port;
+
 #endif			/* #ifndef FUSE_SPECTRUM_H */
