@@ -172,7 +172,7 @@ _fuse()
         --sdl-fullscreen-mode|--snet|--sound-device|-d| \
         --sound-freq|-f|--speccyboot-tap|--speed| \
         --teletext-addr-[1-4]|--teletext-port-[1-4]|--volume-ay| \
-        --volume-beeper|--volume-covox|--volume-specdrum|--volume-uspeech)
+        --volume-beeper|--volume-covox|--volume-specdrum|--volume-uspeech|--volume-dac3ch)
             # argument required but no completions available
             return 0
             ;;
@@ -182,7 +182,7 @@ _fuse()
         COMPREPLY=( $( compgen -W '--accelerate-loader --aspect-hint
             --auto-load --autosave-settings --beta128 --beta128-48boot
             --betadisk --bw-tv --cmos-z80 --competition-code
-            --competition-mode --compress-rzx --confirm-actions --covox
+            --competition-mode --compress-rzx --confirm-actions --covox --dac3ch
             --debugger-command --detect-loader --didaktik80
             --didaktik80disk --disciple --discipledisk --disk-ask-merge
             --disk-try-merge --divide --divide-masterfile
@@ -226,7 +226,7 @@ _fuse()
             --no-accelerate-loader --no-aspect-hint --no-auto-load
             --no-autosave-settings --no-beta128 --no-beta128-48boot
             --no-bw-tv --no-cmos-z80 --no-competition-mode
-            --no-compress-rzx --no-confirm-actions --no-covox
+            --no-compress-rzx --no-confirm-actions --no-covox --no-dac3ch
             --no-detect-loader
             --no-didaktik80 --no-disciple --no-disk-ask-merge
             --no-divide --no-divide-write-protect --no-divmmc
@@ -278,7 +278,7 @@ _fuse()
             --teletext-port-3 --teletext-port-4 --textfile --traps --ttx2000s
             --unittests --usource --uspeech --version --volume-ay
             --volume-beeper --volume-covox --volume-specdrum --volume-uspeech
-            --writable-roms
+            --volume-dac3ch --writable-roms
             --zxatasp --zxatasp-masterfile --zxatasp-slavefile --zxatasp-upload
             --zxatasp-write-protect --zxcf --zxcf-cffile --zxcf-upload
             --zxmmc --zxmmc-file --zxprinter' -- "$cur" ) )

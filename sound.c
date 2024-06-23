@@ -102,6 +102,15 @@ Blip_Synth *left_covox_synth = NULL, *right_covox_synth = NULL;
 
 Blip_Synth *left_sp0256_synth = NULL, *right_sp0256_synth = NULL;
 
+/* 3 channel D/A converter:
+     When setting a byte to Blip, value needs to be amplified/multiplied.
+     Low multiplier => low volume, big value => distorted sound
+     Covox had this as 128, however sound is distored at that value. */
+#define DAC3CH_VOLUME_MULTIPLIER  64
+
+Blip_Synth *left_dac3ch_synth = NULL, *right_dac3ch_synth = NULL, 
+*middle_dac3ch_synth_l = NULL, *middle_dac3ch_synth_r = NULL;
+
 struct speaker_type_tag
 {
   int bass;
@@ -258,7 +267,32 @@ sound_init( const char *device )
                          sound_get_volume( settings_current.volume_covox ) );
   blip_synth_set_output( left_covox_synth, left_buf );
   blip_synth_set_treble_eq( left_covox_synth, treble );
-  
+
+  /* DAC 3x 8bit */
+  left_dac3ch_synth = new_Blip_Synth();
+  blip_synth_set_volume( left_dac3ch_synth,
+                         sound_get_volume( settings_current.volume_dac3ch ) );
+  blip_synth_set_output( left_dac3ch_synth, left_buf );
+  blip_synth_set_treble_eq( left_dac3ch_synth, treble );
+
+  right_dac3ch_synth = new_Blip_Synth();
+  blip_synth_set_volume( right_dac3ch_synth,
+                         sound_get_volume( settings_current.volume_dac3ch ) );
+  blip_synth_set_output( right_dac3ch_synth, sound_stereo_ay == SOUND_STEREO_AY_NONE ? left_buf : right_buf );
+  blip_synth_set_treble_eq( right_dac3ch_synth, treble );
+
+  middle_dac3ch_synth_l = new_Blip_Synth();
+  blip_synth_set_volume( middle_dac3ch_synth_l,
+                         sound_get_volume( settings_current.volume_dac3ch ) );
+  blip_synth_set_output( middle_dac3ch_synth_l, left_buf );
+  blip_synth_set_treble_eq( middle_dac3ch_synth_l, treble );
+
+  middle_dac3ch_synth_r = new_Blip_Synth();
+  blip_synth_set_volume( middle_dac3ch_synth_r,
+                         sound_get_volume( settings_current.volume_dac3ch ) );
+  blip_synth_set_output( middle_dac3ch_synth_r, sound_stereo_ay == SOUND_STEREO_AY_NONE ? left_buf : right_buf );
+  blip_synth_set_treble_eq( middle_dac3ch_synth_r, treble );
+
   left_sp0256_synth = new_Blip_Synth();
   blip_synth_set_volume( left_sp0256_synth,
                          sound_get_volume( settings_current.volume_uspeech ) );
@@ -303,12 +337,14 @@ sound_init( const char *device )
     blip_synth_set_output( *ay_mid_synth_r, right_buf );
     blip_synth_set_treble_eq( *ay_mid_synth_r, treble );
 
+    /* @FIXME: Specdrum cannot work when AY stereo is OFF (crash) */
     right_specdrum_synth = new_Blip_Synth();
     blip_synth_set_volume( right_specdrum_synth,
                            sound_get_volume( settings_current.volume_specdrum ) );
     blip_synth_set_output( right_specdrum_synth, right_buf );
     blip_synth_set_treble_eq( right_specdrum_synth, treble );
 
+    /* @FIXME: Covox cannot work when AY stereo is OFF (crash) */
     right_covox_synth = new_Blip_Synth();
     blip_synth_set_volume( right_covox_synth,
                            sound_get_volume( settings_current.volume_covox ) );
@@ -325,6 +361,32 @@ sound_init( const char *device )
     blip_synth_set_output( ay_b_synth, left_buf );
     blip_synth_set_output( ay_c_synth, left_buf );
   }
+
+  /* Init sound for 3 channel D/A converter */
+  left_dac3ch_synth = new_Blip_Synth();
+  blip_synth_set_volume( left_dac3ch_synth,
+                          sound_get_volume( settings_current.volume_dac3ch ) );
+  blip_synth_set_output( left_dac3ch_synth, left_buf );
+  blip_synth_set_treble_eq( left_dac3ch_synth, treble );
+
+  right_dac3ch_synth = new_Blip_Synth();
+  blip_synth_set_volume( right_dac3ch_synth,
+                          sound_get_volume( settings_current.volume_dac3ch ) );
+  blip_synth_set_output( right_dac3ch_synth, sound_stereo_ay == SOUND_STEREO_AY_NONE ? left_buf : right_buf );
+  blip_synth_set_treble_eq( right_dac3ch_synth, treble );
+
+  middle_dac3ch_synth_l = new_Blip_Synth();
+  blip_synth_set_volume( middle_dac3ch_synth_l,
+                          sound_get_volume( settings_current.volume_dac3ch ) );
+  blip_synth_set_output( middle_dac3ch_synth_l, left_buf );
+  blip_synth_set_treble_eq( middle_dac3ch_synth_l, treble );
+
+  middle_dac3ch_synth_r = new_Blip_Synth();
+  blip_synth_set_volume( middle_dac3ch_synth_r,
+                          sound_get_volume( settings_current.volume_dac3ch ) );
+  blip_synth_set_output( middle_dac3ch_synth_r, sound_stereo_ay == SOUND_STEREO_AY_NONE ? left_buf : right_buf );
+  blip_synth_set_treble_eq( middle_dac3ch_synth_r, treble );
+
 
   sound_enabled = sound_enabled_ever = 1;
 
@@ -385,6 +447,11 @@ sound_end( void )
 
     delete_Blip_Synth( &left_sp0256_synth );
     delete_Blip_Synth( &right_sp0256_synth );
+
+    delete_Blip_Synth( &left_dac3ch_synth );
+    delete_Blip_Synth( &right_dac3ch_synth );
+    delete_Blip_Synth( &middle_dac3ch_synth_l );
+    delete_Blip_Synth( &middle_dac3ch_synth_r );
 
     delete_Blip_Buffer( &left_buf );
     delete_Blip_Buffer( &right_buf );
@@ -680,6 +747,8 @@ sound_ay_reset( void )
 void
 sound_specdrum_write( libspectrum_word port GCC_UNUSED, libspectrum_byte val )
 {
+  if( !sound_enabled ) return;
+  
   if( periph_is_active( PERIPH_TYPE_SPECDRUM ) ) {
     blip_synth_update( left_specdrum_synth, tstates, ( val - 128) * 128);
     if( right_specdrum_synth ) {
@@ -696,6 +765,8 @@ sound_specdrum_write( libspectrum_word port GCC_UNUSED, libspectrum_byte val )
 void
 sound_covox_write( libspectrum_word port GCC_UNUSED, libspectrum_byte val )
 {
+  if( !sound_enabled ) return;
+
   if( periph_is_active( PERIPH_TYPE_COVOX_FB ) ||
       periph_is_active( PERIPH_TYPE_COVOX_DD ) ) {
     blip_synth_update( left_covox_synth, tstates, val * 128);
@@ -721,6 +792,62 @@ sound_sp0256_write( libspectrum_dword at_tstates, libspectrum_signed_word val )
     blip_synth_update( right_sp0256_synth, at_tstates, val );
   }
 }
+
+/*
+ * sound_dac3ch_write_a/b/c
+ * Implementation of sound for 3ch 8-bit or 4-bit D/A converter.
+ * Similarly as with COVOX, writing to channels is easy,
+ * as the output is already a digitized waveform.
+ */
+void
+sound_dac3ch_write_left( libspectrum_byte val )
+{
+  if( !sound_enabled ) return;
+
+  /* 4 or 8 bits ? */
+  if (option_enumerate_sound_dac3ch_mode() == SOUND_DAC3CH_MODE_4BIT) {
+    /* 4 bit mode: Move lower 4 bits up to boost volume and remove possible
+       static on higher 4 bits, which should not contain anything in this mode. */
+    val <<= 4;
+  }
+
+  /* Left channel */
+  blip_synth_update( left_dac3ch_synth, tstates, val * DAC3CH_VOLUME_MULTIPLIER );
+}
+
+void
+sound_dac3ch_write_right( libspectrum_byte val )
+{
+  if( !sound_enabled ) return;
+
+  /* 4 or 8 bits ? */
+  if (option_enumerate_sound_dac3ch_mode() == SOUND_DAC3CH_MODE_4BIT) {
+    /* 4 bit mode: Move lower 4 bits up to boost volume and remove possible
+       static on higher 4 bits, which should not contain anything in this mode. */
+    val <<= 4;
+  }
+
+  /* Right channel */
+  blip_synth_update( right_dac3ch_synth, tstates, val * DAC3CH_VOLUME_MULTIPLIER );
+}
+
+void
+sound_dac3ch_write_middle( libspectrum_byte val )
+{
+  if( !sound_enabled ) return;
+
+  /* 4 or 8 bits ? */
+  if (option_enumerate_sound_dac3ch_mode() == SOUND_DAC3CH_MODE_4BIT) {
+    /* 4 bit mode: Move lower 4 bits up to boost volume and remove possible
+       static on higher 4 bits, which should not contain anything in this mode. */
+    val <<= 4;
+  }
+
+  /* Middle channel */
+  blip_synth_update( middle_dac3ch_synth_l, tstates, val * DAC3CH_VOLUME_MULTIPLIER );
+  blip_synth_update( middle_dac3ch_synth_r, tstates, val * DAC3CH_VOLUME_MULTIPLIER );
+}
+/* end of dac3ch sound support */
 
 void
 sound_frame( void )
