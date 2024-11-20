@@ -59,29 +59,29 @@ gtkstatusbar_create( GtkBox *parent )
 
   /* FIXME: unref these pixbuf on statusbar destroy */
   pixbuf_tape_inactive =
-    gdk_pixbuf_new_from_xpm_data( gtkpixmap_tape_inactive );
+    gdk_pixbuf_new_from_resource( ICON_TAPE_INACTIVE, NULL );
   pixbuf_tape_active =
-    gdk_pixbuf_new_from_xpm_data( gtkpixmap_tape_active );
+    gdk_pixbuf_new_from_resource( ICON_TAPE_ACTIVE, NULL );
 
   pixbuf_mdr_inactive =
-    gdk_pixbuf_new_from_xpm_data( gtkpixmap_mdr_inactive );
+    gdk_pixbuf_new_from_resource( ICON_MDR_INACTIVE, NULL );
   pixbuf_mdr_active =
-    gdk_pixbuf_new_from_xpm_data( gtkpixmap_mdr_active );
+    gdk_pixbuf_new_from_resource( ICON_MDR_ACTIVE, NULL );
 
   pixbuf_disk_inactive =
-    gdk_pixbuf_new_from_xpm_data( gtkpixmap_disk_inactive );
+    gdk_pixbuf_new_from_resource( ICON_DISK_INACTIVE, NULL );
   pixbuf_disk_active =
-    gdk_pixbuf_new_from_xpm_data( gtkpixmap_disk_active );
+    gdk_pixbuf_new_from_resource( ICON_DISK_ACTIVE, NULL );
 
   pixbuf_pause_inactive =
-    gdk_pixbuf_new_from_xpm_data( gtkpixmap_pause_inactive );
+    gdk_pixbuf_new_from_resource( ICON_PAUSE_INACTIVE, NULL );
   pixbuf_pause_active =
-    gdk_pixbuf_new_from_xpm_data( gtkpixmap_pause_active );
+    gdk_pixbuf_new_from_resource( ICON_PAUSE_ACTIVE, NULL );
 
   pixbuf_mouse_inactive =
-    gdk_pixbuf_new_from_xpm_data( gtkpixmap_mouse_inactive );
+    gdk_pixbuf_new_from_resource( ICON_MOUSE_INACTIVE, NULL );
   pixbuf_mouse_active =
-    gdk_pixbuf_new_from_xpm_data( gtkpixmap_mouse_active );
+    gdk_pixbuf_new_from_resource( ICON_MOUSE_ACTIVE, NULL );
 
   speed_status = gtk_label_new( "100%" );
   gtk_label_set_width_chars( GTK_LABEL( speed_status ), 8 );
