@@ -1,6 +1,6 @@
 # Reusable workflow for all MacOS builds
 name: Fuse App For MacOS (single build)
-run-name: Build Fuse App for MacOS / ${{ github.actor }} /
+run-name: Build Fuse App for MacOS (build ${{ inputs.name }}) / ${{ github.actor }} /
 
 on:
   workflow_call:
