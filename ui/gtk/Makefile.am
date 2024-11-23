@@ -30,6 +30,18 @@ pkgdata_DATA += ui/gtk/menu_data.ui
 
 endif
 
+gtkui_resource_files = \
+              ui/gtk/icons/disk_active.png \
+              ui/gtk/icons/disk_inactive.png \
+              ui/gtk/icons/mdr_active.png \
+              ui/gtk/icons/mdr_inactive.png \
+              ui/gtk/icons/mouse_active.png \
+              ui/gtk/icons/mouse_inactive.png \
+              ui/gtk/icons/pause_active.png \
+              ui/gtk/icons/pause_inactive.png \
+              ui/gtk/icons/tape_active.png \
+              ui/gtk/icons/tape_inactive.png \
+              ui/gtk/icons/tape_marker.png
 
 CLEANFILES += $(ui_gtk_built)
 
@@ -50,9 +62,10 @@ ui_gtk_files = \
                ui/gtk/menu_data.c \
                ui/gtk/options.c \
                ui/gtk/picture.c \
-               ui/gtk/pixmaps.c \
                ui/gtk/pokefinder.c \
                ui/gtk/pokemem.c \
+               ui/gtk/resources.c \
+               ui/gtk/resources.h \
                ui/gtk/rollback.c \
                ui/gtk/roms.c \
                ui/gtk/statusbar.c \
@@ -74,11 +87,15 @@ ui_gtk_built = \
                ui/gtk/menu_data.c \
                ui/gtk/menu_data.ui \
                ui/gtk/options.c \
-               ui/gtk/options_internals.h
+               ui/gtk/options_internals.h \
+               ui/gtk/resources.c \
+               ui/gtk/resources.h
 
 EXTRA_DIST += \
+              $(gtkui_resource_files) \
               ui/gtk/options.pl \
-              ui/gtk/options-header.pl
+              ui/gtk/options-header.pl \
+              ui/gtk/resources.xml
 
 ui/gtk/keysyms.c: $(srcdir)/keysyms.pl $(srcdir)/keysyms.dat
 	@$(MKDIR_P) ui/gtk
@@ -99,3 +116,9 @@ ui/gtk/options.c: $(srcdir)/perl/cpp-perl.pl config.h $(srcdir)/ui/gtk/options.p
 ui/gtk/options_internals.h: $(srcdir)/perl/cpp-perl.pl config.h $(srcdir)/ui/gtk/options-header.pl $(srcdir)/ui/options.dat $(srcdir)/perl/Fuse.pm $(srcdir)/perl/Fuse/Dialog.pm
 	@$(MKDIR_P) ui/gtk
 	$(AM_V_GEN)$(PERL) $(srcdir)/perl/cpp-perl.pl config.h $(srcdir)/ui/options.dat | $(PERL) -I$(srcdir)/perl $(srcdir)/ui/gtk/options-header.pl - > $@.tmp && mv $@.tmp $@
+
+ui/gtk/resources.c: ui/gtk/resources.xml $(gtkui_resource_files)
+	$(AM_V_GEN)glib-compile-resources --sourcedir=$(srcdir) --target=$@ --internal --generate-source --c-name=gtkui $<
+
+ui/gtk/resources.h: ui/gtk/resources.xml $(gtkui_resource_files)
+	$(AM_V_GEN)glib-compile-resources --sourcedir=$(srcdir) --target=$@ --internal --generate-header --c-name=gtkui $<
