@@ -975,7 +975,11 @@ xdisplay_destroy_image(void)
     shm_used = 0;
   }
 #endif
-  if( image ) XDestroyImage( image ); image = NULL;
+
+  if( image != NULL ) {
+    XDestroyImage( image );
+    image = NULL;
+  }
 }
 
 static void
