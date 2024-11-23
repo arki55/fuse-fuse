@@ -51,6 +51,7 @@
 #include "settings.h"
 #include "snapshot.h"
 #include "timer/timer.h"
+#include "ui/gtk/resources.h"
 #include "ui/ui.h"
 #include "utils.h"
 
@@ -165,6 +166,8 @@ ui_init( int *argc, char ***argv )
   gtk_widget_set_default_colormap( gdk_rgb_get_cmap() );
   gtk_widget_set_default_visual( gdk_rgb_get_visual() );
 #endif                /* #if !GTK_CHECK_VERSION( 3, 0, 0 ) */
+
+  g_resources_register( gtkui_get_resource() );
 
   gtkui_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 
@@ -316,6 +319,8 @@ ui_end(void)
   gtk_widget_hide( gtkui_window );
 
   g_object_unref( ui_manager_menu );
+
+  g_resources_unregister( gtkui_get_resource() );
 
   return 0;
 }
@@ -672,7 +677,7 @@ menu_help_about( GtkAction *gtk_action GCC_UNUSED, gpointer data GCC_UNUSED )
 {
   gtk_show_about_dialog( GTK_WINDOW( gtkui_window ),
                          "program-name", "Fuse",
-                         "comments", "The Free Unix Spectrum Emulator",
+                         "comments", FUSE_LONG,
                          "copyright", FUSE_COPYRIGHT,
 #ifdef FUSE_ICON_AVAILABLE
                          "logo-icon-name", "fuse",
