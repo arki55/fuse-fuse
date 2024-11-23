@@ -512,7 +512,7 @@ static void fuse_show_copyright(void)
 
 static void fuse_show_version( void )
 {
-  printf( "The Free Unix Spectrum Emulator (Fuse) version " VERSION ".\n" );
+  printf( FUSE_LONG " (Fuse) version " VERSION ".\n" );
 
   fuse_show_test_build_info();
 }
