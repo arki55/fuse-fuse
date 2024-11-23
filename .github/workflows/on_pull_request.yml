@@ -1,4 +1,4 @@
-name: Fuse App - Build for all platform (Pull request)
+name: Fuse App (on Pull request)
 run-name: Build Fuse App for all platforms (Pull request) / ${{ github.actor }} /
 
 # Executed upon each merge commit in PR
