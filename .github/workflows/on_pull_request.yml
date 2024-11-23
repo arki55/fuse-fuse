@@ -1,0 +1,10 @@
+name: Fuse App - Build for all platform (Pull request)
+run-name: Build Fuse App for all platforms (Pull request) / ${{ github.actor }} /
+
+# Executed upon each merge commit in PR
+on: [pull_request]
+
+jobs:
+  build-all:
+    name: "Build all"
+    uses: ./.github/workflows/build_all.yml

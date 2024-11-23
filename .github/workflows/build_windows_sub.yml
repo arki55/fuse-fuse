@@ -1,12 +1,12 @@
 # Reusable workflow for all Windows builds
-name: Fuse App For Windows
-run-name: Build Fuse App for windows / ${{ github.actor }} /
+name: Fuse App For Windows (single build)
+run-name: Build Fuse App for windows (build ${{ inputs.name }}) / ${{ github.actor }} /
 
 on:
   workflow_call:
     inputs:
       # Name this setup (no spaces please)
-      key:
+      name:
         type: string
         required: true
       dependencies:
@@ -290,7 +290,7 @@ jobs:
         run: |
           cd ${GITHUB_WORKSPACE}
 
-          base_name="${{ steps.copy-dlls.outputs.FUSE_DISTR_DIR }}-${{ inputs.key }}"
+          base_name="${{ steps.copy-dlls.outputs.FUSE_DISTR_DIR }}-${{ inputs.name }}"
 
           zip_from=${{ steps.copy-dlls.outputs.FUSE_DISTR_DIR }}.zip
           zip_to="${base_name}.zip"
