@@ -21,9 +21,11 @@
 
 */
 
-#error "This file is used to generate ui/xlib/xpixmaps.c and is not meant to be compiled"
+#include "config.h"
 
-const char *pixmap_tape_inactive[] = {
+#include "gtkinternals.h"
+
+const char *gtkpixmap_tape_inactive[] = {
 "27 17 13 1",
 " 	c None",
 ".	c #D5D5D5",
@@ -56,7 +58,7 @@ const char *pixmap_tape_inactive[] = {
 ".+..>.................>..+.",
 "....>.................>...."};
 
-const char *pixmap_tape_active[] = {
+const char *gtkpixmap_tape_active[] = {
 "27 17 13 1",
 " 	c None",
 ".	c #00D500",
@@ -89,7 +91,7 @@ const char *pixmap_tape_active[] = {
 ".+..>.................>..+.",
 "....>.................>...."};
 
-const char *pixmap_mdr_inactive[] = {
+const char *gtkpixmap_mdr_inactive[] = {
 "15 20 6 1",
 " 	c None",
 ".	c #000000",
@@ -118,7 +120,7 @@ const char *pixmap_mdr_inactive[] = {
 "+++++++++++++++",
 "+++++++++++++++"};
 
-const char *pixmap_mdr_active[] = {
+const char *gtkpixmap_mdr_active[] = {
 "15 20 6 1",
 " 	c None",
 ".	c #000000",
@@ -147,7 +149,7 @@ const char *pixmap_mdr_active[] = {
 "+++++++++++++++",
 "+++++++++++++++"};
 
-const char *pixmap_disk_inactive[] = {
+const char *gtkpixmap_disk_inactive[] = {
 "15 20 7 1",
 " 	c None",
 ".	c #A5A5A5",
@@ -177,7 +179,7 @@ const char *pixmap_disk_inactive[] = {
 "++@@@@@@@#@@#..",
 "..##@#@@@@#@#.+"};
 
-const char *pixmap_disk_active[] = {
+const char *gtkpixmap_disk_active[] = {
 "15 20 7 1",
 " 	c None",
 ".	c #00A500",
@@ -207,7 +209,7 @@ const char *pixmap_disk_active[] = {
 "++@@@@@@@#@@#..",
 "..##@#@@@@#@#.+"};
 
-const char *pixmap_pause_inactive[] = {
+const char *gtkpixmap_pause_inactive[] = {
 "30 21 7 1",
 " 	c None",
 ".	c #6C6C6C",
@@ -238,7 +240,7 @@ const char *pixmap_pause_inactive[] = {
 "                   #$$$$+     ",
 "                     %$@      "};
 
-const char *pixmap_pause_active[] = {
+const char *gtkpixmap_pause_active[] = {
 "30 21 7 1",
 " 	c None",
 ".	c #D80000",
@@ -269,7 +271,7 @@ const char *pixmap_pause_active[] = {
 "                   #$$$$+     ",
 "                     %$@      "};
 
-const char *pixmap_tape_marker[] = {
+const char *gtkpixmap_tape_marker[] = {
 "8 16 2 1",
 " 	c None",
 ".	c #212FC6",
@@ -290,7 +292,7 @@ const char *pixmap_tape_marker[] = {
 "..      ",
 ".       "};
 
-const char *pixmap_mouse_inactive[] = {
+const char *gtkpixmap_mouse_inactive[] = {
 "14 21 4 1",
 "     c None",
 "#    c #6C6C6C",
@@ -318,7 +320,7 @@ const char *pixmap_mouse_inactive[] = {
 " +##########+ ",
 "  ++######++  "};
 
-const char *pixmap_mouse_active[] = {
+const char *gtkpixmap_mouse_active[] = {
 "14 21 4 1",
 "     c None",
 "#    c #0000D0",

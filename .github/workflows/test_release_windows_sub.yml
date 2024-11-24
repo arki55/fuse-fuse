@@ -9,11 +9,6 @@ on:
       reason:
         type: string
         required: true
-      # Build type - standard or special
-      build_type:
-        type: string
-        required: true
-        description: "Possible values 'STD' or 'TEST'"
       # Build parameters (forwarded)
       key:
         type: string
@@ -24,10 +19,6 @@ on:
       configure_params:
         type: string
         required: true
-      fuse_version:
-        type: string
-        required: false
-        default: ""
       verify_ui:
         type: string
         required: true
@@ -40,25 +31,10 @@ on:
 
 jobs:
 
-  # Build type: STD
-  build-std:
-    name: "Build Fuse in standard way"
+  # Build Fuse App
+  build:
+    name: "Build Fuse"
     uses: ./.github/workflows/build_windows_sub.yml
-    if: ${{ inputs.build_type == 'STD' }}
-    with:
-      key: "${{ inputs.key }}"
-      dependencies: "${{ inputs.dependencies }}"
-      configure_params: "${{ inputs.configure_params }}"
-      fuse_version: "${{ inputs.fuse_version }}"
-      verify_ui: "${{ inputs.verify_ui }}"
-      verify_audio: "${{ inputs.verify_audio }}"
-      upload_artifacts: true
-  
-  # Build type: TEST
-  build-test:
-    name: "Build Fuse with TEST build flag"
-    uses: ./.github/workflows/build_windows_sub.yml
-    if: ${{ inputs.build_type == 'TEST' }}
     with:
       key: "${{ inputs.key }}"
       dependencies: "${{ inputs.dependencies }}"
@@ -67,4 +43,3 @@ jobs:
       verify_ui: "${{ inputs.verify_ui }}"
       verify_audio: "${{ inputs.verify_audio }}"
       upload_artifacts: true
-

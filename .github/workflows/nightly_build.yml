@@ -6,19 +6,32 @@ on:
   schedule:
     - cron: '0 1 * * *'
   workflow_dispatch:
-    inputs:
-      force_build:
-        type: boolean
-        required: false
-        default: false
-        description: "Force build even if the branch was not updated with master branch from parent repo. Defaults to false."
 
 jobs:
+  # Merge master from defined repo (usually official fuse repo)
+  catchup:
+    name: "Merge foreign master"
+    runs-on: ubuntu-latest
+    if: ${{ vars.PARENT_FUSE_BRANCH }} && ${{ vars.PARENT_FUSE_REPO }}
+    permissions:
+      contents: write
+    steps:
+      - name: "Checkout code"
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: "Merge fresh ${{ vars.PARENT_FUSE_BRANCH }} from ${{ vars.PARENT_FUSE_REPO }}"
+        run: |
+          git fetch --prune
+          git remote add repo ${{ vars.PARENT_FUSE_REPO }}
+          git fetch repo
+          git merge repo/${{ vars.PARENT_FUSE_BRANCH }}
+          git push
 
-  # Build and release nightly prerelease version from master (no draft).
-  # Use APPEND build type, appending date and branch from last git entry, 
-  #   keep latest 5 releases, cancel release build if nothing to be merged.
+  # Build and release nightly prerelease version from master (no draft)
+  # Add current date and time to the tag, keep latest 5
   master:
+    needs: [catchup]
     name: "Nightly build from master"
     uses: ./.github/workflows/test_release.yml
     with:
@@ -26,14 +39,7 @@ jobs:
       draft: false
       generateReleaseNotes: true
       libspectrum_branch: "master"
-      fuse_version_pattern: "<ver>-<ref>-<log_date>"
-      tag_pattern: "nightly-<ver>-<ref>-<log_date>"
+      add_date_time: true
       keep_latest: 5
-      build_type: "STD"
-      merge_master: true
-      merge_master_cancel: ${{ inputs.force_build == false }}
     secrets:
       RELEASE_TOKEN: "${{ secrets.RELEASE_TOKEN }}"
-      LIBSPECTRUM_TOKEN: "${{ secrets.LIBSPECTRUM_TOKEN }}"
-    permissions:
-      contents: write

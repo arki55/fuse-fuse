@@ -130,21 +130,19 @@ extern GtkActionEntry gtkui_menu_data[];
 extern guint gtkui_menu_data_size;
 
 /*
- * Resources for the GTK UI (ui/gtk/resources.xml)
+ * The icon pixmaps (pixmaps.c)
  */
-
-#define FUSE_RESOURCE_PREFIX "/net/sourceforge/fuse_emulator/"
-#define ICON_DISK_ACTIVE     FUSE_RESOURCE_PREFIX "disk_active.png"
-#define ICON_DISK_INACTIVE   FUSE_RESOURCE_PREFIX "disk_inactive.png"
-#define ICON_MDR_ACTIVE      FUSE_RESOURCE_PREFIX "mdr_active.png"
-#define ICON_MDR_INACTIVE    FUSE_RESOURCE_PREFIX "mdr_inactive.png"
-#define ICON_MOUSE_ACTIVE    FUSE_RESOURCE_PREFIX "mouse_active.png"
-#define ICON_MOUSE_INACTIVE  FUSE_RESOURCE_PREFIX "mouse_inactive.png"
-#define ICON_PAUSE_ACTIVE    FUSE_RESOURCE_PREFIX "pause_active.png"
-#define ICON_PAUSE_INACTIVE  FUSE_RESOURCE_PREFIX "pause_inactive.png"
-#define ICON_TAPE_ACTIVE     FUSE_RESOURCE_PREFIX "tape_active.png"
-#define ICON_TAPE_INACTIVE   FUSE_RESOURCE_PREFIX "tape_inactive.png"
-#define ICON_TAPE_MARKER     FUSE_RESOURCE_PREFIX "tape_marker.png"
+extern const char *gtkpixmap_tape_inactive[];
+extern const char *gtkpixmap_tape_active[];
+extern const char *gtkpixmap_mdr_inactive[];
+extern const char *gtkpixmap_mdr_active[];
+extern const char *gtkpixmap_disk_inactive[];
+extern const char *gtkpixmap_disk_active[];
+extern const char *gtkpixmap_pause_inactive[];
+extern const char *gtkpixmap_pause_active[];
+extern const char *gtkpixmap_tape_marker[];
+extern const char *gtkpixmap_mouse_inactive[];
+extern const char *gtkpixmap_mouse_active[];
 
 /*
  * Statusbar routines (statusbar.c)
