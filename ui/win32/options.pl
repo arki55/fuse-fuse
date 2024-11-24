@@ -2,7 +2,7 @@
 
 # options.pl: generate options dialog boxes
 
-# Copyright (c) 2001-2015 Philip Kendall, Marek Januszewski, Stuart Brady
+# Copyright (c) 2001-2015 Philip Kendall, Marek Januszewski, Stuart Brady, Miroslav Durcik
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -133,7 +133,39 @@ CODE
     my $idcname = uc( "IDC_OPT_$_->{name}" );
     my $optname = uc( "OPT_$_->{name}" );
 
+# Generate onclick event handler for every option widget (checkbox)
+    foreach my $widget ( @{ $_->{widgets} } ) {
+      if( $widget->{onclick} ) {
+        my $idcname = uc( "$widget->{value}" );
+
 print << "CODE";
+static void
+menu_options_$_->{name}_$widget->{value}_onclick( HWND hwndDlg )
+{
+CODE
+  # Suboption use whole parent definition for && || support in editability (2/2)
+  if( $widget->{subvalues} ) {
+    foreach my $suboption_arr ( @{ $widget->{subvalues} } ) {
+      my $suboption = $suboption_arr->{sub};
+      my $edit_def = $suboption_arr->{parent_def};
+      $edit_def =~ s/(s\.[_a-zA-Z0-9]+)/ (settings_current\.$1 \=\= TRUE) /g;
+      $edit_def =~ s/(w\.[_a-zA-Z0-9]+)/ IsDlgButtonChecked( hwndDlg, IDC_${optname}_$1 ) /g;
+      $edit_def =~ s/([sw]\.)//g; # Cleanup
+      $edit_def =~ s/(IDC_([_a-zA-Z0-9]+))/uc($1)/ge; # uppercase IDC_*
+      my $idcname2 = sprintf( "IDC_%s_%s", $optname, uc( "$suboption" ) );
+      print << "CODE";
+  EnableWindow( GetDlgItem(hwndDlg, $idcname2), ($edit_def) ? TRUE : FALSE );
+CODE
+    }
+  }
+      print << "CODE";
+}
+
+CODE
+  # Next $widget 
+    }}
+
+      print << "CODE";
 static void
 menu_options_$_->{name}_init( HWND hwndDlg )
 {
@@ -145,18 +177,20 @@ menu_options_$_->{name}_init( HWND hwndDlg )
   if( buffer[i] ) {};          /* Shut gcc up */
 
 CODE
+
+    print "  $_->{prehook}();\n\n" if $_->{prehook};
+
     foreach my $widget ( @{ $_->{widgets} } ) {
 	my $type = $widget->{type};
+  my $idcname = uc( "$widget->{value}" );
 
 	if( $type eq "Checkbox" ) {
-	    my $idcname = uc( "$widget->{value}" );
         print << "CODE";
   SendDlgItemMessage( hwndDlg, IDC_${optname}_${idcname}, BM_SETCHECK,
     settings_current.$widget->{value} ? BST_CHECKED : BST_UNCHECKED, 0 );
 
 CODE
 	} elsif( $widget->{type} eq "Entry" ) {
-	    my $idcname = uc( "$widget->{value}" );
         print << "CODE";
   SendDlgItemMessage( hwndDlg, IDC_${optname}_${idcname}, EM_LIMITTEXT,
                       $widget->{data1}, 0 );
@@ -167,7 +201,6 @@ CODE
 
 CODE
 	} elsif( $type eq "Combo" ) {
-          my $idcname = uc( "$widget->{value}" );
           print << "CODE";
   for( i = 0; i < $_->{name}_$widget->{value}_combo_count; i++ ) {
     /* FIXME This is asuming SendDlgItemMessage is not UNICODE */
@@ -185,10 +218,47 @@ CODE
       }
     }
   }
+
 CODE
 	} else {
           die "Unknown type `$type'";
         }
+
+  # Update editablity of this widget (2 ways)
+
+  # (1) If parent setting value is not set [located in any dialog box], disable this widget
+  #     Supports separators (1/2):
+  #     && - If any parent is disabled, then this is disabled too (cascade hierarchy).
+  #     || - If all parents are disabled, then this is disabled too (option used by multiple hw).
+  if( $widget->{parent_value} ) {
+    my $edit_def = $widget->{parent_value};
+    $edit_def =~ s/([sw]\.)//g; # Initializing window, ignoring w./s.
+    $edit_def =~ s/([_a-zA-Z0-9]+)/ (settings_current\.$1 \=\= TRUE) /g;
+      print << "CODE";
+    EnableWindow( GetDlgItem(hwndDlg, IDC_${optname}_${idcname}), ($edit_def) ? TRUE : FALSE );
+
+CODE
+  }
+
+  # (2) Activate check if option should be disabled (callback fnc.)
+  # Locked option ? -> gray out button (all types)
+  if( $_->{lockedcheck} ) {
+      print << "CODE";
+  if( $_->{lockedcheck}( &settings_current.$widget->{value} ) == 1 ) {
+    EnableWindow( GetDlgItem(hwndDlg, IDC_${optname}_${idcname}), FALSE );
+  }
+
+CODE
+  }
+
+  # Update editability of its suboptions (when onclick function is present)
+  if( $widget->{onclick} ) {
+  print << "CODE";
+  menu_options_$_->{name}_$widget->{value}_onclick( hwndDlg );
+
+CODE
+  }
+  # Next $widget 
     }
 
 print << "CODE";
@@ -312,6 +382,20 @@ menu_options_$_->{name}_proc( HWND hwndDlg, UINT msg, WPARAM wParam GCC_UNUSED,
         case IDCANCEL:
           EndDialog( hwndDlg, 0 );
           return 0;
+
+CODE
+    # Register onclick event callbacks for widgets
+    foreach my $widget ( @{ $_->{widgets} } ) {
+      if( $widget->{onclick} ) {
+	      my $idcname = uc( "$widget->{value}" );
+        print << "CODE";
+        case IDC_${optname}_${idcname}:
+          menu_options_$_->{name}_$widget->{value}_onclick( hwndDlg );
+          return 0;
+
+CODE
+    }}
+      print << "CODE";
       }
       break;
 

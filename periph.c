@@ -100,13 +100,29 @@ periph_register( periph_type type, const periph_t *periph )
   g_hash_table_insert( peripherals, GINT_TO_POINTER( type ), private );
 }
 
-/* Get the data about one peripheral */
+/* Return 0 if peripheral port info (in data) has searched peripheral type (in user_data).
+   To be used with list function g_slist_find_custom */
 static gint
 find_by_type( gconstpointer data, gconstpointer user_data )
 {
   const periph_port_private_t *periph = data;
   periph_type type = GPOINTER_TO_INT( user_data );
   return periph->type - type;
+}
+
+/* Return TRUE if peripheral info (in data) has searched option variable (in user_data).
+   To be used with list function g_hash_table_find */
+gboolean
+find_by_option( gpointer key, gpointer value, gpointer user_data )
+{
+  const periph_private_t *periph = value;
+
+  if (periph->periph->option) {
+    /* Compare pointers (as if names), not values.. */
+    return ((periph->periph->option) == (int *)user_data) ? TRUE : FALSE;
+  }
+  /* This peripheral has no preferences option */
+  return FALSE;
 }
 
 /* Set whether a peripheral can be present on this machine or not */
@@ -222,6 +238,17 @@ set_type_inactive( gpointer key, gpointer value, gpointer user_data )
   periph_private_t *type_data = value;
   type_data->present = PERIPH_PRESENT_NEVER;
   type_data->active = 0;
+}
+
+/* copy activity of peripheral to its setting (align setting with what is actually active atm.) */
+static void
+set_option_from_activity( gpointer key, gpointer value, gpointer user_data GCC_UNUSED )
+{
+  periph_private_t *private = value;
+
+  if (private->periph->option) {
+    *(private->periph->option) = private->active;
+  }
 }
 
 /* Mark all peripherals as being never present on this machine */
@@ -510,6 +537,29 @@ periph_postcheck( void )
   g_hash_table_foreach( peripherals, get_hard_reset, &needs_hard_reset );
 
   return needs_hard_reset;
+}
+
+/* Do something before opening peripherals options */
+void
+periph_prehook( void )
+{
+  /* Uncheck options for HW that is not active right now */
+  g_hash_table_foreach( peripherals, set_option_from_activity, NULL );
+}
+
+/* Check if option for peripheral should be locked, return TRUE(1) in that case.
+  Locate peripheral by its config setting, is locked if not optional */
+int
+periph_lockedcheck( int * option )
+{
+  periph_private_t *periph;
+  if( ( periph = g_hash_table_find( peripherals, find_by_option, option ) ) != NULL ) {
+    /* Peripheral found, check if it is not optional => locked */
+    return ( periph->present == PERIPH_PRESENT_OPTIONAL ) ? 0 : 1;
+  }
+
+  /* No peripheral by searched option variable, not locking */
+  return 0;
 }
 
 /* Register debugger page/unpage events for a peripheral */
