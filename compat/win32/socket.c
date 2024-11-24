@@ -46,6 +46,12 @@ compat_socket_blocking_mode( compat_socket_t fd, int blocking )
 }
 
 int
+compat_socket_get_fionread( compat_socket_t fd, u_long *bytes)
+{
+  return ( ioctlsocket( fd, FIONREAD, bytes ) );
+}
+
+int
 compat_socket_close( compat_socket_t fd )
 {
   return closesocket( fd );
