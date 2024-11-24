@@ -1,6 +1,6 @@
 # Reusable workflow for all WII builds
-name: Fuse App For WII
-run-name: Build Fuse App for WII / ${{ github.actor }} /
+name: Fuse App For WII (single build)
+run-name: Build Fuse App for WII (build ${{ inputs.name }}) / ${{ github.actor }} /
 
 on:
   workflow_call:
@@ -70,7 +70,9 @@ jobs:
           echo "Done."
 
       - name: (3) Check out repository code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: (4) Download libspectrum artefact
         uses: actions/download-artifact@v3

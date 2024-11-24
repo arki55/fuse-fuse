@@ -1,6 +1,6 @@
 # Reusable workflow for all Linux builds
-name: Fuse App For Linux
-run-name: Build Fuse App for Linux / ${{ github.actor }} /
+name: Fuse App For Linux (single build)
+run-name: Build Fuse App for Linux (build ${{ inputs.name }}) / ${{ github.actor }} /
 
 on:
   workflow_call:
@@ -44,7 +44,9 @@ jobs:
           sudo apt-get install -y ${{ inputs.dependencies }}
 
       - name: (2) Check out repository code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: (3) Download libspectrum artefact
         uses: actions/download-artifact@v3

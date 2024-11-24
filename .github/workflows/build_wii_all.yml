@@ -1,8 +1,8 @@
-name: Fuse App For WII
-run-name: Build Fuse App for WII / ${{ github.actor }} /
+name: Fuse App For WII (all builds)
+run-name: Build Fuse App for WII (all builds) / ${{ github.actor }} /
 
-# Executed upon each commit pushed, merge commit in PR
-on: [pull_request]
+on:
+  workflow_call:
 
 jobs:
   libspectrum:

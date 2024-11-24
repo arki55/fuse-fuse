@@ -1,12 +1,12 @@
 # Reusable workflow for all Windows builds
-name: Fuse App For Windows
-run-name: Build Fuse App for windows / ${{ github.actor }} /
+name: Fuse App For Windows (single build)
+run-name: Build Fuse App for windows (build ${{ inputs.name }}) / ${{ github.actor }} /
 
 on:
   workflow_call:
     inputs:
       # Name this setup (no spaces please)
-      key:
+      name:
         type: string
         required: true
       dependencies:
@@ -21,6 +21,7 @@ on:
         type: string
         required: false
         default: ""
+        description: "Overwrite FUSE_VERSION constant."
       verify_ui:
         type: string
         required: true
@@ -73,7 +74,9 @@ jobs:
         shell: bash
 
       - name: (2) Check out repository code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: (3) Install Cygwin (32 bit) with libs
         uses: cygwin/cygwin-install-action@master
@@ -118,14 +121,21 @@ jobs:
           echo "Done"
         shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
 
-      - name: (5a) Adjust fuse_version
+      - name: (5a) Overwrite fuse_version
         if: ${{ inputs.fuse_version }}
         run: |
           cd ${GITHUB_WORKSPACE}
           file="configure.ac"
-          replace="${{ inputs.fuse_version }}"
+          
+          echo "Checking versions.."
+          current_fuse_version=`cat "$file" | grep -E "\[fuse_version\]" | grep -Eo ', \[.+\]' | grep -Eo '([0-9\.]+)'`
+          replace_fuse_version="${{ inputs.fuse_version }}"
+          
+          echo "Current fuse version : ${current_fuse_version}"
+          echo " ==> replacing with : ${replace_fuse_version}"
+          
           content=`cat $file`
-          content2=${content//m4_define(\[fuse_version\], \[[0-9].[0-9].[0-9]\])/m4_define(\[fuse_version\], \[$replace\])}
+          content2=${content//m4_define(\[fuse_version\], \[$current_fuse_version\])/m4_define(\[fuse_version\], \[$replace_fuse_version\])}
           echo "$content2" > $file
         shell: C:\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
 
@@ -280,7 +290,7 @@ jobs:
         run: |
           cd ${GITHUB_WORKSPACE}
 
-          base_name="fuse-windows-${{ inputs.key }}"
+          base_name="${{ steps.copy-dlls.outputs.FUSE_DISTR_DIR }}-${{ inputs.name }}"
 
           zip_from=${{ steps.copy-dlls.outputs.FUSE_DISTR_DIR }}.zip
           zip_to="${base_name}.zip"
