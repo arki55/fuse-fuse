@@ -12,6 +12,8 @@ jobs:
     with:
       branch: arki55/github-workflows
       key: fuse-app
+      use_libgcrypt: false # Lib not working
+      use_libaudiofile: false # Lib not available
       # repo name is taken from var.LIBSPECTRUM_REPO
 
   # Default build without any configure params (xlib)
